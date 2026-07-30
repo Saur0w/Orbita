@@ -1,120 +1,97 @@
 "use client";
 
-import { useRef } from "react";
 import styles from "./style.module.scss";
-import Image from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { useRef } from "react";
+import Image from "next/image";
+import { SplitText } from "gsap/SplitText";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(SplitText, ScrollTrigger);
 
 export default function Landing() {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const mainImageRef = useRef<HTMLDivElement>(null);
-    const leftImageRef = useRef<HTMLDivElement>(null);
-    const rightImageRef = useRef<HTMLDivElement>(null);
+    const landingRef = useRef<HTMLDivElement>(null);
+    const imgWrapperRef = useRef<HTMLDivElement>(null);
+    const headingRef1 = useRef<HTMLSpanElement>(null);
+    const headingRef2 = useRef<HTMLSpanElement>(null);
 
-    useGSAP(
-        () => {
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: containerRef.current,
-                    start: "top top",
-                    end: "+=200%",
-                    scrub: 1,
-                    pin: true,
-                },
+    useGSAP(() => {
+        const split1 = SplitText.create(headingRef1.current, {
+            type: "lines",
+            mask: "lines",
+            autoSplit: true,
+        });
+
+        const split2 = SplitText.create(headingRef2.current, {
+            type: "lines",
+            mask: "lines",
+            autoSplit: true,
+        });
+
+        const entranceTl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+
+        entranceTl
+            .from([split1.lines, split2.lines], {
+                yPercent: 110,
+                duration: 1,
+                stagger: 0.08,
+            })
+
+            .set([split1.masks, split2.masks], {
+                overflow: "visible"
+            })
+
+            .from(headingRef2.current, {
+                xPercent: -48,
+                duration: 1.2,
+                ease: "power2.out",
             });
 
-            gsap.set([leftImageRef.current, rightImageRef.current], {
+        const scrollTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: landingRef.current,
+                start: "top top",
+                end: "+=40%",
+                scrub: 0.3,
+                pin: true,
+                anticipatePin: 1,
+            },
+        });
+
+        scrollTl
+            .to([headingRef1.current, headingRef2.current], {
                 opacity: 0,
-                scale: 0.8,
-                x: "0vw",
-            });
-
-            tl.to(
-                mainImageRef.current,
+                ease: "none",
+            })
+            .to(
+                imgWrapperRef.current,
                 {
-                    width: "28vw",
-                    height: "70vh",
-                    borderRadius: "16px",
-                    ease: "power2.inOut",
+                    clipPath: "inset(15% 38% 15% 38% round 10px)",
+                    ease: "none"
                 },
-                0
-            )
-                .to(
-                    leftImageRef.current,
-                    {
-                        x: "-30vw",
-                        opacity: 1,
-                        scale: 1,
-                        ease: "power2.inOut",
-                    },
-                    0
-                )
-                .to(
-                    rightImageRef.current,
-                    {
-                        x: "30vw",
-                        opacity: 1,
-                        scale: 1,
-                        ease: "power2.inOut",
-                    },
-                    0
-                );
-        },
-        { scope: containerRef }
-    );
+                "<"
+            );
+    }, { scope: landingRef });
 
     return (
-        <section ref={containerRef} className={styles.landing}>
-            <div className={styles.stickyWrapper}>
-                <div
-                    ref={leftImageRef}
-                    className={`${styles.imageContainer} ${styles.sideImage}`}
-                >
+        <section className={styles.landing} ref={landingRef}>
+            <div className={styles.body}>
+                <div className={styles.imageWrapper} ref={imgWrapperRef}>
                     <Image
-                        src="/images/hero-left.jpg"
-                        alt="Left Lamp Detail"
+                        src="/images/main.jpg"
+                        alt="hero"
                         fill
                         priority
-                        className={styles.img}
-                        sizes="(max-width: 768px) 100vw, 30vw"
                         unoptimized
                     />
                 </div>
-
-                <div
-                    ref={mainImageRef}
-                    className={`${styles.imageContainer} ${styles.mainImage}`}
-                >
-                    <Image
-                        src="/images/hero.jpg"
-                        alt="Orbita Lamp"
-                        fill
-                        priority
-                        className={styles.img}
-                        sizes="100vw"
-                        unoptimized
-                    />
+                <div className={styles.text}>
+                    <h1>
+                        <span ref={headingRef1}>Born for Adventure.</span>
+                        <span ref={headingRef2}>Built in America</span>
+                    </h1>
                 </div>
-
-                <div
-                    ref={rightImageRef}
-                    className={`${styles.imageContainer} ${styles.sideImage}`}
-                >
-                    <Image
-                        src="/images/hero-right.jpg"
-                        alt="Right Lamp Detail"
-                        fill
-                        priority
-                        className={styles.img}
-                        sizes="(max-width: 768px) 100vw, 30vw"
-                        unoptimized
-                    />
-                </div>
-
             </div>
         </section>
     );
