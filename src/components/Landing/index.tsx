@@ -43,9 +43,9 @@ export default function Landing() {
             })
 
             .from(headingRef2.current, {
-                xPercent: -48,
-                duration: 1.2,
-                ease: "power2.out",
+                xPercent: -245,
+                duration: 0.8,
+                ease: "power3.inOut",
             });
 
         const scrollTl = gsap.timeline({

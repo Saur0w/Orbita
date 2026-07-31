@@ -1,8 +1,9 @@
 .landing {
   position: relative;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   overflow: hidden;
+  z-index: 1;
   background-color: #fff;
 
   .body {
@@ -33,7 +34,7 @@
         display: flex;
         justify-content: space-between;
         width: 100%;
-        font-size: clamp(2.5rem, 6vw, 5.5rem);
+        font-size: 3.2rem;
         font-weight: 700;
         span {
           display: inline-block;
