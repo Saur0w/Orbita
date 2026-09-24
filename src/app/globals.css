@@ -4,6 +4,23 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1a1a1a;
+  background-color: #f7f1e8;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
