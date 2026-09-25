@@ -74,6 +74,7 @@ export default function Footer() {
           fill
           priority
           sizes="100vw"
+          quality={100}
           className={styles.bannerImage}
         />
 
