@@ -56,14 +56,14 @@ export default function Footer() {
           <ul className={styles.linkList}>
             {SOCIAL_LINKS.map((link) => (
               <li key={link.label}>
-                <a
+                <Link
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.linkItem}
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
