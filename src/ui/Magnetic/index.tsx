@@ -1,24 +1,24 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP);
 
 interface MagneticProps {
-    children: React.ReactElement;
+    children: React.ReactNode;
 }
 
 export default function MagneticWrapper({ children }: MagneticProps) {
-    const magnetic = useRef<HTMLElement>(null);
+    const magnetic = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
         if (!magnetic.current) return;
         if (typeof window !== 'undefined' && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
             return;
         }
-        
+
         const element = magnetic.current;
 
         const xTo = gsap.quickTo(element, 'x', {
@@ -36,11 +36,11 @@ export default function MagneticWrapper({ children }: MagneticProps) {
             const { height, width, left, top } = element.getBoundingClientRect();
             const x = clientX - (left + width / 2);
             const y = clientY - (top + height / 2);
-            xTo(x * 0.35);
+            xTo(x * 0.035);
             yTo(y * 0.35);
         };
 
-        const handleMouseLeave =() => {
+        const handleMouseLeave = () => {
             xTo(0);
             yTo(0);
         };
@@ -52,12 +52,12 @@ export default function MagneticWrapper({ children }: MagneticProps) {
             element.removeEventListener('mousemove', handleMouseMove);
             element.removeEventListener('mouseleave', handleMouseLeave);
         };
-        
-    }, { scope: magnetic });
 
-    if (!React.isValidElement(children)) return children;
+    }, { dependencies: [] });
 
-    return React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
-        ref: magnetic
-    });
+    return (
+        <div ref={magnetic} style={{ display: 'inline-block' }}>
+            {children}
+        </div>
+    );
 }
