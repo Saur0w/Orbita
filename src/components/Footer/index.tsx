@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./style.module.scss";
 import { Logo } from "../Icons/logo";
+import Magnetic from "@/ui/Magnetic";
 
 const NAV_LINKS = [
   { label: "About", href: "#about" },
@@ -30,9 +31,11 @@ export default function Footer() {
 
         <div className={styles.emailCol}>
           <span className={styles.columnLabel}>(Email)</span>
-          <a href="mailto:hello@orbitalight.com" className={styles.emailLink}>
-            hello@orbitalight.com
-          </a>
+          <Magnetic>
+            <Link href="mailto:hello@orbitalight.com" className={styles.emailLink}>
+              hello@orbitalight.com
+            </Link>
+          </Magnetic>
         </div>
 
         <div className={styles.navCol}>
