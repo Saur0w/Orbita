@@ -73,8 +73,7 @@ export default function Footer() {
           alt="Orbita Lamp preview"
           fill
           priority
-          sizes="100vw"
-          quality={100}
+          unoptimized
           className={styles.bannerImage}
         />
 
