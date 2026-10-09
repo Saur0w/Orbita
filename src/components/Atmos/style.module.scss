@@ -1,0 +1,23 @@
+@mixin display-flex {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.atmos {
+  width: 100%;
+
+
+  .header {
+    width: 100%;
+    min-height: 50vh;
+    padding: 6rem 2rem 3rem;
+    background-color: #F7F1E8;
+    @include display-flex;
+    .tag {
+      font-size: 20px;
+      letter-spacing: -2%;
+      line-height: 94%;
+    }
+  }
+}
