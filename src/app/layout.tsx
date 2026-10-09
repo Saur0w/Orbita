@@ -1,22 +1,17 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const neueMontreal = localFont({
-  src: "../../public/font/ppneuemontreal.woff2",
+const neueMontrealBold = localFont({
+  src: "../../public/font/NeueMontreal-bold.woff2",
   variable: "--font-neue-montreal",
   display: "swap",
 });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const neueMontrealMedium = localFont({
+  src: "../../public/font/NeueMontreal-Medium.woff2",
+  variable: "--font-neue-montreal",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -29,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${neueMontreal.variable}`}
+      className={`${neueMontrealBold.variable} ${neueMontrealMedium.variable}`}
     >
       <body>{children}</body>
     </html>

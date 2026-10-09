@@ -1,29 +1,63 @@
 @mixin display-flex {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .atmos {
   width: 100%;
 
-
   .header {
     width: 100%;
     min-height: 50vh;
-    background-color: #F7F1E8;
-    padding-top: 100px;
+    background-color: #f7f1e8;
+    padding: 100px 1.5rem 80px;
     @include display-flex;
+    justify-content: center;
+
     .tag {
+      font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
       font-size: 20px;
-      letter-spacing: -2%;
-      line-height: 94%;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: #232323;
+      margin-bottom: 2.75rem;
+      text-align: center;
     }
 
-    h1 {
-      font-size: 150px;
+    .title {
+      font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+      font-size: clamp(3.25rem, 9.8vw, 150px);
+      font-weight: 700;
+      line-height: 0.88;
+      letter-spacing: -0.04em;
       text-align: center;
       text-transform: uppercase;
+      color: #232323;
+      @include display-flex;
+      margin: 0;
+
+      span {
+        display: inline-block;
+      }
+
+      .fourRow {
+        display: inline-flex;
+        align-items: flex-start;
+        justify-content: center;
+        position: relative;
+      }
+
+      .sup {
+        font-size: 20px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        margin-left: 0.12em;
+        position: relative;
+        top: 0.12em;
+      }
     }
   }
 }
