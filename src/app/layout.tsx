@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+const neueMontreal = localFont({
+  src: "../../public/font/ppneuemontreal.woff2",
+  variable: "--font-neue-montreal",
+  display: "swap",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,9 +25,12 @@ export const metadata: Metadata = {
     "Designed to shape the atmosphere of your space, Orbita Lamp combines timeless form, intelligent lighting, and premium craftsmanship.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${neueMontreal.variable}`}
+    >
       <body>{children}</body>
     </html>
   );
