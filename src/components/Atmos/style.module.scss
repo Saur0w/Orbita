@@ -11,13 +11,19 @@
   .header {
     width: 100%;
     min-height: 50vh;
-    padding: 6rem 2rem 3rem;
     background-color: #F7F1E8;
+    padding-top: 100px;
     @include display-flex;
     .tag {
       font-size: 20px;
       letter-spacing: -2%;
       line-height: 94%;
+    }
+
+    h1 {
+      font-size: 150px;
+      text-align: center;
+      text-transform: uppercase;
     }
   }
 }

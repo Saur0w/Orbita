@@ -7,11 +7,9 @@ export default function Atmos() {
       <section className={styles.atmos}>
           <div className={styles.header}>
               <span className={styles.tag}>[Key Features]</span>
-              <h2 className={styles.title}>
-                  <span>ONE LAMP</span>
-                  <span>FOUR<sup>04</sup></span>
-                  <span>ATMOSPHERES</span>
-              </h2>
+              <h1>
+                  One <br /><span>Four<sup>4</sup><br />Atmosphere</span>
+              </h1>
           </div>
       </section>
   );
