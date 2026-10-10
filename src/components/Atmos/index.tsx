@@ -251,7 +251,7 @@ export default function Atmos() {
                 );
               })}
             </div>
-            
+
             <div className={styles.textTrack}>
               {atmospheres.map((item, i) => (
                 <div key={item.id} className={styles.textItem}>
