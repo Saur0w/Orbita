@@ -60,8 +60,6 @@ export default function Atmos() {
   const atmosRef = useRef<HTMLElement>(null);
   const pinWrapperRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const cardItemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const titlesRef = useRef<(HTMLHeadingElement | null)[]>([]);
   const descsRef = useRef<(HTMLParagraphElement | null)[]>([]);
   const iconsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -69,14 +67,13 @@ export default function Atmos() {
   useGSAP(
     () => {
       const slides = slidesRef.current;
-      const cardItems = cardItemsRef.current;
-      if (slides.length <= 1 || cardItems.length <= 1) return;
+      if (slides.length <= 1) return;
 
       const titleSplits: SplitText[] = [];
       const descSplits: SplitText[] = [];
 
-      // Create SplitText line masks for each card item
-      cardItems.forEach((_, i) => {
+      // Create SplitText line masks for each title and description
+      atmospheres.forEach((_, i) => {
         const titleEl = titlesRef.current[i];
         const descEl = descsRef.current[i];
 
@@ -99,12 +96,8 @@ export default function Atmos() {
         }
       });
 
-      // Initial states for items > 0
-      for (let i = 1; i < cardItems.length; i++) {
-        const item = cardItems[i];
-        if (item) {
-          gsap.set(item, { clipPath: "inset(100% 0% 0% 0%)" });
-        }
+      // Initial states for items > 0 (hidden below ready to slide up into masks)
+      for (let i = 1; i < atmospheres.length; i++) {
         if (titleSplits[i]?.lines) {
           gsap.set(titleSplits[i].lines, { yPercent: 100, opacity: 0 });
         }
@@ -112,14 +105,11 @@ export default function Atmos() {
           gsap.set(descSplits[i].lines, { yPercent: 100, opacity: 0 });
         }
         if (iconsRef.current[i]) {
-          gsap.set(iconsRef.current[i], { y: 20, opacity: 0, scale: 0.85 });
+          gsap.set(iconsRef.current[i], { yPercent: 100, opacity: 0 });
         }
       }
 
-      // Initial state for item 0
-      if (cardItems[0]) {
-        gsap.set(cardItems[0], { clipPath: "inset(0% 0% 0% 0%)" });
-      }
+      // Initial state for item 0 (active and visible)
       if (titleSplits[0]?.lines) {
         gsap.set(titleSplits[0].lines, { yPercent: 0, opacity: 1 });
       }
@@ -127,25 +117,7 @@ export default function Atmos() {
         gsap.set(descSplits[0].lines, { yPercent: 0, opacity: 1 });
       }
       if (iconsRef.current[0]) {
-        gsap.set(iconsRef.current[0], { y: 0, opacity: 1, scale: 1 });
-      }
-
-      // Entrance reveal for the card container when scrolling down into Atmos section
-      if (cardRef.current && pinWrapperRef.current) {
-        gsap.fromTo(
-          cardRef.current,
-          { clipPath: "inset(100% 0% 0% 0%)" },
-          {
-            scrollTrigger: {
-              trigger: pinWrapperRef.current,
-              start: "top 85%",
-              end: "top 65%",
-              scrub: 1,
-            },
-            clipPath: "inset(0% 0% 0% 0%)",
-            ease: "none",
-          }
-        );
+        gsap.set(iconsRef.current[0], { yPercent: 0, opacity: 1 });
       }
 
       // Atmosphere scroll scrubbing timeline
@@ -173,18 +145,16 @@ export default function Atmos() {
           stepTime
         );
 
-        // 2. Card item layer wipes from bottom
-        const nextCard = cardItems[nextIdx];
-        if (nextCard) {
-          tl.fromTo(
-            nextCard,
-            { clipPath: "inset(100% 0% 0% 0%)" },
-            { clipPath: "inset(0% 0% 0% 0%)", ease: "none", duration: 1 },
+        // 2. Outgoing icon inside static .iconBadge circle masks up and out
+        if (iconsRef.current[prevIdx]) {
+          tl.to(
+            iconsRef.current[prevIdx],
+            { yPercent: -100, opacity: 0, duration: 0.45, ease: "power2.inOut" },
             stepTime
           );
         }
 
-        // 3. Outgoing atmosphere content: text & icon mask-reveal out
+        // 3. Outgoing atmosphere text: lines slide up and out into their line masks
         if (titleSplits[prevIdx]?.lines?.length) {
           tl.to(
             titleSplits[prevIdx].lines,
@@ -199,15 +169,18 @@ export default function Atmos() {
             stepTime
           );
         }
-        if (iconsRef.current[prevIdx]) {
-          tl.to(
-            iconsRef.current[prevIdx],
-            { y: -20, opacity: 0, scale: 0.85, duration: 0.4, ease: "power2.inOut" },
-            stepTime
+
+        // 4. Incoming icon inside static .iconBadge circle masks up into the circle
+        if (iconsRef.current[nextIdx]) {
+          tl.fromTo(
+            iconsRef.current[nextIdx],
+            { yPercent: 100, opacity: 0 },
+            { yPercent: 0, opacity: 1, duration: 0.55, ease: "power2.out" },
+            stepTime + 0.35
           );
         }
 
-        // 4. Incoming atmosphere content: text & icon mask-reveal in
+        // 5. Incoming atmosphere text: lines slide up from behind their line masks
         if (titleSplits[nextIdx]?.lines?.length) {
           tl.fromTo(
             titleSplits[nextIdx].lines,
@@ -221,14 +194,6 @@ export default function Atmos() {
             descSplits[nextIdx].lines,
             { yPercent: 100, opacity: 0 },
             { yPercent: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
-            stepTime + 0.35
-          );
-        }
-        if (iconsRef.current[nextIdx]) {
-          tl.fromTo(
-            iconsRef.current[nextIdx],
-            { y: 20, opacity: 0, scale: 0.85 },
-            { y: 0, opacity: 1, scale: 1, duration: 0.55, ease: "power2.out" },
             stepTime + 0.35
           );
         }
@@ -278,49 +243,49 @@ export default function Atmos() {
             ))}
           </div>
 
-          {/* Floating Atmospheric Card with Mask Reveal Layers */}
-          <div className={styles.card} ref={cardRef}>
-            {atmospheres.map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={item.id}
-                  ref={(el) => {
-                    cardItemsRef.current[i] = el;
-                  }}
-                  className={styles.cardItem}
-                  style={{ zIndex: i + 1 }}
-                >
+          {/* Floating Atmospheric Card */}
+          <div className={styles.card}>
+            {/* Static Circular Icon Badge Div */}
+            <div className={styles.iconBadge}>
+              {atmospheres.map((item, i) => {
+                const Icon = item.icon;
+                return (
                   <div
-                    className={styles.iconBadge}
+                    key={item.id}
                     ref={(el) => {
                       iconsRef.current[i] = el;
                     }}
+                    className={styles.iconSlot}
                   >
                     <Icon />
                   </div>
+                );
+              })}
+            </div>
 
-                  <div className={styles.text}>
-                    <h3
-                      className={styles.cardTitle}
-                      ref={(el) => {
-                        titlesRef.current[i] = el;
-                      }}
-                    >
-                      {item.title}
-                    </h3>
-                    <p
-                      className={styles.cardDesc}
-                      ref={(el) => {
-                        descsRef.current[i] = el;
-                      }}
-                    >
-                      {item.description}
-                    </p>
-                  </div>
+            {/* Text Track with Masked Titles & Descriptions */}
+            <div className={styles.textTrack}>
+              {atmospheres.map((item, i) => (
+                <div key={item.id} className={styles.textItem}>
+                  <h3
+                    className={styles.cardTitle}
+                    ref={(el) => {
+                      titlesRef.current[i] = el;
+                    }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p
+                    className={styles.cardDesc}
+                    ref={(el) => {
+                      descsRef.current[i] = el;
+                    }}
+                  >
+                    {item.description}
+                  </p>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
         </div>
       </div>

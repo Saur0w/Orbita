@@ -110,43 +110,35 @@
                 right: 20px;
                 width: 335px;
                 height: 253px;
+                padding: 26px 24px;
                 border-radius: 4px;
                 background: rgba(247, 241, 232, 0.04);
                 backdrop-filter: blur(24px) saturate(120%);
                 -webkit-backdrop-filter: blur(24px) saturate(120%);
                 border: 1px solid rgba(247, 241, 232, 0.18);
                 box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
-                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                text-align: left;
                 z-index: 20;
                 pointer-events: auto;
-                will-change: clip-path;
 
-                .cardItem {
-                    position: absolute;
-                    inset: 0;
-                    padding: 26px 24px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: flex-start;
-                    align-items: flex-start;
-                    text-align: left;
-                    will-change: clip-path;
+                .iconBadge {
+                    width: 56px;
+                    height: 56px;
+                    border-radius: 50%;
+                    border: 0.5px solid rgba(247, 241, 232, 0.4);
+                    position: relative;
+                    overflow: hidden;
+                    color: #f7f1e8;
+                    flex-shrink: 0;
 
-                    &:first-child {
-                        clip-path: inset(0% 0% 0% 0%);
-                    }
-
-                    &:not(:first-child) {
-                        clip-path: inset(100% 0% 0% 0%);
-                    }
-
-                    .iconBadge {
-                        width: 56px;
-                        height: 56px;
-                        border-radius: 50%;
-                        border: 0.5px solid rgba(247, 241, 232, 0.4);
+                    .iconSlot {
+                        position: absolute;
+                        inset: 0;
                         @include flex-center;
-                        color: #f7f1e8;
                         will-change: transform, opacity;
 
                         svg {
@@ -155,11 +147,20 @@
                             display: block;
                         }
                     }
+                }
 
-                    .text {
+                .textTrack {
+                    position: relative;
+                    width: 100%;
+                    max-width: 255px;
+                    margin-top: 2rem;
+                    flex: 1;
+
+                    .textItem {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
                         width: 100%;
-                        max-width: 255px;
-                        margin-top: 2rem;
 
                         .cardTitle {
                             font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
@@ -169,7 +170,6 @@
                             letter-spacing: -0.02em;
                             color: #f7f1e8;
                             margin: 0 0 0.55rem;
-                            overflow: hidden;
                         }
 
                         .cardDesc {
@@ -180,7 +180,6 @@
                             letter-spacing: -0.01em;
                             color: rgba(247, 241, 232, 0.72);
                             margin: 0;
-                            overflow: hidden;
                         }
                     }
                 }
@@ -191,24 +190,23 @@
                     left: 1.25rem;
                     width: auto;
                     height: 220px;
+                    padding: 1.5rem 1.25rem;
 
-                    .cardItem {
-                        padding: 1.5rem 1.25rem;
+                    .iconBadge {
+                        width: 44px;
+                        height: 44px;
 
-                        .iconBadge {
-                            width: 44px;
-                            height: 44px;
-
-                            svg {
-                                width: 20px;
-                                height: 20px;
-                            }
+                        .iconSlot svg {
+                            width: 20px;
+                            height: 20px;
                         }
+                    }
 
-                        .text {
-                            max-width: 100%;
-                            margin-top: 1.25rem;
+                    .textTrack {
+                        max-width: 100%;
+                        margin-top: 1.25rem;
 
+                        .textItem {
                             .cardTitle {
                                 font-size: 1.5rem;
                             }
