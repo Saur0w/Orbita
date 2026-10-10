@@ -72,7 +72,6 @@ export default function Atmos() {
       const titleSplits: SplitText[] = [];
       const descSplits: SplitText[] = [];
 
-      // Create SplitText line masks for each title and description
       atmospheres.forEach((_, i) => {
         const titleEl = titlesRef.current[i];
         const descEl = descsRef.current[i];
@@ -96,7 +95,6 @@ export default function Atmos() {
         }
       });
 
-      // Initial states for items > 0 (hidden below ready to slide up into masks)
       for (let i = 1; i < atmospheres.length; i++) {
         if (titleSplits[i]?.lines) {
           gsap.set(titleSplits[i].lines, { yPercent: 100, opacity: 0 });
@@ -109,7 +107,6 @@ export default function Atmos() {
         }
       }
 
-      // Initial state for item 0 (active and visible)
       if (titleSplits[0]?.lines) {
         gsap.set(titleSplits[0].lines, { yPercent: 0, opacity: 1 });
       }
@@ -120,7 +117,6 @@ export default function Atmos() {
         gsap.set(iconsRef.current[0], { yPercent: 0, opacity: 1 });
       }
 
-      // Atmosphere scroll scrubbing timeline
       const incomingSlides = slides.slice(1);
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -137,7 +133,6 @@ export default function Atmos() {
         const nextIdx = idx + 1;
         const stepTime = idx;
 
-        // 1. Background image slide wipes from bottom
         tl.fromTo(
           slide,
           { clipPath: "inset(100% 0% 0% 0%)" },
@@ -145,7 +140,6 @@ export default function Atmos() {
           stepTime
         );
 
-        // 2. Outgoing icon inside static .iconBadge circle masks up and out
         if (iconsRef.current[prevIdx]) {
           tl.to(
             iconsRef.current[prevIdx],
@@ -154,7 +148,6 @@ export default function Atmos() {
           );
         }
 
-        // 3. Outgoing atmosphere text: lines slide up and out into their line masks
         if (titleSplits[prevIdx]?.lines?.length) {
           tl.to(
             titleSplits[prevIdx].lines,
@@ -170,7 +163,6 @@ export default function Atmos() {
           );
         }
 
-        // 4. Incoming icon inside static .iconBadge circle masks up into the circle
         if (iconsRef.current[nextIdx]) {
           tl.fromTo(
             iconsRef.current[nextIdx],
@@ -180,7 +172,6 @@ export default function Atmos() {
           );
         }
 
-        // 5. Incoming atmosphere text: lines slide up from behind their line masks
         if (titleSplits[nextIdx]?.lines?.length) {
           tl.fromTo(
             titleSplits[nextIdx].lines,
@@ -243,9 +234,7 @@ export default function Atmos() {
             ))}
           </div>
 
-          {/* Floating Atmospheric Card */}
           <div className={styles.card}>
-            {/* Static Circular Icon Badge Div */}
             <div className={styles.iconBadge}>
               {atmospheres.map((item, i) => {
                 const Icon = item.icon;
@@ -262,8 +251,7 @@ export default function Atmos() {
                 );
               })}
             </div>
-
-            {/* Text Track with Masked Titles & Descriptions */}
+            
             <div className={styles.textTrack}>
               {atmospheres.map((item, i) => (
                 <div key={item.id} className={styles.textItem}>
