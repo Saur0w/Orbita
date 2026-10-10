@@ -60,4 +60,38 @@
       }
     }
   }
+
+  .pinWrapper {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        will-change: clip-path;
+
+        &:first-child {
+          clip-path: inset(0% 0% 0% 0%);
+        }
+
+        &:not(:first-child) {
+          clip-path: inset(100% 0% 0% 0%);
+        }
+
+        img {
+          object-fit: cover;
+        }
+      }
+    }
+  }
 }
