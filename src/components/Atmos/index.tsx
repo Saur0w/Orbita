@@ -6,11 +6,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
 import Image from "next/image";
-
+import { SplitText } from "gsap/SplitText";
 import { AmbientIcon, FocusIcon, NightIcon, HaloIcon } from "@/lib/icons";
 import type { ComponentType, SVGProps } from "react";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
 interface AtmosphereItem {
   id: number;
@@ -117,14 +117,16 @@ export default function Atmos() {
                         alt={item.alt}
                         fill
                         priority={i === 0}
-                        unoptimized
                     />
                     <div className={styles.card}>
                       <div className={styles.iconBadge}>
-                        <Icon/>
+                        <Icon />
                       </div>
-                      <h3 className={styles.cardTitle}>{item.title}</h3>
-                      <p className={styles.cardDesc}>{item.description}</p>
+
+                      <div className={styles.text}>
+                        <h3 className={styles.cardTitle}>{item.title}</h3>
+                        <p className={styles.cardDesc}>{item.description}</p>
+                      </div>
                     </div>
                   </div>
               );
