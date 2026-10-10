@@ -69,6 +69,13 @@ function Pill({ id }: { id: string }) {
 
     return (
         <span className={styles.pill} data-pill aria-label={item.alt}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+                className={styles.pillImage}
+                src={item.src}
+                alt={item.alt}
+                data-pill-img
+            />
             <span className={styles.label} data-label style={style}>
                 {item.title}
             </span>
@@ -108,13 +115,14 @@ export default function Des() {
                     gsap.set(`.${styles.char}`, { opacity: DIM });
                     gsap.set(`.${styles.label}`, { "--mask-pos": "-18%" });
                     gsap.set("[data-pill]", { "--b": 0 });
+                    gsap.set("[data-pill-img]", { opacity: 0 });
 
                     const tl = gsap.timeline({
                         defaults: { ease: "none" },
                         scrollTrigger: {
                             trigger: el,
                             start: "top top",
-                            end: "+=180%",
+                            end: "+=250%",
                             pin: true,
                             scrub: 0.8,
                             anticipatePin: 1,
@@ -138,11 +146,64 @@ export default function Des() {
                         }
                     });
 
-                    // Generous hold after all text is revealed:
-                    // Text finishes revealing at ~75% scroll, and remains fully illuminated and readable
-                    // for the remaining ~25% before the section unpins into Atmos
-                    const HOLD_DURATION = 1.4;
-                    tl.to({}, { duration: HOLD_DURATION }, t + FADE);
+                    // Brief hold after text reveal completes before expansion begins
+                    const HOLD_BEFORE_EXPAND = 0.6;
+                    const expandStart = t + FADE + HOLD_BEFORE_EXPAND;
+
+                    // ──── Pill Expansion Phase ────
+                    // Each pill grows from text capsule into a visible image container
+                    const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
+                    const EXPAND_DUR = 0.8;
+                    const STAGGER = 0.15;
+
+                    pills.forEach((pill, i) => {
+                        const pillImg = pill.querySelector<HTMLElement>("[data-pill-img]");
+                        const label = pill.querySelector<HTMLElement>("[data-label]");
+                        const pillStart = expandStart + i * STAGGER;
+
+                        // Grow the pill to show the image
+                        tl.to(
+                            pill,
+                            {
+                                height: 120,
+                                width: 220,
+                                padding: 0,
+                                duration: EXPAND_DUR,
+                                ease: "power2.inOut",
+                            },
+                            pillStart
+                        );
+
+                        // Reveal the full image
+                        if (pillImg) {
+                            tl.to(
+                                pillImg,
+                                {
+                                    opacity: 1,
+                                    duration: EXPAND_DUR * 0.6,
+                                    ease: "power2.inOut",
+                                },
+                                pillStart + EXPAND_DUR * 0.15
+                            );
+                        }
+
+                        // Fade out the text label
+                        if (label) {
+                            tl.to(
+                                label,
+                                {
+                                    opacity: 0,
+                                    duration: EXPAND_DUR * 0.4,
+                                    ease: "power2.in",
+                                },
+                                pillStart
+                            );
+                        }
+                    });
+
+                    // Hold at expanded state before unpinning
+                    const expandEnd = expandStart + pills.length * STAGGER + EXPAND_DUR;
+                    tl.to({}, { duration: 0.8 }, expandEnd);
                 }, el);
 
                 ScrollTrigger.sort();
