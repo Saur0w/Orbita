@@ -125,12 +125,9 @@ export default function Atmos() {
         const prevIndex = currentIndex;
         currentIndex = nextIndex;
 
-        // Kill in-flight tweens to prevent overlapping animations during fast scrolling
         iconsRef.current.forEach((icon) => icon && gsap.killTweensOf(icon));
         titleSplits.forEach((s) => s?.lines && gsap.killTweensOf(s.lines));
         descSplits.forEach((s) => s?.lines && gsap.killTweensOf(s.lines));
-
-        // Hide any other non-active atmospheres immediately
         atmospheres.forEach((_, i) => {
           if (i !== prevIndex && i !== nextIndex) {
             if (iconsRef.current[i]) gsap.set(iconsRef.current[i], { opacity: 0 });
@@ -142,7 +139,6 @@ export default function Atmos() {
         const outY = isForward ? -100 : 100;
         const inY = isForward ? 100 : -100;
 
-        // Outgoing icon masks out of the circular badge
         if (iconsRef.current[prevIndex]) {
           gsap.to(iconsRef.current[prevIndex], {
             yPercent: outY,
@@ -152,7 +148,6 @@ export default function Atmos() {
           });
         }
 
-        // Outgoing text lines slide out of their line masks
         if (titleSplits[prevIndex]?.lines?.length) {
           gsap.to(titleSplits[prevIndex].lines, {
             yPercent: outY,
@@ -170,7 +165,6 @@ export default function Atmos() {
           });
         }
 
-        // Incoming icon masks into the circular badge (runs fully once)
         if (iconsRef.current[nextIndex]) {
           gsap.fromTo(
             iconsRef.current[nextIndex],
@@ -179,7 +173,6 @@ export default function Atmos() {
           );
         }
 
-        // Incoming text lines slide up from behind their line masks (runs fully once)
         if (titleSplits[nextIndex]?.lines?.length) {
           gsap.fromTo(
             titleSplits[nextIndex].lines,
@@ -196,7 +189,6 @@ export default function Atmos() {
         }
       };
 
-      // Atmosphere scroll timeline: background slides wipe on scrub, card content triggers once per section
       const incomingSlides = slides.slice(1);
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -207,11 +199,20 @@ export default function Atmos() {
           scrub: 1,
           onUpdate: (self) => {
             const p = self.progress;
-            let targetIdx = 0;
-            if (p < 0.18) targetIdx = 0;
-            else if (p < 0.52) targetIdx = 1;
-            else if (p < 0.84) targetIdx = 2;
-            else targetIdx = 3;
+            const isDown = self.direction > 0;
+            let targetIdx = currentIndex;
+
+            if (isDown) {
+              if (p >= 0.72) targetIdx = 3;
+              else if (p >= 0.39) targetIdx = 2;
+              else if (p >= 0.07) targetIdx = 1;
+              else targetIdx = 0;
+            } else {
+              if (p < 0.05) targetIdx = 0;
+              else if (p < 0.36) targetIdx = 1;
+              else if (p < 0.69) targetIdx = 2;
+              else targetIdx = 3;
+            }
 
             goToAtmosphere(targetIdx);
           },
@@ -250,7 +251,6 @@ export default function Atmos() {
 
       <div className={styles.pinWrapper} ref={pinWrapperRef}>
         <div className={styles.stage}>
-          {/* Background Image Slides */}
           <div className={styles.slidesTrack}>
             {atmospheres.map((item, i) => (
               <div
