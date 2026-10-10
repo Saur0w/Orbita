@@ -22,6 +22,11 @@
   font-display: swap;
 }
 
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
 html,
 body {
   overflow-x: hidden;
@@ -30,6 +35,8 @@ body {
   background-color: #f7f1e8;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 a {
