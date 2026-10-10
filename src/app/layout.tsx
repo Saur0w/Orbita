@@ -14,6 +14,12 @@ const neueMontrealMedium = localFont({
   display: "swap",
 });
 
+const neueMontrealRegular = localFont({
+  src: "../../public/font/NeueMontreal-Regular.woff2",
+  variable: "--font-neue-montreal",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Orbita — Beyond Illumination",
   description:
@@ -24,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${neueMontrealBold.variable} ${neueMontrealMedium.variable}`}
+      className={`${neueMontrealBold.variable} ${neueMontrealMedium.variable} ${neueMontrealRegular.variable}`}
     >
       <body>{children}</body>
     </html>
