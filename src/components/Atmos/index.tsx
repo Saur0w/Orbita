@@ -197,6 +197,8 @@ export default function Atmos() {
           end: `+=${incomingSlides.length * 100}%`,
           pin: true,
           scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
             const p = self.progress;
             const isDown = self.direction > 0;
@@ -227,6 +229,9 @@ export default function Atmos() {
           idx
         );
       });
+
+      ScrollTrigger.sort();
+      ScrollTrigger.refresh();
 
       return () => {
         titleSplits.forEach((s) => s.revert());

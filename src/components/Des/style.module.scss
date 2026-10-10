@@ -1,4 +1,126 @@
+$bg: #f7f1e8;
+$ink: #1a1a1a;
+
 .des {
-    height: 70vh;
-    width: 100vw;
+    height: 100svh;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 14vw;
+    background-color: $bg;
+    color: $ink;
+    font-family: var(--font-neue-montreal), "Neue Montreal", -apple-system, BlinkMacSystemFont, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.textContainer {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.statement {
+    margin: 0;
+    opacity: 1;
+    font-size: clamp(1.85rem, 3.4vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1.48;
+    letter-spacing: -0.03em;
+    color: $ink;
+    text-align: left;
+}
+
+.desktopBr {
+    display: inline;
+}
+
+.char {
+    display: inline-block;
+    will-change: opacity;
+}
+
+/* ───────── Pill Capsule ───────── */
+.pill {
+    --b: 1; // outline opacity progress (0 to 1)
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: baseline;
+    position: relative;
+    padding: 0.04em 0.38em 0.08em;
+    margin-inline: 0.08em;
+    border: 1px solid rgba($ink, calc(0.12 + var(--b, 1) * 0.24));
+    border-radius: 9999px;
+    background-color: transparent;
+    white-space: nowrap;
+    cursor: default;
+    transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    will-change: border-color, transform;
+
+    &:hover {
+        border-color: rgba($ink, 0.55);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+}
+
+/* ───────── Pill Label (Image Texture Fill) ───────── */
+.label {
+    --mask-pos: 100%; // sweep progress from -18% to 100%
+
+    display: inline-block;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image: var(--img);
+    background-position: var(--pos, center center);
+    background-size: var(--size, cover);
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    font-weight: 400;
+    letter-spacing: inherit;
+    line-height: 1.15;
+
+    // Smooth left-to-right reveal sweep inside pill
+    $sweep: linear-gradient(
+        90deg,
+        #000 0%,
+        #000 var(--mask-pos, 100%),
+        rgba(0, 0, 0, 0.2) calc(var(--mask-pos, 100%) + 18%)
+    );
+    -webkit-mask-image: $sweep;
+    mask-image: $sweep;
+}
+
+@media (max-width: 900px) {
+    .des {
+        padding-inline: 8vw;
+    }
+    .statement {
+        font-size: clamp(1.45rem, 4.2vw, 2.4rem);
+        line-height: 1.42;
+    }
+}
+
+@media (max-width: 768px) {
+    .des {
+        padding-inline: 6vw;
+        height: auto;
+        min-height: 100svh;
+        padding-block: 14vh 10vh;
+    }
+    .desktopBr {
+        display: none;
+    }
+    .statement {
+        font-size: clamp(1.35rem, 5.6vw, 1.95rem);
+        line-height: 1.4;
+    }
+    .pill {
+        padding: 0.03em 0.32em 0.07em;
+        margin-inline: 0.05em;
+    }
 }
