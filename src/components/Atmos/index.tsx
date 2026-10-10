@@ -117,6 +117,86 @@ export default function Atmos() {
         gsap.set(iconsRef.current[0], { yPercent: 0, opacity: 1 });
       }
 
+      let currentIndex = 0;
+
+      const goToAtmosphere = (nextIndex: number) => {
+        if (nextIndex === currentIndex) return;
+        const isForward = nextIndex > currentIndex;
+        const prevIndex = currentIndex;
+        currentIndex = nextIndex;
+
+        // Kill in-flight tweens to prevent overlapping animations during fast scrolling
+        iconsRef.current.forEach((icon) => icon && gsap.killTweensOf(icon));
+        titleSplits.forEach((s) => s?.lines && gsap.killTweensOf(s.lines));
+        descSplits.forEach((s) => s?.lines && gsap.killTweensOf(s.lines));
+
+        // Hide any other non-active atmospheres immediately
+        atmospheres.forEach((_, i) => {
+          if (i !== prevIndex && i !== nextIndex) {
+            if (iconsRef.current[i]) gsap.set(iconsRef.current[i], { opacity: 0 });
+            if (titleSplits[i]?.lines) gsap.set(titleSplits[i].lines, { opacity: 0 });
+            if (descSplits[i]?.lines) gsap.set(descSplits[i].lines, { opacity: 0 });
+          }
+        });
+
+        const outY = isForward ? -100 : 100;
+        const inY = isForward ? 100 : -100;
+
+        // Outgoing icon masks out of the circular badge
+        if (iconsRef.current[prevIndex]) {
+          gsap.to(iconsRef.current[prevIndex], {
+            yPercent: outY,
+            opacity: 0,
+            duration: 0.35,
+            ease: "power2.in",
+          });
+        }
+
+        // Outgoing text lines slide out of their line masks
+        if (titleSplits[prevIndex]?.lines?.length) {
+          gsap.to(titleSplits[prevIndex].lines, {
+            yPercent: outY,
+            opacity: 0,
+            duration: 0.35,
+            ease: "power2.in",
+          });
+        }
+        if (descSplits[prevIndex]?.lines?.length) {
+          gsap.to(descSplits[prevIndex].lines, {
+            yPercent: outY,
+            opacity: 0,
+            duration: 0.35,
+            ease: "power2.in",
+          });
+        }
+
+        // Incoming icon masks into the circular badge (runs fully once)
+        if (iconsRef.current[nextIndex]) {
+          gsap.fromTo(
+            iconsRef.current[nextIndex],
+            { yPercent: inY, opacity: 0 },
+            { yPercent: 0, opacity: 1, duration: 0.5, ease: "power2.out", delay: 0.12 }
+          );
+        }
+
+        // Incoming text lines slide up from behind their line masks (runs fully once)
+        if (titleSplits[nextIndex]?.lines?.length) {
+          gsap.fromTo(
+            titleSplits[nextIndex].lines,
+            { yPercent: inY, opacity: 0 },
+            { yPercent: 0, opacity: 1, duration: 0.55, ease: "power2.out", delay: 0.15 }
+          );
+        }
+        if (descSplits[nextIndex]?.lines?.length) {
+          gsap.fromTo(
+            descSplits[nextIndex].lines,
+            { yPercent: inY, opacity: 0 },
+            { yPercent: 0, opacity: 1, duration: 0.55, ease: "power2.out", delay: 0.15 }
+          );
+        }
+      };
+
+      // Atmosphere scroll timeline: background slides wipe on scrub, card content triggers once per section
       const incomingSlides = slides.slice(1);
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -125,69 +205,26 @@ export default function Atmos() {
           end: `+=${incomingSlides.length * 100}%`,
           pin: true,
           scrub: 1,
+          onUpdate: (self) => {
+            const p = self.progress;
+            let targetIdx = 0;
+            if (p < 0.18) targetIdx = 0;
+            else if (p < 0.52) targetIdx = 1;
+            else if (p < 0.84) targetIdx = 2;
+            else targetIdx = 3;
+
+            goToAtmosphere(targetIdx);
+          },
         },
       });
 
       incomingSlides.forEach((slide, idx) => {
-        const prevIdx = idx;
-        const nextIdx = idx + 1;
-        const stepTime = idx;
-
         tl.fromTo(
           slide,
           { clipPath: "inset(100% 0% 0% 0%)" },
           { clipPath: "inset(0% 0% 0% 0%)", ease: "none", duration: 1 },
-          stepTime
+          idx
         );
-
-        if (iconsRef.current[prevIdx]) {
-          tl.to(
-            iconsRef.current[prevIdx],
-            { yPercent: -100, opacity: 0, duration: 0.45, ease: "power2.inOut" },
-            stepTime
-          );
-        }
-
-        if (titleSplits[prevIdx]?.lines?.length) {
-          tl.to(
-            titleSplits[prevIdx].lines,
-            { yPercent: -100, opacity: 0, duration: 0.45, ease: "power2.inOut" },
-            stepTime
-          );
-        }
-        if (descSplits[prevIdx]?.lines?.length) {
-          tl.to(
-            descSplits[prevIdx].lines,
-            { yPercent: -100, opacity: 0, duration: 0.45, ease: "power2.inOut" },
-            stepTime
-          );
-        }
-
-        if (iconsRef.current[nextIdx]) {
-          tl.fromTo(
-            iconsRef.current[nextIdx],
-            { yPercent: 100, opacity: 0 },
-            { yPercent: 0, opacity: 1, duration: 0.55, ease: "power2.out" },
-            stepTime + 0.35
-          );
-        }
-
-        if (titleSplits[nextIdx]?.lines?.length) {
-          tl.fromTo(
-            titleSplits[nextIdx].lines,
-            { yPercent: 100, opacity: 0 },
-            { yPercent: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
-            stepTime + 0.35
-          );
-        }
-        if (descSplits[nextIdx]?.lines?.length) {
-          tl.fromTo(
-            descSplits[nextIdx].lines,
-            { yPercent: 100, opacity: 0 },
-            { yPercent: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
-            stepTime + 0.35
-          );
-        }
       });
 
       return () => {
