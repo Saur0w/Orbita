@@ -53,9 +53,9 @@ export const atmosphereImages: AtmosphereImage[] = [
     },
 ];
 
-const STEP = 0.03; // timeline time per character
-const FADE = 0.2; // time one character takes to go from dim to full
-const DIM = 0.22; // starting opacity of unread text
+const CHAR_STEP = 0.035; // Scrub time per character
+const FADE_DUR = 0.22;   // Character illumination duration
+const DIM_OPACITY = 0.18; // Initial dim state
 
 function Pill({ id }: { id: string }) {
     const item = atmosphereImages.find((i) => i.id === id);
@@ -69,17 +69,22 @@ function Pill({ id }: { id: string }) {
 
     return (
         <span className={styles.pill} data-pill aria-label={item.alt}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-                className={styles.pillImage}
-                src={item.src}
-                alt={item.alt}
-                data-pill-img
-            />
-            <span className={styles.label} data-label style={style}>
-                {item.title}
-            </span>
-        </span>
+      {/* Absolute image container locked within capsule boundaries */}
+            <span className={styles.pillMedia} data-pill-media>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                    src={item.src}
+                    alt={item.alt}
+                    className={styles.pillImg}
+                    data-pill-img
+                />
+      </span>
+
+            {/* Text label with photographic background-clip fill that establishes static pill dimensions */}
+            <span className={styles.pillLabel} data-pill-label style={style}>
+        {item.title}
+      </span>
+    </span>
     );
 }
 
@@ -92,15 +97,18 @@ export default function Des() {
             if (!el) return;
 
             let ctx: gsap.Context | undefined;
-            let dead = false;
+            let isUnmounted = false;
 
-            const build = () => {
-                if (dead || !containerRef.current) return;
+            const buildTimeline = () => {
+                if (isUnmounted || !containerRef.current) return;
                 ctx?.revert();
 
                 ctx = gsap.context(() => {
-                    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                    const prefersReducedMotion = window.matchMedia(
+                        "(prefers-reduced-motion: reduce)"
+                    ).matches;
 
+                    // Split only plain text elements, protecting .pill from being modified
                     const splitTargets = el.querySelectorAll("[data-split]");
                     if (splitTargets.length > 0) {
                         SplitText.create(splitTargets, {
@@ -109,83 +117,88 @@ export default function Des() {
                         });
                     }
 
-                    gsap.set(`.${styles.statement}`, { opacity: 1 });
-                    if (reduce) return;
+                    if (prefersReducedMotion) return;
 
-                    gsap.set(`.${styles.char}`, { opacity: DIM });
-                    gsap.set(`.${styles.label}`, { "--mask-pos": "-18%" });
-                    gsap.set("[data-pill]", { "--b": 0 });
-                    gsap.set("[data-pill-img]", { opacity: 0 });
+                    // 1. Initial State
+                    gsap.set(`.${styles.char}`, { opacity: DIM_OPACITY });
+                    gsap.set(`.${styles.pillLabel}`, { opacity: DIM_OPACITY });
+                    gsap.set(`.${styles.pillMedia}`, { opacity: 0 });
+                    gsap.set("[data-pill]", {
+                        borderColor: "rgba(26, 26, 26, 0.14)",
+                    });
 
+                    // 2. Main Scrubbed Timeline
                     const tl = gsap.timeline({
                         defaults: { ease: "none" },
                         scrollTrigger: {
                             trigger: el,
                             start: "top top",
-                            end: "+=250%",
+                            end: "+=220%",
                             pin: true,
-                            scrub: 0.8,
+                            scrub: 0.9,
                             anticipatePin: 1,
                             invalidateOnRefresh: true,
                         },
                     });
 
-                    let t = 0;
-                    el.querySelectorAll<HTMLElement>(`.${styles.char}, [data-pill]`).forEach((node) => {
+                    // Phase 1: Progressive character & pill reading illumination
+                    let timelineCursor = 0;
+                    const readSequence = el.querySelectorAll<HTMLElement>(
+                        `.${styles.char}, [data-pill]`
+                    );
+
+                    readSequence.forEach((node) => {
                         if (node.hasAttribute("data-pill")) {
-                            const label = node.querySelector<HTMLElement>("[data-label]");
-                            const span = (label?.textContent?.length ?? 10) * STEP;
+                            const label = node.querySelector<HTMLElement>("[data-pill-label]");
+                            const charCount = label?.textContent?.length ?? 12;
+                            const pillDuration = charCount * CHAR_STEP + FADE_DUR;
+
+                            // Crisp pill border formation
+                            tl.to(
+                                node,
+                                {
+                                    borderColor: "rgba(26, 26, 26, 0.45)",
+                                    duration: pillDuration,
+                                },
+                                timelineCursor
+                            );
+
+                            // Illuminate photographic text fill
                             if (label) {
-                                tl.to(label, { "--mask-pos": "100%", duration: span + FADE }, t);
+                                tl.to(
+                                    label,
+                                    {
+                                        opacity: 1,
+                                        duration: pillDuration,
+                                    },
+                                    timelineCursor
+                                );
                             }
-                            tl.to(node, { "--b": 1, duration: span + FADE }, t);
-                            t += span;
+
+                            timelineCursor += charCount * CHAR_STEP;
                         } else {
-                            tl.to(node, { opacity: 1, duration: FADE }, t);
-                            t += STEP;
+                            tl.to(
+                                node,
+                                {
+                                    opacity: 1,
+                                    duration: FADE_DUR,
+                                },
+                                timelineCursor
+                            );
+                            timelineCursor += CHAR_STEP;
                         }
                     });
 
-                    // Brief hold after text reveal completes before expansion begins
-                    const HOLD_BEFORE_EXPAND = 0.6;
-                    const expandStart = t + FADE + HOLD_BEFORE_EXPAND;
-
-                    // ──── Pill Expansion Phase ────
-                    // Each pill grows from text capsule into a visible image container
+                    // Phase 2: Pill Image Reveal (static capsule footprint)
+                    const PAUSE_BEFORE_IMAGE = 0.4;
+                    const imageRevealStart = timelineCursor + FADE_DUR + PAUSE_BEFORE_IMAGE;
                     const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
-                    const EXPAND_DUR = 0.8;
-                    const STAGGER = 0.15;
 
-                    pills.forEach((pill, i) => {
-                        const pillImg = pill.querySelector<HTMLElement>("[data-pill-img]");
-                        const label = pill.querySelector<HTMLElement>("[data-label]");
-                        const pillStart = expandStart + i * STAGGER;
-
-                        // Grow the pill to show the image
-                        tl.to(
-                            pill,
-                            {
-                                height: 120,
-                                width: 220,
-                                padding: 0,
-                                duration: EXPAND_DUR,
-                                ease: "power2.inOut",
-                            },
-                            pillStart
-                        );
-
-                        // Reveal the full image
-                        if (pillImg) {
-                            tl.to(
-                                pillImg,
-                                {
-                                    opacity: 1,
-                                    duration: EXPAND_DUR * 0.6,
-                                    ease: "power2.inOut",
-                                },
-                                pillStart + EXPAND_DUR * 0.15
-                            );
-                        }
+                    pills.forEach((pill, index) => {
+                        const media = pill.querySelector<HTMLElement>("[data-pill-media]");
+                        const img = pill.querySelector<HTMLElement>("[data-pill-img]");
+                        const label = pill.querySelector<HTMLElement>("[data-pill-label]");
+                        const pillStart = imageRevealStart + index * 0.18;
 
                         // Fade out the text label
                         if (label) {
@@ -193,49 +206,70 @@ export default function Des() {
                                 label,
                                 {
                                     opacity: 0,
-                                    duration: EXPAND_DUR * 0.4,
-                                    ease: "power2.in",
+                                    duration: 0.5,
+                                    ease: "power2.inOut",
+                                },
+                                pillStart
+                            );
+                        }
+
+                        // Reveal the photo inside the capsule
+                        if (media) {
+                            tl.to(
+                                media,
+                                {
+                                    opacity: 1,
+                                    duration: 0.6,
+                                    ease: "power2.inOut",
+                                },
+                                pillStart
+                            );
+                        }
+
+                        // Subtle inward scale settle
+                        if (img) {
+                            tl.fromTo(
+                                img,
+                                { scale: 1.18 },
+                                {
+                                    scale: 1,
+                                    duration: 0.65,
+                                    ease: "power2.out",
                                 },
                                 pillStart
                             );
                         }
                     });
 
-                    // Hold at expanded state before unpinning
-                    const expandEnd = expandStart + pills.length * STAGGER + EXPAND_DUR;
-                    tl.to({}, { duration: 0.8 }, expandEnd);
+                    // Hold final state before unpinning
+                    const totalEnd = imageRevealStart + pills.length * 0.18 + 0.8;
+                    tl.to({}, { duration: 0.8 }, totalEnd);
                 }, el);
 
                 ScrollTrigger.sort();
                 ScrollTrigger.refresh();
             };
 
-            // Build immediately so the pinned spacer is in the DOM in correct order from the start
-            build();
+            buildTimeline();
 
-            // When web fonts finish loading, rebuild SplitText with final font metrics and refresh triggers
             if (document.fonts?.ready) {
                 document.fonts.ready.then(() => {
-                    if (!dead) {
-                        build();
-                    }
+                    if (!isUnmounted) buildTimeline();
                 });
             }
 
-            let timer: number;
+            let resizeTimer: number;
             const onResize = () => {
-                clearTimeout(timer);
-                timer = window.setTimeout(() => {
-                    if (!dead) {
-                        build();
-                    }
+                clearTimeout(resizeTimer);
+                resizeTimer = window.setTimeout(() => {
+                    if (!isUnmounted) buildTimeline();
                 }, 200);
             };
             window.addEventListener("resize", onResize);
 
             return () => {
-                dead = true;
-                clearTimeout(timer);
+                isUnmounted = true;
+                clearTimeout(resizeTimer);
                 window.removeEventListener("resize", onResize);
                 ctx?.revert();
             };
@@ -247,19 +281,16 @@ export default function Des() {
         <section className={styles.des} ref={containerRef}>
             <div className={styles.textContainer}>
                 <p className={styles.statement}>
-                    <span data-split>Meet</span>{" "}
-                    <Pill id="lamp" />
+                    <span data-split>Meet</span> <Pill id="lamp" />
                     <br className={styles.desktopBr} />
                     <span data-split>Designed to shape the atmosphere</span>
                     <br className={styles.desktopBr} />
                     <span data-split>of your space, Orbita Lamp combines</span>
                     <br className={styles.desktopBr} />
-                    <Pill id="timeless" />{" "}
-                    <Pill id="intelligent" />{" "}
+                    <Pill id="timeless" /> <Pill id="intelligent" />{" "}
                     <span data-split>and</span>
                     <br className={styles.desktopBr} />
-                    <span data-split>premium</span>{" "}
-                    <Pill id="craftsmanship" />{" "}
+                    <span data-split>premium</span> <Pill id="craftsmanship" />{" "}
                     <span data-split>to create an</span>
                     <br className={styles.desktopBr} />
                     <span data-split>experience that goes beyond illumination</span>

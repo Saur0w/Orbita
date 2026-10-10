@@ -2,32 +2,32 @@ $bg: #f7f1e8;
 $ink: #1a1a1a;
 
 .des {
-    height: 100svh;
+    width: 100%;
+    height: 100vh;
     min-height: 100vh;
+    background-color: $bg;
+    color: $ink;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-inline: 14vw;
-    background-color: $bg;
-    color: $ink;
-    font-family: var(--font-neue-montreal), "Neue Montreal", -apple-system, BlinkMacSystemFont, sans-serif;
+    padding-inline: 10vw;
     position: relative;
     overflow: hidden;
+    font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
 }
 
 .textContainer {
     width: 100%;
-    max-width: 1240px;
+    max-width: 1180px;
     margin: 0 auto;
 }
 
 .statement {
     margin: 0;
-    opacity: 1;
-    font-size: clamp(1.85rem, 3.4vw, 3.4rem);
+    font-size: clamp(2rem, 3.4vw, 52px);
     font-weight: 400;
-    line-height: 1.48;
-    letter-spacing: -0.03em;
+    line-height: 1.36;
+    letter-spacing: -0.025em;
     color: $ink;
     text-align: left;
 }
@@ -41,110 +41,93 @@ $ink: #1a1a1a;
     will-change: opacity;
 }
 
-/* ───────── Pill Capsule ───────── */
+/* ───────── Static Pill Capsule ───────── */
 .pill {
-    --b: 1; // outline opacity progress (0 to 1)
-    --expand: 0; // expansion progress (0 = text pill, 1 = full image)
-    --pill-h: auto; // animated height for expansion
-    --pill-w: auto; // animated width for expansion
-    --pill-radius: 9999px; // animated border-radius
-
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     vertical-align: baseline;
-    position: relative;
-    padding: 0.04em 0.38em 0.08em;
-    margin-inline: 0.08em;
-    border: 1px solid rgba($ink, calc(0.12 + var(--b, 1) * 0.24));
-    border-radius: var(--pill-radius);
+    padding: 0.04em 0.52em;
+    margin-inline: 0.1em;
+    border: 1px solid rgba($ink, 0.14);
+    border-radius: 9999px;
     background-color: transparent;
     white-space: nowrap;
-    cursor: default;
     overflow: hidden;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: default;
     will-change: border-color;
-
-    &:hover {
-        border-color: rgba($ink, 0.55);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    }
+    transition: border-color 0.2s ease;
 }
 
-/* ───────── Full Image inside Pill ───────── */
-.pillImage {
+/* ───────── Photo Media Container (Fills Exact Capsule Footprint) ───────── */
+.pillMedia {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
     border-radius: inherit;
+    overflow: hidden;
     opacity: 0;
     pointer-events: none;
     z-index: 1;
     will-change: opacity;
+
+    .pillImg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        will-change: transform;
+    }
 }
 
-/* ───────── Pill Label (Image Texture Fill) ───────── */
-.label {
-    --mask-pos: 100%; // sweep progress from -18% to 100%
-
+/* ───────── Pill Label (Photographic Text Fill) ───────── */
+.pillLabel {
     display: inline-block;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: inherit;
+    position: relative;
+    z-index: 2;
+    will-change: opacity;
+
+    /* Image texture fill */
     background-image: var(--img);
     background-position: var(--pos, center center);
     background-size: var(--size, cover);
     background-repeat: no-repeat;
     -webkit-background-clip: text;
     background-clip: text;
-    font-weight: 400;
-    letter-spacing: inherit;
-    line-height: 1.15;
-    position: relative;
-    z-index: 2;
-    will-change: opacity;
-
-    // Smooth left-to-right reveal sweep inside pill
-    $sweep: linear-gradient(
-        90deg,
-        #000 0%,
-        #000 var(--mask-pos, 100%),
-        rgba(0, 0, 0, 0.2) calc(var(--mask-pos, 100%) + 18%)
-    );
-    -webkit-mask-image: $sweep;
-    mask-image: $sweep;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 @media (max-width: 900px) {
     .des {
-        padding-inline: 8vw;
+        padding-inline: 6vw;
     }
     .statement {
-        font-size: clamp(1.45rem, 4.2vw, 2.4rem);
-        line-height: 1.42;
+        font-size: clamp(1.6rem, 4vw, 2.4rem);
+        line-height: 1.4;
     }
 }
 
 @media (max-width: 768px) {
     .des {
-        padding-inline: 6vw;
         height: auto;
-        min-height: 100svh;
-        padding-block: 14vh 10vh;
+        min-height: 100vh;
+        padding-block: 12vh 8vh;
     }
     .desktopBr {
         display: none;
     }
     .statement {
-        font-size: clamp(1.35rem, 5.6vw, 1.95rem);
-        line-height: 1.4;
+        font-size: clamp(1.4rem, 5.2vw, 2rem);
+        line-height: 1.45;
     }
     .pill {
-        padding: 0.03em 0.32em 0.07em;
-        margin-inline: 0.05em;
-    }
-    .pillImage {
-        border-radius: 12px;
+        padding: 0.05em 0.44em;
+        margin-inline: 0.06em;
     }
 }
