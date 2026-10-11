@@ -57,6 +57,13 @@ const CHAR_STEP = 0.035; // Scrub time per character
 const FADE_DUR = 0.22;   // Character illumination duration
 const DIM_OPACITY = 0.18; // Initial dim state
 
+export const gridCards = [
+    { id: "lamp", src: "/images/lamp.jpg", alt: "Orbita Lamp minimalist silhouette" },
+    { id: "intelligent", src: "/images/lightning.jpg", alt: "Intelligent warm lighting on wood surface" },
+    { id: "timeless", src: "/images/timeless.jpg", alt: "Timeless circular brushed metallic form" },
+    { id: "craftsmanship", src: "/images/craftmanship.jpg", alt: "Close-up detail of brushed aluminum craftsmanship" },
+];
+
 function Pill({ id }: { id: string }) {
     const item = atmosphereImages.find((i) => i.id === id);
     if (!item) return null;
@@ -141,6 +148,8 @@ export default function Des() {
 
                     if (prefersReducedMotion) return;
 
+                    const elRect = el.getBoundingClientRect();
+
                     // 1. Initial State
                     gsap.set(`.${styles.char}`, { opacity: DIM_OPACITY });
                     gsap.set("[data-pill-svg]", { opacity: DIM_OPACITY });
@@ -149,6 +158,25 @@ export default function Des() {
                     gsap.set("[data-pill]", {
                         borderColor: "rgba(26, 26, 26, 0.14)",
                     });
+                    gsap.set(`.${styles.textContainer}`, { opacity: 1 });
+
+                    // Initial State for floating cards: align exactly over inline pills
+                    gridCards.forEach((card) => {
+                        const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
+                        const pill = el.querySelector<HTMLElement>(`[data-pill][data-id="${card.id}"]`);
+                        if (cardEl && pill) {
+                            const pillRect = pill.getBoundingClientRect();
+                            gsap.set(cardEl, {
+                                left: pillRect.left - elRect.left,
+                                top: pillRect.top - elRect.top,
+                                width: pillRect.width,
+                                height: pillRect.height,
+                                borderRadius: 9999,
+                                opacity: 0,
+                                boxShadow: "0 0 0 rgba(0, 0, 0, 0)",
+                            });
+                        }
+                    });
 
                     // 2. Main Scrubbed Timeline
                     const tl = gsap.timeline({
@@ -156,7 +184,7 @@ export default function Des() {
                         scrollTrigger: {
                             trigger: el,
                             start: "top top",
-                            end: "+=240%",
+                            end: "+=360%",
                             pin: true,
                             scrub: 0.9,
                             anticipatePin: 1,
@@ -222,10 +250,10 @@ export default function Des() {
 
                     // Origins anchored on actual letterforms (never on whitespace between words)
                     const pillOrigins: Record<string, string> = {
-                        lamp: "56.5% 50%",          // Center of "Orbita"
-                        timeless: "45% 50%",      // Center of "timeless"
-                        intelligent: "60.5% 50%",   // Center of "intelligent"
-                        craftsmanship: "52% 60%", // Center of "craftsmanship"
+                        lamp: "56.5% 50%",
+                        timeless: "45% 50%",
+                        intelligent: "60.5% 50%",
+                        craftsmanship: "52% 60%",
                     };
 
                     pills.forEach((pill, index) => {
@@ -265,9 +293,72 @@ export default function Des() {
                         }
                     });
 
-                    // Hold final state before unpinning so all full pill images remain visible
-                    const totalEnd = zoomStart + (pills.length - 1) * STAGGER + ZOOM_DUR;
-                    tl.to({}, { duration: 0.9 }, totalEnd);
+                    const zoomEnd = zoomStart + (pills.length - 1) * STAGGER + ZOOM_DUR;
+
+                    // Phase 3: "Sucked Out" 2x2 Grid Expansion
+                    const PAUSE_BEFORE_SUCK = 0.25;
+                    const suckStart = zoomEnd + PAUSE_BEFORE_SUCK;
+                    const SUCK_DUR = 1.0;
+                    const SUCK_STAGGER = 0.08;
+
+                    // 1. Paragraph text dims down as images get sucked out
+                    tl.to(
+                        `.${styles.textContainer}`,
+                        {
+                            opacity: 0.18,
+                            duration: SUCK_DUR * 0.7,
+                            ease: "power2.inOut",
+                        },
+                        suckStart
+                    );
+
+                    // 2. Each card lifts out of its pill and flies into the 2x2 grid
+                    gridCards.forEach((card, index) => {
+                        const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
+                        const targetSlot = el.querySelector<HTMLElement>(`[data-target="${card.id}"]`);
+                        const cardStart = suckStart + index * SUCK_STAGGER;
+
+                        if (cardEl && targetSlot) {
+                            const targetRect = targetSlot.getBoundingClientRect();
+                            const endLeft = targetRect.left - elRect.left;
+                            const endTop = targetRect.top - elRect.top;
+                            const endWidth = targetRect.width;
+                            const endHeight = targetRect.height;
+
+                            // Card takes over from the pill image seamlessly
+                            tl.to(
+                                cardEl,
+                                {
+                                    opacity: 1,
+                                    duration: 0.18,
+                                    ease: "power1.inOut",
+                                },
+                                cardStart
+                            );
+
+                            // Fly & expand into the 2x2 grid position
+                            tl.to(
+                                cardEl,
+                                {
+                                    left: endLeft,
+                                    top: endTop,
+                                    width: endWidth,
+                                    height: endHeight,
+                                    borderRadius: 20,
+                                    boxShadow:
+                                        "0 24px 60px rgba(0, 0, 0, 0.16), 0 4px 14px rgba(0, 0, 0, 0.08)",
+                                    duration: SUCK_DUR,
+                                    ease: "power2.inOut",
+                                },
+                                cardStart
+                            );
+                        }
+                    });
+
+                    // Phase 4: Hold final 2x2 grid state before unpinning
+                    const totalEnd = suckStart + (gridCards.length - 1) * SUCK_STAGGER + SUCK_DUR;
+                    const HOLD_DUR = 1.2;
+                    tl.to({}, { duration: HOLD_DUR }, totalEnd);
                 }, el);
 
                 ScrollTrigger.sort();
@@ -319,6 +410,23 @@ export default function Des() {
                     <br className={styles.desktopBr} />
                     <span data-split>experience that goes beyond illumination</span>
                 </p>
+            </div>
+
+            {/* Invisible 2x2 target grid used for measuring responsive destination rects */}
+            <div className={styles.targetGrid} aria-hidden="true">
+                {gridCards.map((card) => (
+                    <div key={card.id} className={styles.targetSlot} data-target={card.id} />
+                ))}
+            </div>
+
+            {/* Floating cards overlay that animate out of the pills into the 2x2 grid */}
+            <div className={styles.cardsOverlay} aria-hidden="true">
+                {gridCards.map((card) => (
+                    <div key={card.id} className={styles.floatingCard} data-card={card.id}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={card.src} alt={card.alt} className={styles.cardImage} />
+                    </div>
+                ))}
             </div>
         </section>
     );

@@ -93,6 +93,52 @@ $ink: #1a1a1a;
     will-change: transform;
 }
 
+/* ───────── 2x2 Destination Grid Layout (Measurement Guide) ───────── */
+.targetGrid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 24px;
+    width: min(88vw, 1140px);
+    height: min(74vh, 660px);
+    margin: auto;
+    pointer-events: none;
+    visibility: hidden;
+    z-index: 0;
+}
+
+.targetSlot {
+    width: 100%;
+    height: 100%;
+}
+
+/* ───────── Floating Cards Overlay (Sucked Out Expansion) ───────── */
+.cardsOverlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.floatingCard {
+    position: absolute;
+    overflow: hidden;
+    background-color: #e5ded4;
+    border: 1px solid rgba(26, 26, 26, 0.08);
+    will-change: left, top, width, height, border-radius, opacity, box-shadow;
+}
+
+.cardImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    pointer-events: none;
+}
+
 @media (max-width: 900px) {
     .des {
         padding-inline: 6vw;
