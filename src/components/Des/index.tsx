@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type CSSProperties } from "react";
+import { useRef } from "react";
 import styles from "./style.module.scss";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -61,30 +61,51 @@ function Pill({ id }: { id: string }) {
     const item = atmosphereImages.find((i) => i.id === id);
     if (!item) return null;
 
-    const style = {
-        "--img": `url(${item.src})`,
-        "--pos": item.bgPosition || "center center",
-        "--size": item.bgSize || "cover",
-    } as CSSProperties;
-
     return (
-        <span className={styles.pill} data-pill aria-label={item.alt}>
-            {/* Absolute image container locked within capsule boundaries */}
-            <span className={styles.pillMedia} data-pill-media>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                    src={item.src}
-                    alt={item.alt}
-                    className={styles.pillImg}
-                    data-pill-img
-                    style={{ objectPosition: item.bgPosition || "center center" }}
-                />
-            </span>
-
-            {/* Text label with photographic background-clip fill that establishes static pill dimensions */}
-            <span className={styles.pillLabel} data-pill-label style={style}>
+        <span className={styles.pill} data-pill data-id={id} aria-label={item.alt}>
+            {/* Ghost text establishes the exact natural capsule footprint in the paragraph */}
+            <span className={styles.pillGhost} aria-hidden="true">
                 {item.title}
             </span>
+
+            {/* SVG with static image and expanding text clip-path */}
+            <svg
+                className={styles.pillSvg}
+                data-pill-svg
+                aria-hidden="true"
+            >
+                <defs>
+                    <clipPath id={`pill-clip-${id}`}>
+                        <text
+                            x="50%"
+                            y="50%"
+                            textAnchor="middle"
+                            dominantBaseline="central"
+                            className={styles.clipText}
+                            data-clip-text
+                        >
+                            {item.title}
+                        </text>
+                        <rect
+                            x="0"
+                            y="0"
+                            width="100%"
+                            height="100%"
+                            rx="9999"
+                            data-clip-fill
+                        />
+                    </clipPath>
+                </defs>
+                <image
+                    href={item.src}
+                    x="0"
+                    y="0"
+                    width="100%"
+                    height="100%"
+                    preserveAspectRatio="xMidYMid slice"
+                    clipPath={`url(#pill-clip-${id})`}
+                />
+            </svg>
         </span>
     );
 }
@@ -122,8 +143,9 @@ export default function Des() {
 
                     // 1. Initial State
                     gsap.set(`.${styles.char}`, { opacity: DIM_OPACITY });
-                    gsap.set(`.${styles.pillLabel}`, { opacity: DIM_OPACITY, scale: 1 });
-                    gsap.set(`.${styles.pillMedia}`, { opacity: 0 });
+                    gsap.set("[data-pill-svg]", { opacity: DIM_OPACITY });
+                    gsap.set("[data-clip-text]", { scale: 1 });
+                    gsap.set("[data-clip-fill]", { scale: 0 });
                     gsap.set("[data-pill]", {
                         borderColor: "rgba(26, 26, 26, 0.14)",
                     });
@@ -150,8 +172,9 @@ export default function Des() {
 
                     readSequence.forEach((node) => {
                         if (node.hasAttribute("data-pill")) {
-                            const label = node.querySelector<HTMLElement>("[data-pill-label]");
-                            const charCount = label?.textContent?.length ?? 12;
+                            const svg = node.querySelector<SVGElement>("[data-pill-svg]");
+                            const text = node.querySelector<SVGTextElement>("[data-clip-text]");
+                            const charCount = text?.textContent?.length ?? 12;
                             const pillDuration = charCount * CHAR_STEP + FADE_DUR;
 
                             // Crisp pill border formation
@@ -165,9 +188,9 @@ export default function Des() {
                             );
 
                             // Illuminate photographic text fill
-                            if (label) {
+                            if (svg) {
                                 tl.to(
-                                    label,
+                                    svg,
                                     {
                                         opacity: 1,
                                         duration: pillDuration,
@@ -190,54 +213,54 @@ export default function Des() {
                         }
                     });
 
-                    // Phase 2: Pill Font Zoom to Reveal Image (static capsule footprint)
+                    // Phase 2: Pill Clip-Path Reveal (Static image, expanding text mask into full capsule)
                     const PAUSE_BEFORE_IMAGE = 0.35;
                     const zoomStart = timelineCursor + FADE_DUR + PAUSE_BEFORE_IMAGE;
                     const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
-                    const ZOOM_DUR = 0.85;
+                    const ZOOM_DUR = 0.9;
                     const STAGGER = 0.22;
 
+                    // Origins anchored on actual letterforms (never on whitespace between words)
+                    const pillOrigins: Record<string, string> = {
+                        lamp: "56.5% 50%",          // Center of "Orbita"
+                        timeless: "45% 50%",      // Center of "timeless"
+                        intelligent: "60.5% 50%",   // Center of "intelligent"
+                        craftsmanship: "52% 60%", // Center of "craftsmanship"
+                    };
+
                     pills.forEach((pill, index) => {
-                        const media = pill.querySelector<HTMLElement>("[data-pill-media]");
-                        const label = pill.querySelector<HTMLElement>("[data-pill-label]");
+                        const id = pill.getAttribute("data-id") || "";
+                        const origin = pillOrigins[id] || "50% 50%";
+                        const clipText = pill.querySelector<SVGTextElement>("[data-clip-text]");
+                        const clipFill = pill.querySelector<SVGRectElement>("[data-clip-fill]");
                         const pillStart = zoomStart + index * STAGGER;
 
-                        // 1. Scale font inside capsule massively (image expands through letter cutouts)
-                        if (label) {
+                        if (clipText && clipFill) {
+                            // 1. Text zooms up aggressively from where the letters actually are
                             tl.fromTo(
-                                label,
-                                { scale: 1 },
+                                clipText,
+                                { scale: 1, transformOrigin: origin },
                                 {
-                                    scale: 18,
+                                    scale: 150,
+                                    transformOrigin: origin,
                                     duration: ZOOM_DUR,
-                                    ease: "power2.in",
+                                    ease: "power2.inOut",
                                 },
                                 pillStart
                             );
 
-                            // Fade out text label as letters explode past the capsule boundaries
-                            tl.to(
-                                label,
-                                {
-                                    opacity: 0,
-                                    duration: ZOOM_DUR * 0.35,
-                                    ease: "power1.in",
-                                },
-                                pillStart + ZOOM_DUR * 0.65
-                            );
-                        }
-
-                        // 2. Full photographic fill seamlessly takes over the capsule
-                        if (media) {
+                            // 2. Capsule fill blooms outward from the exact same text origin,
+                            // expanding with the letters so at full zoom 100% of the image is revealed
                             tl.fromTo(
-                                media,
-                                { opacity: 0 },
+                                clipFill,
+                                { scale: 0, transformOrigin: origin },
                                 {
-                                    opacity: 1,
-                                    duration: ZOOM_DUR * 0.45,
-                                    ease: "power2.out",
+                                    scale: 1,
+                                    transformOrigin: origin,
+                                    duration: ZOOM_DUR * 0.85,
+                                    ease: "power2.inOut",
                                 },
-                                pillStart + ZOOM_DUR * 0.55
+                                pillStart + ZOOM_DUR * 0.15
                             );
                         }
                     });

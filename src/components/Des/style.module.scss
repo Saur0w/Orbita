@@ -60,48 +60,37 @@ $ink: #1a1a1a;
     transition: border-color 0.2s ease;
 }
 
-/* ───────── Photo Media Container (Fills Exact Capsule Footprint) ───────── */
-.pillMedia {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: inherit;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1;
-    will-change: opacity;
-
-    .pillImg {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-        will-change: transform;
-    }
-}
-
-/* ───────── Pill Label (Photographic Text Fill) ───────── */
-.pillLabel {
+/* ───────── Ghost Text (Locks Natural Capsule Footprint) ───────── */
+.pillGhost {
     display: inline-block;
     line-height: 1.15;
     font-weight: 400;
     letter-spacing: inherit;
-    position: relative;
-    z-index: 2;
-    will-change: transform, opacity;
-    transform-origin: center center;
+    visibility: hidden;
+    pointer-events: none;
+    user-select: none;
+}
 
-    /* Image texture fill */
-    background-image: var(--img);
-    background-position: var(--pos, center center);
-    background-size: var(--size, cover);
-    background-repeat: no-repeat;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+/* ───────── SVG ClipPath Container (Static Image with Scaling Text Clip) ───────── */
+.pillSvg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    display: block;
+    z-index: 2;
+    will-change: opacity;
+}
+
+.clipText {
+    font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 3.4vw, 52px);
+    letter-spacing: -0.025em;
+    transform-origin: center center;
+    will-change: transform;
 }
 
 @media (max-width: 900px) {
