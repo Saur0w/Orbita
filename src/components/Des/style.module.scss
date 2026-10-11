@@ -1,171 +1,3 @@
-// $bg: #f7f1e8;
-// $ink: #232323;
-
-// .des {
-//     width: 100%;
-//     min-height: 100vh;
-//     background-color: $bg;
-//     color: $ink;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     padding-inline: 10vw;
-//     position: relative;
-//     overflow: hidden;
-//     font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
-// }
-
-
-// .textContainer {
-//     width: 100%;
-//     max-width: 1180px;
-//     margin: 0 auto;
-
-// }
-
-// .statement {
-//     margin: 0;
-//     font-size: clamp(2rem, 3.4vw, 52px);
-//     font-weight: 400;
-//     line-height: 1.36;
-//     letter-spacing: -0.025em;
-//     color: $ink;
-//     text-align: left;
-// }
-
-// .desktopBr {
-//     display: inline;
-// }
-
-// .char {
-//     display: inline-block;
-//     will-change: opacity;
-// }
-
-// /* ───────── Static Pill Capsule ───────── */
-// .pill {
-//     position: relative;
-//     display: inline-flex;
-//     align-items: center;
-//     justify-content: center;
-//     vertical-align: baseline;
-//     padding: 0.04em 0.52em;
-//     margin-inline: 0.1em;
-//     border: 1px solid rgba($ink, 0.14);
-//     border-radius: 9999px;
-//     background-color: transparent;
-//     white-space: nowrap;
-//     overflow: hidden;
-//     cursor: default;
-//     will-change: border-color;
-//     transition: border-color 0.2s ease;
-// }
-
-// /* ───────── Ghost Text (Locks Natural Capsule Footprint) ───────── */
-// .pillGhost {
-//     display: inline-block;
-//     line-height: 1.15;
-//     font-weight: 400;
-//     letter-spacing: inherit;
-//     visibility: hidden;
-//     pointer-events: none;
-//     user-select: none;
-// }
-
-// /* ───────── SVG ClipPath Container (Static Image with Scaling Text Clip) ───────── */
-// .pillSvg {
-//     position: absolute;
-//     inset: 0;
-//     width: 100%;
-//     height: 100%;
-//     overflow: hidden;
-//     pointer-events: none;
-//     display: block;
-//     z-index: 2;
-//     will-change: opacity;
-// }
-
-// .clipText {
-//     font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
-//     font-weight: 400;
-//     font-size: clamp(2rem, 3.4vw, 52px);
-//     letter-spacing: -0.025em;
-//     transform-origin: center center;
-//     will-change: transform;
-// }
-
-// /* ───────── 2x2 Destination Grid Layout (Measurement Guide) ───────── */
-// .targetGrid {
-//     position: absolute;
-//     inset: 0;
-//     display: grid;
-//     grid-template-columns: 1fr 1fr;
-//     grid-template-rows: 1fr 1fr;
-//     gap: 24px;
-//     width: min(88vw, 1140px);
-//     height: min(74vh, 660px);
-//     margin: auto;
-//     pointer-events: none;
-//     visibility: hidden;
-//     z-index: 0;
-// }
-
-// .targetSlot {
-//     width: 100%;
-//     height: 100%;
-// }
-
-// /* ───────── Floating Cards Overlay (Sucked Out Expansion) ───────── */
-// .cardsOverlay {
-//     position: absolute;
-//     inset: 0;
-//     pointer-events: none;
-//     z-index: 10;
-// }
-
-// .floatingCard {
-//     position: absolute;
-//     overflow: hidden;
-//     background-color: #e5ded4;
-//     border: 1px solid rgba(26, 26, 26, 0.08);
-//     will-change: transform;
-// }
-
-// .cardImage {
-//     object-fit: cover;
-//     object-position: center center;
-//     pointer-events: none;
-// }
-
-// @media (max-width: 900px) {
-//     .des {
-//         padding-inline: 6vw;
-//     }
-//     .statement {
-//         font-size: clamp(1.6rem, 4vw, 2.4rem);
-//         line-height: 1.4;
-//     }
-// }
-
-// @media (max-width: 768px) {
-//     .des {
-//         height: auto;
-//         min-height: 100vh;
-//         padding-block: 12vh 8vh;
-//     }
-//     .desktopBr {
-//         display: none;
-//     }
-//     .statement {
-//         font-size: clamp(1.4rem, 5.2vw, 2rem);
-//         line-height: 1.45;
-//     }
-//     .pill {
-//         padding: 0.05em 0.44em;
-//         margin-inline: 0.06em;
-//     }
-// }
-
 $bg: #F7F1E8;
 $ink: #232323;
 
@@ -177,28 +9,208 @@ $ink: #232323;
 
 .des {
   width: 100%;
+  min-height: 100vh;
   background-color: $bg;
   color: $ink;
-  .textContainer {
-    height: 100vh;
+  position: relative;
+  overflow: hidden;
+
+  .contentWrapper {
     width: 100%;
+    position: relative;
+    will-change: transform;
+  }
+
+  .textContainer {
+    min-height: 100vh;
+    width: 100%;
+    max-width: 1260px;
+    margin: 0 auto;
+    padding-inline: 4vw;
+    box-sizing: border-box;
     @include flex-center;
+    position: relative;
+    z-index: 1;
+
     .text {
-      p {
-        font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
-        font-size: 56px;
-        font-weight: 400;
-        line-height: 1.2;
-        letter-spacing: -0.02em;
+      width: 100%;
+    }
+  }
+
+  .statement {
+    margin: 0;
+    font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+    font-size: clamp(2rem, 3.2vw, 52px);
+    font-weight: 400;
+    line-height: 1.34;
+    letter-spacing: -0.025em;
+    color: $ink;
+    text-align: left;
+  }
+
+  .line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .char {
+    display: inline-block;
+    will-change: opacity;
+  }
+
+  /* ───────── 2x2 Mid-State Grid (Measurement Guide) ───────── */
+  .midGrid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    width: min(86vw, 1120px);
+    height: min(72vh, 650px);
+    margin: auto;
+    pointer-events: none;
+    visibility: hidden;
+    z-index: 0;
+  }
+
+  .midSlot {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ───────── Grid Destination Section ───────── */
+  .gridContainer {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 10vh 5vw 24vh;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      column-gap: 8vw;
+      row-gap: 16vh;
+      align-items: start;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      &.timeless {
+        grid-column: 1;
+        grid-row: 1;
+        width: 85%;
+
+        .cardImageWrapper {
+          aspect-ratio: 1 / 1;
+        }
+      }
+
+      &.intelligent {
+        grid-column: 2;
+        grid-row: 1;
+        width: 100%;
+
+        .cardImageWrapper {
+          aspect-ratio: 4 / 5;
+        }
+      }
+
+      &.lamp {
+        grid-column: 1;
+        grid-row: 2;
+        width: 78%;
+
+        .cardImageWrapper {
+          aspect-ratio: 3 / 4;
+        }
+      }
+
+      &.craftsmanship {
+        grid-column: 2;
+        grid-row: 2;
+        width: 78%;
+        justify-self: end;
+
+        .cardImageWrapper {
+          aspect-ratio: 3 / 4;
+        }
+      }
+    }
+
+    .cardImageWrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #e5ded4;
+    }
+
+    .cardCaption {
+      font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba($ink, 0.85);
+      letter-spacing: -0.01em;
+      will-change: opacity, transform;
+    }
+
+    @media (max-width: 768px) {
+      padding: 6vh 6vw 14vh;
+
+      .grid {
+        grid-template-columns: 1fr;
+        row-gap: 8vh;
+      }
+
+      .card {
+        &.timeless,
+        &.intelligent,
+        &.lamp,
+        &.craftsmanship {
+          grid-column: 1;
+          grid-row: auto;
+          width: 100%;
+          justify-self: stretch;
+
+          .cardImageWrapper {
+            aspect-ratio: 4 / 3;
+          }
+        }
       }
     }
   }
 
-  .gridContainer {
-    height: 200vh;
+  /* ───────── Floating Cards Overlay (Travels: Pills -> Mid-Grid -> Final Grid) ───────── */
+  .cardsOverlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .floatingCard {
+    position: absolute;
+    overflow: hidden;
+    background-color: #e5ded4;
+    border: 1px solid rgba(26, 26, 26, 0.08);
+    will-change: transform, left, top, width, height;
+  }
+
+  .cardImage {
+    object-fit: cover;
+    object-position: center center;
+    pointer-events: none;
   }
 }
 
+/* ───────── Inline Text Pills ───────── */
 .pill {
   position: relative;
   display: inline-flex;
@@ -212,7 +224,8 @@ $ink: #232323;
   background-color: transparent;
   overflow: hidden;
   cursor: default;
-  will-change: transform;
+  will-change: border-color;
+  transition: border-color 0.25s ease;
 
   .pillGhost {
     display: inline-block;
@@ -238,7 +251,7 @@ $ink: #232323;
     .clipText {
       font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
       font-weight: 400;
-      font-size: clamp(2rem, 3.4vw, 52px);
+      font-size: clamp(2rem, 3.2vw, 52px);
       letter-spacing: -0.025em;
       transform-origin: center center;
       will-change: transform;
@@ -246,6 +259,26 @@ $ink: #232323;
   }
 }
 
+@media (max-width: 900px) {
+  .des {
+    .statement {
+      font-size: clamp(1.6rem, 3.8vw, 2.4rem);
+    }
+  }
+}
 
-
-
+@media (max-width: 768px) {
+  .des {
+    .line {
+      display: inline;
+      white-space: normal;
+    }
+    .statement {
+      font-size: clamp(1.4rem, 5.2vw, 2.2rem);
+      line-height: 1.35;
+    }
+    .pill {
+      padding: 0.04em 0.44em;
+    }
+  }
+}
