@@ -6,10 +6,13 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { Flip } from "gsap/Flip";
+import { CustomEase } from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
 
-gsap.registerPlugin(ScrollTrigger, SplitText, Flip, useGSAP);
+gsap.registerPlugin(ScrollTrigger, SplitText, Flip, CustomEase, useGSAP);
+
+CustomEase.create("cardFlight", "0.65, 0, 0.076, 1");
 
 export interface cardProps {
     id: string;
@@ -151,6 +154,11 @@ export default function Des() {
                     if (!contentWrapper || !textContainer || !gridContainer) return;
 
                     const wrapperRect = contentWrapper.getBoundingClientRect();
+                    const gridRect = gridContainer.getBoundingClientRect();
+                    const availablePadding = Math.max(0, (window.innerHeight - gridRect.height) * 0.2);
+                    const scrollDistance = Math.max(0, gridRect.top - wrapperRect.top - availablePadding);
+                    const finalDesHeight = wrapperRect.height - scrollDistance;
+                    gsap.set(el, { height: finalDesHeight });
 
                     // 1. Initial State
                     gsap.set(`.${styles.char}`, { opacity: DIM_OPACITY });
@@ -164,7 +172,6 @@ export default function Des() {
                     gsap.set(`.${styles.cardCaption}`, { opacity: 0, y: 14 });
                     gsap.set(contentWrapper, { y: 0 });
 
-                    // Initial State for floating cards: align exactly over inline pills
                     cards.forEach((card) => {
                         const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
                         const pill = el.querySelector<HTMLElement>(`[data-pill][data-id="${card.id}"]`);
@@ -181,7 +188,6 @@ export default function Des() {
                         }
                     });
 
-                    // 2. Timeline with Pin & Scrub
                     const tl = gsap.timeline({
                         defaults: { ease: "none" },
                         scrollTrigger: {
@@ -195,7 +201,7 @@ export default function Des() {
                         },
                     });
 
-                    // Phase 1: Text & Pill reveal reading sequence
+                    // Text & Pill reveal reading sequence
                     let timelineCursor = 0;
                     const readSequence = el.querySelectorAll<HTMLElement>(
                         `.${styles.char}, [data-pill]`
@@ -242,7 +248,7 @@ export default function Des() {
                         }
                     });
 
-                    // Phase 2: Pill zoom & bloom (Image fills capsule)
+                    // Pill zoom & bloom
                     const PAUSE_BEFORE_ZOOM = 0.35;
                     const zoomStart = timelineCursor + FADE_DUR + PAUSE_BEFORE_ZOOM;
                     const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
@@ -292,13 +298,11 @@ export default function Des() {
 
                     const zoomEnd = zoomStart + (pills.length - 1) * STAGGER + ZOOM_DUR;
 
-                    // Phase 3: Sucked out to form the 2x2 Centered Mid-Grid
                     const PAUSE_BEFORE_SUCK = 0.25;
                     const suckStart = zoomEnd + PAUSE_BEFORE_SUCK;
-                    const MID_DUR = 0.95;
+                    const MID_DUR = 1.4;
                     const SUCK_STAGGER = 0.08;
 
-                    // Text container dims down softly
                     tl.to(
                         textContainer,
                         {
@@ -309,7 +313,6 @@ export default function Des() {
                         suckStart
                     );
 
-                    // Each floating card animates from its inline pill into the 2x2 midGrid slot
                     cards.forEach((card, index) => {
                         const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
                         const midSlot = el.querySelector<HTMLElement>(`[data-mid-target="${card.id}"]`);
@@ -353,9 +356,9 @@ export default function Des() {
                                     top: midTop,
                                     width: midWidth,
                                     height: midHeight,
-                                    borderRadius: 12,
+                                    borderRadius: 8,
                                     duration: MID_DUR,
-                                    ease: "power2.inOut",
+                                    ease: "cardFlight",
                                 },
                                 cardStart
                             );
@@ -363,28 +366,19 @@ export default function Des() {
                     });
 
                     const midGridEnd = suckStart + (cards.length - 1) * SUCK_STAGGER + MID_DUR;
-
-                    // Hold the 2x2 grid so the user clearly sees this state
                     const HOLD_MID_DUR = 0.85;
                     tl.to({}, { duration: HOLD_MID_DUR }, midGridEnd);
 
-                    // Phase 4: On more scroll, transition down to the Final Editorial Grid
                     const finalStart = midGridEnd + HOLD_MID_DUR;
                     const FINAL_DUR = 1.15;
                     const FINAL_STAGGER = 0.08;
 
-                    // Calculate translation distance so the final grid aligns nicely in view
-                    const gridRect = gridContainer.getBoundingClientRect();
-                    const availablePadding = Math.max(0, (window.innerHeight - gridRect.height) * 0.2);
-                    const scrollDistance = gridRect.top - wrapperRect.top - availablePadding;
-
-                    // Content wrapper glides up to bring the final grid into view
                     tl.to(
                         contentWrapper,
                         {
-                            y: -Math.max(0, scrollDistance),
+                            y: -scrollDistance,
                             duration: FINAL_DUR * 1.05,
-                            ease: "power2.inOut",
+                            ease: "cardFlight",
                         },
                         finalStart
                     );
@@ -399,7 +393,6 @@ export default function Des() {
                         finalStart
                     );
 
-                    // Cards fly from the 2x2 mid-grid into the final destination cards
                     cards.forEach((card, index) => {
                         const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
                         const targetSlot = el.querySelector<HTMLElement>(`[data-grid-card="${card.id}"] .${styles.cardImageWrapper}`);
@@ -419,16 +412,15 @@ export default function Des() {
                                     top: endTop,
                                     width: endWidth,
                                     height: endHeight,
-                                    borderRadius: 12,
+                                    borderRadius: 8,
                                     duration: FINAL_DUR,
-                                    ease: "power2.inOut",
+                                    ease: "cardFlight",
                                 },
                                 cardFinalStart
                             );
                         }
                     });
 
-                    // Reveal card captions under the final grid cards
                     tl.to(
                         `.${styles.cardCaption}`,
                         {
@@ -441,7 +433,6 @@ export default function Des() {
                         finalStart + FINAL_DUR * 0.65
                     );
 
-                    // Phase 5: Hold final layout before unpinning
                     const totalEnd = finalStart + (cards.length - 1) * FINAL_STAGGER + FINAL_DUR;
                     const HOLD_FINAL_DUR = 1.0;
                     tl.to({}, { duration: HOLD_FINAL_DUR }, totalEnd);
@@ -507,7 +498,6 @@ export default function Des() {
                         </p>
                     </div>
 
-                    {/* 2x2 Mid-State Grid Guide (Image 3) */}
                     <div className={styles.midGrid} aria-hidden="true">
                         <div className={styles.midSlot} data-mid-target="timeless" />
                         <div className={styles.midSlot} data-mid-target="intelligent" />

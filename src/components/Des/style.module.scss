@@ -58,7 +58,6 @@ $ink: #232323;
     will-change: opacity;
   }
 
-  /* ───────── 2x2 Mid-State Grid (Measurement Guide) ───────── */
   .midGrid {
     position: absolute;
     inset: 0;
@@ -79,11 +78,11 @@ $ink: #232323;
     height: 100%;
   }
 
-  /* ───────── Grid Destination Section ───────── */
   .gridContainer {
     width: 100%;
+    height: auto;
     margin: 0;
-    padding: 10vh 150px 24vh;
+    padding: 6vh 150px 10vh;
     box-sizing: border-box;
     position: relative;
     z-index: 1;
@@ -192,7 +191,6 @@ $ink: #232323;
     }
   }
 
-  /* ───────── Floating Cards Overlay (Travels: Pills -> Mid-Grid -> Final Grid) ───────── */
   .cardsOverlay {
     position: absolute;
     inset: 0;
@@ -215,7 +213,6 @@ $ink: #232323;
   }
 }
 
-/* ───────── Inline Text Pills ───────── */
 .pill {
   position: relative;
   display: inline-flex;
