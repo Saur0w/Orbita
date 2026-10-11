@@ -476,21 +476,21 @@ export default function Des() {
                     <div className={styles.text}>
                         <p className={styles.statement}>
                             <span className={styles.line}>
-                                <span data-split>Meet</span> <Pill id="lamp" />
+                                <span data-split>Meet</span> <Pill id="lamp" />{" "}
                             </span>
                             <span className={styles.line}>
-                                <span data-split>Designed to shape the atmosphere</span>
+                                <span data-split>Designed to shape the atmosphere </span>
                             </span>
                             <span className={styles.line}>
-                                <span data-split>of your space, Orbita Lamp combines</span>
+                                <span data-split>of your space, Orbita Lamp combines </span>
                             </span>
                             <span className={styles.line}>
                                 <Pill id="timeless" /> <Pill id="intelligent" />{" "}
-                                <span data-split>and</span>
+                                <span data-split>and </span>
                             </span>
                             <span className={styles.line}>
-                                <span data-split>premium</span> <Pill id="craftsmanship" />{" "}
-                                <span data-split>to create an</span>
+                                <span data-split>premium </span><Pill id="craftsmanship" />{" "}
+                                <span data-split>to create an </span>
                             </span>
                             <span className={styles.line}>
                                 <span data-split>experience that goes beyond illumination</span>

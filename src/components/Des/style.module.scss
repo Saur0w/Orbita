@@ -229,6 +229,8 @@ $ink: #232323;
   will-change: border-color;
   transition: border-color 0.25s ease;
 
+  font-size: inherit;
+
   .pillGhost {
     display: inline-block;
     line-height: 1.15;
@@ -249,11 +251,12 @@ $ink: #232323;
     display: block;
     z-index: 2;
     will-change: opacity;
+    font-size: inherit;
 
     .clipText {
       font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
       font-weight: 400;
-      font-size: clamp(2rem, 3.2vw, 52px);
+      font-size: 1em;
       letter-spacing: -0.025em;
       transform-origin: center center;
       will-change: transform;
@@ -271,16 +274,25 @@ $ink: #232323;
 
 @media (max-width: 768px) {
   .des {
+    .textContainer {
+      padding-inline: 5vw;
+    }
     .line {
       display: inline;
       white-space: normal;
     }
     .statement {
-      font-size: clamp(1.4rem, 5.2vw, 2.2rem);
+      font-size: clamp(1.35rem, 5.2vw, 2rem);
       line-height: 1.35;
     }
     .pill {
-      padding: 0.04em 0.44em;
+      padding: 0.04em 0.46em;
+      margin-inline: 0.08em;
+    }
+    .midGrid {
+      gap: 12px;
+      width: 92vw;
+      height: min(60vh, 460px);
     }
   }
 }
