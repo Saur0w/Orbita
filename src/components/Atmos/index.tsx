@@ -58,6 +58,9 @@ const atmospheres: AtmosphereItem[] = [
 
 export default function Atmos() {
   const atmosRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const tagRef = useRef<HTMLSpanElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const pinWrapperRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
   const titlesRef = useRef<(HTMLHeadingElement | null)[]>([]);
@@ -66,6 +69,42 @@ export default function Atmos() {
 
   useGSAP(
     () => {
+      // Header Split Line Mask Reveal on Scroll
+      let headerTitleSplit: SplitText | null = null;
+      if (titleRef.current) {
+        headerTitleSplit = new SplitText(titleRef.current, {
+          type: "lines",
+          mask: "lines",
+          linesClass: styles.splitLine,
+        });
+
+        gsap.from(headerTitleSplit.lines, {
+          yPercent: 120,
+          duration: 1.15,
+          stagger: 0.12,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        });
+      }
+
+      if (tagRef.current) {
+        gsap.from(tagRef.current, {
+          y: 24,
+          opacity: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        });
+      }
+
       const slides = slidesRef.current;
       if (slides.length <= 1) return;
 
@@ -234,6 +273,7 @@ export default function Atmos() {
       ScrollTrigger.refresh();
 
       return () => {
+        headerTitleSplit?.revert();
         titleSplits.forEach((s) => s.revert());
         descSplits.forEach((s) => s.revert());
       };
@@ -243,9 +283,11 @@ export default function Atmos() {
 
   return (
     <section className={styles.atmos} ref={atmosRef}>
-      <div className={styles.header}>
-        <span className={styles.tag}>(Key Features)</span>
-        <h1 className={styles.title}>
+      <div className={styles.header} ref={headerRef}>
+        <span className={styles.tag} ref={tagRef}>
+          (Key Features)
+        </span>
+        <h1 className={styles.title} ref={titleRef}>
           <span>ONE LAMP</span>
           <span className={styles.fourRow}>
             FOUR<sup className={styles.sup}>(4)</sup>
