@@ -22,17 +22,17 @@ export const atmosphereImages: AtmosphereImage[] = [
     {
         id: "lamp",
         title: "Orbita Lamp",
-        src: "/images/timeless.jpg",
-        alt: "Orbita Lamp circular brushed metallic form",
-        bgPosition: "62% 48%",
+        src: "/images/lamp.jpg",
+        alt: "Orbita Lamp minimalist silhouette",
+        bgPosition: "50% 50%",
         bgSize: "cover",
     },
     {
         id: "timeless",
         title: "timeless form,",
-        src: "/images/lamp.jpg",
-        alt: "Timeless brushed metallic lamp silhouette",
-        bgPosition: "50% 46%",
+        src: "/images/timeless.jpg",
+        alt: "Timeless circular brushed metallic form",
+        bgPosition: "62% 48%",
         bgSize: "cover",
     },
     {
@@ -69,22 +69,23 @@ function Pill({ id }: { id: string }) {
 
     return (
         <span className={styles.pill} data-pill aria-label={item.alt}>
-      {/* Absolute image container locked within capsule boundaries */}
+            {/* Absolute image container locked within capsule boundaries */}
             <span className={styles.pillMedia} data-pill-media>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     src={item.src}
                     alt={item.alt}
                     className={styles.pillImg}
                     data-pill-img
+                    style={{ objectPosition: item.bgPosition || "center center" }}
                 />
-      </span>
+            </span>
 
             {/* Text label with photographic background-clip fill that establishes static pill dimensions */}
             <span className={styles.pillLabel} data-pill-label style={style}>
-        {item.title}
-      </span>
-    </span>
+                {item.title}
+            </span>
+        </span>
     );
 }
 
@@ -121,7 +122,7 @@ export default function Des() {
 
                     // 1. Initial State
                     gsap.set(`.${styles.char}`, { opacity: DIM_OPACITY });
-                    gsap.set(`.${styles.pillLabel}`, { opacity: DIM_OPACITY });
+                    gsap.set(`.${styles.pillLabel}`, { opacity: DIM_OPACITY, scale: 1 });
                     gsap.set(`.${styles.pillMedia}`, { opacity: 0 });
                     gsap.set("[data-pill]", {
                         borderColor: "rgba(26, 26, 26, 0.14)",
@@ -133,7 +134,7 @@ export default function Des() {
                         scrollTrigger: {
                             trigger: el,
                             start: "top top",
-                            end: "+=220%",
+                            end: "+=240%",
                             pin: true,
                             scrub: 0.9,
                             anticipatePin: 1,
@@ -189,61 +190,61 @@ export default function Des() {
                         }
                     });
 
-                    // Phase 2: Pill Image Reveal (static capsule footprint)
-                    const PAUSE_BEFORE_IMAGE = 0.4;
-                    const imageRevealStart = timelineCursor + FADE_DUR + PAUSE_BEFORE_IMAGE;
+                    // Phase 2: Pill Font Zoom to Reveal Image (static capsule footprint)
+                    const PAUSE_BEFORE_IMAGE = 0.35;
+                    const zoomStart = timelineCursor + FADE_DUR + PAUSE_BEFORE_IMAGE;
                     const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
+                    const ZOOM_DUR = 0.85;
+                    const STAGGER = 0.22;
 
                     pills.forEach((pill, index) => {
                         const media = pill.querySelector<HTMLElement>("[data-pill-media]");
-                        const img = pill.querySelector<HTMLElement>("[data-pill-img]");
                         const label = pill.querySelector<HTMLElement>("[data-pill-label]");
-                        const pillStart = imageRevealStart + index * 0.18;
+                        const pillStart = zoomStart + index * STAGGER;
 
-                        // Fade out the text label
+                        // 1. Scale font inside capsule massively (image expands through letter cutouts)
                         if (label) {
+                            tl.fromTo(
+                                label,
+                                { scale: 1 },
+                                {
+                                    scale: 18,
+                                    duration: ZOOM_DUR,
+                                    ease: "power2.in",
+                                },
+                                pillStart
+                            );
+
+                            // Fade out text label as letters explode past the capsule boundaries
                             tl.to(
                                 label,
                                 {
                                     opacity: 0,
-                                    duration: 0.5,
-                                    ease: "power2.inOut",
+                                    duration: ZOOM_DUR * 0.35,
+                                    ease: "power1.in",
                                 },
-                                pillStart
+                                pillStart + ZOOM_DUR * 0.65
                             );
                         }
 
-                        // Reveal the photo inside the capsule
+                        // 2. Full photographic fill seamlessly takes over the capsule
                         if (media) {
-                            tl.to(
+                            tl.fromTo(
                                 media,
+                                { opacity: 0 },
                                 {
                                     opacity: 1,
-                                    duration: 0.6,
-                                    ease: "power2.inOut",
-                                },
-                                pillStart
-                            );
-                        }
-
-                        // Subtle inward scale settle
-                        if (img) {
-                            tl.fromTo(
-                                img,
-                                { scale: 1.18 },
-                                {
-                                    scale: 1,
-                                    duration: 0.65,
+                                    duration: ZOOM_DUR * 0.45,
                                     ease: "power2.out",
                                 },
-                                pillStart
+                                pillStart + ZOOM_DUR * 0.55
                             );
                         }
                     });
 
-                    // Hold final state before unpinning
-                    const totalEnd = imageRevealStart + pills.length * 0.18 + 0.8;
-                    tl.to({}, { duration: 0.8 }, totalEnd);
+                    // Hold final state before unpinning so all full pill images remain visible
+                    const totalEnd = zoomStart + (pills.length - 1) * STAGGER + ZOOM_DUR;
+                    tl.to({}, { duration: 0.9 }, totalEnd);
                 }, el);
 
                 ScrollTrigger.sort();

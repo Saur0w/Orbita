@@ -90,7 +90,8 @@ $ink: #1a1a1a;
     letter-spacing: inherit;
     position: relative;
     z-index: 2;
-    will-change: opacity;
+    will-change: transform, opacity;
+    transform-origin: center center;
 
     /* Image texture fill */
     background-image: var(--img);
