@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
@@ -359,9 +360,7 @@ export default function Des() {
                                     top: endTop,
                                     width: endWidth,
                                     height: endHeight,
-                                    borderRadius: 20,
-                                    boxShadow:
-                                        "0 24px 60px rgba(0, 0, 0, 0.16), 0 4px 14px rgba(0, 0, 0, 0.08)",
+                                    borderRadius: 10,
                                     duration: SUCK_DUR,
                                     ease: "power2.inOut",
                                 },
