@@ -271,6 +271,7 @@ export default function Atmos() {
                   alt={item.alt}
                   fill
                   priority={i === 0}
+                  unoptimized
                 />
               </div>
             ))}

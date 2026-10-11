@@ -1,9 +1,8 @@
 $bg: #f7f1e8;
-$ink: #1a1a1a;
+$ink: #232323;
 
 .des {
     width: 100%;
-    height: 100vh;
     min-height: 100vh;
     background-color: $bg;
     color: $ink;
@@ -20,6 +19,7 @@ $ink: #1a1a1a;
     width: 100%;
     max-width: 1180px;
     margin: 0 auto;
+
 }
 
 .statement {
@@ -127,15 +127,12 @@ $ink: #1a1a1a;
     overflow: hidden;
     background-color: #e5ded4;
     border: 1px solid rgba(26, 26, 26, 0.08);
-    will-change: left, top, width, height, border-radius, opacity, box-shadow;
+    will-change: transform;
 }
 
 .cardImage {
-    width: 100%;
-    height: 100%;
     object-fit: cover;
     object-position: center center;
-    display: block;
     pointer-events: none;
 }
 

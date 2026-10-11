@@ -54,9 +54,9 @@ export const atmosphereImages: AtmosphereImage[] = [
     },
 ];
 
-const CHAR_STEP = 0.035; // Scrub time per character
-const FADE_DUR = 0.22;   // Character illumination duration
-const DIM_OPACITY = 0.18; // Initial dim state
+const CHAR_STEP = 0.035;
+const FADE_DUR = 0.22;
+const DIM_OPACITY = 0.18;
 
 export const gridCards = [
     { id: "lamp", src: "/images/lamp.jpg", alt: "Orbita Lamp minimalist silhouette" },
@@ -71,12 +71,10 @@ function Pill({ id }: { id: string }) {
 
     return (
         <span className={styles.pill} data-pill data-id={id} aria-label={item.alt}>
-            {/* Ghost text establishes the exact natural capsule footprint in the paragraph */}
             <span className={styles.pillGhost} aria-hidden="true">
                 {item.title}
             </span>
 
-            {/* SVG with static image and expanding text clip-path */}
             <svg
                 className={styles.pillSvg}
                 data-pill-svg
@@ -138,7 +136,6 @@ export default function Des() {
                         "(prefers-reduced-motion: reduce)"
                     ).matches;
 
-                    // Split only plain text elements, protecting .pill from being modified
                     const splitTargets = el.querySelectorAll("[data-split]");
                     if (splitTargets.length > 0) {
                         SplitText.create(splitTargets, {
@@ -179,7 +176,6 @@ export default function Des() {
                         }
                     });
 
-                    // 2. Main Scrubbed Timeline
                     const tl = gsap.timeline({
                         defaults: { ease: "none" },
                         scrollTrigger: {
@@ -193,7 +189,6 @@ export default function Des() {
                         },
                     });
 
-                    // Phase 1: Progressive character & pill reading illumination
                     let timelineCursor = 0;
                     const readSequence = el.querySelectorAll<HTMLElement>(
                         `.${styles.char}, [data-pill]`
@@ -206,7 +201,6 @@ export default function Des() {
                             const charCount = text?.textContent?.length ?? 12;
                             const pillDuration = charCount * CHAR_STEP + FADE_DUR;
 
-                            // Crisp pill border formation
                             tl.to(
                                 node,
                                 {
@@ -216,7 +210,6 @@ export default function Des() {
                                 timelineCursor
                             );
 
-                            // Illuminate photographic text fill
                             if (svg) {
                                 tl.to(
                                     svg,
@@ -242,14 +235,12 @@ export default function Des() {
                         }
                     });
 
-                    // Phase 2: Pill Clip-Path Reveal (Static image, expanding text mask into full capsule)
                     const PAUSE_BEFORE_IMAGE = 0.35;
                     const zoomStart = timelineCursor + FADE_DUR + PAUSE_BEFORE_IMAGE;
                     const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
                     const ZOOM_DUR = 0.9;
                     const STAGGER = 0.22;
 
-                    // Origins anchored on actual letterforms (never on whitespace between words)
                     const pillOrigins: Record<string, string> = {
                         lamp: "56.5% 50%",
                         timeless: "45% 50%",
@@ -265,7 +256,6 @@ export default function Des() {
                         const pillStart = zoomStart + index * STAGGER;
 
                         if (clipText && clipFill) {
-                            // 1. Text zooms up aggressively from where the letters actually are
                             tl.fromTo(
                                 clipText,
                                 { scale: 1, transformOrigin: origin },
@@ -278,8 +268,6 @@ export default function Des() {
                                 pillStart
                             );
 
-                            // 2. Capsule fill blooms outward from the exact same text origin,
-                            // expanding with the letters so at full zoom 100% of the image is revealed
                             tl.fromTo(
                                 clipFill,
                                 { scale: 0, transformOrigin: origin },
@@ -296,13 +284,11 @@ export default function Des() {
 
                     const zoomEnd = zoomStart + (pills.length - 1) * STAGGER + ZOOM_DUR;
 
-                    // Phase 3: "Sucked Out" 2x2 Grid Expansion
                     const PAUSE_BEFORE_SUCK = 0.25;
                     const suckStart = zoomEnd + PAUSE_BEFORE_SUCK;
                     const SUCK_DUR = 1.0;
                     const SUCK_STAGGER = 0.08;
 
-                    // 1. Paragraph text dims down as images get sucked out
                     tl.to(
                         `.${styles.textContainer}`,
                         {
@@ -313,7 +299,6 @@ export default function Des() {
                         suckStart
                     );
 
-                    // 2. Each card lifts out of its pill and flies into the 2x2 grid
                     gridCards.forEach((card, index) => {
                         const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
                         const targetSlot = el.querySelector<HTMLElement>(`[data-target="${card.id}"]`);
@@ -328,7 +313,6 @@ export default function Des() {
                             const endWidth = targetRect.width;
                             const endHeight = targetRect.height;
 
-                            // Card takes over from the pill image seamlessly
                             tl.to(
                                 cardEl,
                                 {
@@ -339,7 +323,6 @@ export default function Des() {
                                 cardStart
                             );
 
-                            // The image is sucked out, leaving the inline pill completely empty (hollow capsule)
                             if (pillSvg) {
                                 tl.to(
                                     pillSvg,
@@ -352,7 +335,6 @@ export default function Des() {
                                 );
                             }
 
-                            // Fly & expand into the 2x2 grid position
                             tl.to(
                                 cardEl,
                                 {
@@ -426,19 +408,23 @@ export default function Des() {
                 </p>
             </div>
 
-            {/* Invisible 2x2 target grid used for measuring responsive destination rects */}
             <div className={styles.targetGrid} aria-hidden="true">
                 {gridCards.map((card) => (
                     <div key={card.id} className={styles.targetSlot} data-target={card.id} />
                 ))}
             </div>
 
-            {/* Floating cards overlay that animate out of the pills into the 2x2 grid */}
             <div className={styles.cardsOverlay} aria-hidden="true">
                 {gridCards.map((card) => (
                     <div key={card.id} className={styles.floatingCard} data-card={card.id}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={card.src} alt={card.alt} className={styles.cardImage} />
+                        <Image
+                            src={card.src}
+                            alt={card.alt}
+                            fill
+                            sizes="(max-width: 768px) 44vw, (max-width: 1200px) 42vw, 550px"
+                            priority
+                            className={styles.cardImage}
+                        />
                     </div>
                 ))}
             </div>
