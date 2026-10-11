@@ -316,6 +316,8 @@ export default function Des() {
                     gridCards.forEach((card, index) => {
                         const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
                         const targetSlot = el.querySelector<HTMLElement>(`[data-target="${card.id}"]`);
+                        const pill = el.querySelector<HTMLElement>(`[data-pill][data-id="${card.id}"]`);
+                        const pillSvg = pill?.querySelector<SVGElement>("[data-pill-svg]");
                         const cardStart = suckStart + index * SUCK_STAGGER;
 
                         if (cardEl && targetSlot) {
@@ -330,11 +332,24 @@ export default function Des() {
                                 cardEl,
                                 {
                                     opacity: 1,
-                                    duration: 0.18,
+                                    duration: 0.15,
                                     ease: "power1.inOut",
                                 },
                                 cardStart
                             );
+
+                            // The image is sucked out, leaving the inline pill completely empty (hollow capsule)
+                            if (pillSvg) {
+                                tl.to(
+                                    pillSvg,
+                                    {
+                                        opacity: 0,
+                                        duration: 0.2,
+                                        ease: "power1.inOut",
+                                    },
+                                    cardStart + 0.04
+                                );
+                            }
 
                             // Fly & expand into the 2x2 grid position
                             tl.to(
