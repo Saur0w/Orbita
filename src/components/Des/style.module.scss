@@ -82,19 +82,18 @@ $ink: #232323;
   /* ───────── Grid Destination Section ───────── */
   .gridContainer {
     width: 100%;
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 10vh 5vw 24vh;
+    margin: 0;
+    padding: 10vh 150px 24vh;
     box-sizing: border-box;
     position: relative;
     z-index: 1;
 
     .grid {
       display: grid;
-      grid-template-columns: 1fr 1.35fr;
-      column-gap: 8vw;
-      row-gap: 16vh;
+      grid-template-columns: 335px 1fr;
+      row-gap: 50vh;
       align-items: start;
+      width: 100%;
     }
 
     .card {
@@ -105,64 +104,68 @@ $ink: #232323;
       &.timeless {
         grid-column: 1;
         grid-row: 1;
-        width: 85%;
+        width: 335px;
 
         .cardImageWrapper {
-          aspect-ratio: 1 / 1;
+          width: 335px;
+          height: 414px;
         }
       }
 
       &.intelligent {
         grid-column: 2;
         grid-row: 1;
-        width: 100%;
+        justify-self: end;
+        width: 690px;
 
         .cardImageWrapper {
-          aspect-ratio: 4 / 5;
+          width: 690px;
+          height: 835px;
         }
       }
 
       &.lamp {
         grid-column: 1;
         grid-row: 2;
-        width: 78%;
+        width: 335px;
 
         .cardImageWrapper {
-          aspect-ratio: 3 / 4;
+          width: 335px;
+          height: 414px;
         }
       }
 
       &.craftsmanship {
         grid-column: 2;
         grid-row: 2;
-        width: 78%;
         justify-self: end;
+        width: 335px;
 
         .cardImageWrapper {
-          aspect-ratio: 3 / 4;
+          width: 335px;
+          height: 414px;
         }
       }
     }
 
     .cardImageWrapper {
       position: relative;
-      width: 100%;
-      border-radius: 12px;
+      border-radius: 8px;
       overflow: hidden;
-      background-color: #e5ded4;
+      background-color: transparent;
     }
 
     .cardCaption {
       font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
-      font-size: 13px;
+      font-size: 20px;
       font-weight: 400;
-      color: rgba($ink, 0.85);
+      color: $ink;
       letter-spacing: -0.01em;
       will-change: opacity, transform;
     }
 
-    @media (max-width: 768px) {
-      padding: 6vh 6vw 14vh;
+    @media (max-width: 1060px) {
+      padding: 6vh 10px 14vh;
 
       .grid {
         grid-template-columns: 1fr;
@@ -180,6 +183,8 @@ $ink: #232323;
           justify-self: stretch;
 
           .cardImageWrapper {
+            width: 100%;
+            height: auto;
             aspect-ratio: 4 / 3;
           }
         }
@@ -200,7 +205,7 @@ $ink: #232323;
     overflow: hidden;
     background-color: #e5ded4;
     border: 1px solid rgba(26, 26, 26, 0.08);
-    will-change: transform, left, top, width, height;
+    will-change: transform;
   }
 
   .cardImage {
