@@ -252,7 +252,7 @@ export default function Des() {
                     const PAUSE_BEFORE_ZOOM = 0.35;
                     const zoomStart = timelineCursor + FADE_DUR + PAUSE_BEFORE_ZOOM;
                     const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
-                    const ZOOM_DUR = 0.9;
+                    const ZOOM_DUR = 4.8;
                     const STAGGER = 0.22;
 
                     const pillOrigins: Record<string, string> = {
