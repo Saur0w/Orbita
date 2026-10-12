@@ -12,7 +12,8 @@ import { useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, Flip, CustomEase, useGSAP);
 
-CustomEase.create("Grid", "0.76, 0, 0.24, 1");
+CustomEase.create("gridForm", "0.22, 1, 0.36, 1");
+CustomEase.create("sectionTransition", "0.33, 1, 0.68, 1");
 
 export interface cardProps {
     id: string;
@@ -155,10 +156,7 @@ export default function Des() {
 
                     const wrapperRect = contentWrapper.getBoundingClientRect();
                     const gridRect = gridContainer.getBoundingClientRect();
-                    const availablePadding = Math.max(0, (window.innerHeight - gridRect.height) * 0.2);
-                    const scrollDistance = Math.max(0, gridRect.top - wrapperRect.top - availablePadding);
-                    const finalDesHeight = wrapperRect.height - scrollDistance;
-                    gsap.set(el, { height: finalDesHeight });
+                    gsap.set(el, { height: wrapperRect.height });
 
                     // 1. Initial State
                     gsap.set(`.${styles.char}`, { opacity: DIM_OPACITY });
@@ -306,9 +304,9 @@ export default function Des() {
                     tl.to(
                         textContainer,
                         {
-                            opacity: 0.16,
+                            opacity: 0.35,
                             duration: MID_DUR * 0.7,
-                            ease: "power3.inOut",
+                            ease: "power2.inOut",
                         },
                         gridStart
                     );
@@ -358,7 +356,7 @@ export default function Des() {
                                     height: midHeight,
                                     borderRadius: 8,
                                     duration: MID_DUR,
-                                    ease: "Grid",
+                                    ease: "gridForm",
                                 },
                                 cardStart
                             );
@@ -373,20 +371,11 @@ export default function Des() {
                     const FINAL_DUR = 1.15;
                     const FINAL_STAGGER = 0.08;
 
-                    tl.to(
-                        contentWrapper,
-                        {
-                            y: -scrollDistance,
-                            duration: FINAL_DUR * 1.05,
-                            ease: "Grid",
-                        },
-                        finalStart
-                    );
-
+                    // Keep view stationary at the original text section above (no contentWrapper scroll)
                     tl.to(
                         textContainer,
                         {
-                            opacity: 0.06,
+                            opacity: 1,
                             duration: FINAL_DUR * 0.6,
                             ease: "power2.inOut",
                         },
@@ -414,7 +403,7 @@ export default function Des() {
                                     height: endHeight,
                                     borderRadius: 8,
                                     duration: FINAL_DUR,
-                                    ease: "Grid",
+                                    ease: "sectionTransition",
                                 },
                                 cardFinalStart
                             );
