@@ -12,7 +12,7 @@ import { useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, Flip, CustomEase, useGSAP);
 
-CustomEase.create("cardFlight", "0.65, 0, 0.076, 1");
+CustomEase.create("Grid", "0.76, 0, 0.24, 1");
 
 export interface cardProps {
     id: string;
@@ -299,8 +299,8 @@ export default function Des() {
                     const zoomEnd = zoomStart + (pills.length - 1) * STAGGER + ZOOM_DUR;
 
                     const PAUSE_BEFORE_SUCK = 0.25;
-                    const suckStart = zoomEnd + PAUSE_BEFORE_SUCK;
-                    const MID_DUR = 1.4;
+                    const gridStart = zoomEnd + PAUSE_BEFORE_SUCK;
+                    const MID_DUR = 2.8;
                     const SUCK_STAGGER = 0.08;
 
                     tl.to(
@@ -308,9 +308,9 @@ export default function Des() {
                         {
                             opacity: 0.16,
                             duration: MID_DUR * 0.7,
-                            ease: "power2.inOut",
+                            ease: "power3.inOut",
                         },
-                        suckStart
+                        gridStart
                     );
 
                     cards.forEach((card, index) => {
@@ -318,7 +318,7 @@ export default function Des() {
                         const midSlot = el.querySelector<HTMLElement>(`[data-mid-target="${card.id}"]`);
                         const pill = el.querySelector<HTMLElement>(`[data-pill][data-id="${card.id}"]`);
                         const pillSvg = pill?.querySelector<SVGElement>("[data-pill-svg]");
-                        const cardStart = suckStart + index * SUCK_STAGGER;
+                        const cardStart = gridStart + index * SUCK_STAGGER;
 
                         if (cardEl && midSlot) {
                             const midRect = midSlot.getBoundingClientRect();
@@ -331,8 +331,8 @@ export default function Des() {
                                 cardEl,
                                 {
                                     opacity: 1,
-                                    duration: 0.12,
-                                    ease: "power1.inOut",
+                                    duration: 0.08,
+                                    ease: "power2.out",
                                 },
                                 cardStart
                             );
@@ -342,10 +342,10 @@ export default function Des() {
                                     pillSvg,
                                     {
                                         opacity: 0,
-                                        duration: 0.18,
-                                        ease: "power1.inOut",
+                                        duration: 0.15,
+                                        ease: "power2.out",
                                     },
-                                    cardStart + 0.04
+                                    cardStart
                                 );
                             }
 
@@ -358,14 +358,14 @@ export default function Des() {
                                     height: midHeight,
                                     borderRadius: 8,
                                     duration: MID_DUR,
-                                    ease: "cardFlight",
+                                    ease: "Grid",
                                 },
                                 cardStart
                             );
                         }
                     });
 
-                    const midGridEnd = suckStart + (cards.length - 1) * SUCK_STAGGER + MID_DUR;
+                    const midGridEnd = gridStart + (cards.length - 1) * SUCK_STAGGER + MID_DUR;
                     const HOLD_MID_DUR = 0.85;
                     tl.to({}, { duration: HOLD_MID_DUR }, midGridEnd);
 
@@ -378,7 +378,7 @@ export default function Des() {
                         {
                             y: -scrollDistance,
                             duration: FINAL_DUR * 1.05,
-                            ease: "cardFlight",
+                            ease: "Grid",
                         },
                         finalStart
                     );
@@ -414,7 +414,7 @@ export default function Des() {
                                     height: endHeight,
                                     borderRadius: 8,
                                     duration: FINAL_DUR,
-                                    ease: "cardFlight",
+                                    ease: "Grid",
                                 },
                                 cardFinalStart
                             );
