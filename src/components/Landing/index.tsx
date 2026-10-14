@@ -35,7 +35,6 @@ export default function Landing() {
                                 alt={item.alt}
                                 fill
                                 priority
-                                sizes="217px"
                             />
                         </div>
                         <button type="button" className={styles.cardButton}>
