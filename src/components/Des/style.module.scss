@@ -13,16 +13,15 @@ $ink: #232323;
   background-color: $bg;
   color: $ink;
   position: relative;
-  overflow: hidden;
+  overflow: clip;
 
   .contentWrapper {
     width: 100%;
     position: relative;
-    will-change: transform;
   }
 
   .textContainer {
-    min-height: 90vh;
+    min-height: 82vh;
     width: 100%;
     max-width: 1260px;
     margin: 0 auto;
@@ -90,7 +89,7 @@ $ink: #232323;
     .grid {
       display: grid;
       grid-template-columns: 335px 1fr;
-      row-gap: 50vh;
+      row-gap: 32vh;
       align-items: start;
       width: 100%;
     }
@@ -100,7 +99,7 @@ $ink: #232323;
       flex-direction: column;
       gap: 12px;
 
-      &.timeless {
+      &.lamp {
         grid-column: 1;
         grid-row: 1;
         width: 335px;
@@ -123,7 +122,7 @@ $ink: #232323;
         }
       }
 
-      &.lamp {
+      &.timeless {
         grid-column: 1;
         grid-row: 2;
         width: 335px;
@@ -200,10 +199,11 @@ $ink: #232323;
 
   .floatingCard {
     position: absolute;
+    box-sizing: border-box;
     overflow: hidden;
     background-color: #e5ded4;
     border: 1px solid rgba(26, 26, 26, 0.08);
-    will-change: transform;
+    will-change: left, top, width, height, border-radius;
   }
 
   .cardImage {
@@ -228,7 +228,6 @@ $ink: #232323;
   cursor: default;
   will-change: border-color;
   transition: border-color 0.25s ease;
-
   font-size: inherit;
 
   .pillGhost {

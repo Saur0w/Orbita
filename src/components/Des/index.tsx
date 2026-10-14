@@ -5,15 +5,14 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import { Flip } from "gsap/Flip";
 import { CustomEase } from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
 
-gsap.registerPlugin(ScrollTrigger, SplitText, Flip, CustomEase, useGSAP);
+gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, useGSAP);
 
 CustomEase.create("gridForm", "0.22, 1, 0.36, 1");
-CustomEase.create("sectionTransition", "0.33, 1, 0.68, 1");
+CustomEase.create("sectionTransition", "0.45, 0, 0.25, 1");
 
 export interface cardProps {
     id: string;
@@ -155,8 +154,6 @@ export default function Des() {
                     if (!contentWrapper || !textContainer || !gridContainer) return;
 
                     const wrapperRect = contentWrapper.getBoundingClientRect();
-                    const gridRect = gridContainer.getBoundingClientRect();
-                    gsap.set(el, { height: wrapperRect.height });
 
                     // 1. Initial State
                     gsap.set(`.${styles.char}`, { opacity: DIM_OPACITY });
@@ -168,18 +165,61 @@ export default function Des() {
                     });
                     gsap.set(textContainer, { opacity: 1 });
                     gsap.set(`.${styles.cardCaption}`, { opacity: 0, y: 14 });
-                    gsap.set(contentWrapper, { y: 0 });
+
+                    const cardStates = new Map<
+                        string,
+                        {
+                            pill: { left: number; top: number; width: number; height: number };
+                            mid: { left: number; top: number; width: number; height: number };
+                            final: { left: number; top: number; width: number; height: number };
+                        }
+                    >();
 
                     cards.forEach((card) => {
                         const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
                         const pill = el.querySelector<HTMLElement>(`[data-pill][data-id="${card.id}"]`);
-                        if (cardEl && pill) {
+                        const midSlot = el.querySelector<HTMLElement>(`[data-mid-target="${card.id}"]`);
+                        const targetSlot = el.querySelector<HTMLElement>(
+                            `[data-grid-card="${card.id}"] .${styles.cardImageWrapper}`
+                        );
+
+                        if (cardEl && pill && midSlot && targetSlot) {
                             const pillRect = pill.getBoundingClientRect();
-                            gsap.set(cardEl, {
+                            const midRect = midSlot.getBoundingClientRect();
+                            const targetRect = targetSlot.getBoundingClientRect();
+
+                            const pillState = {
                                 left: pillRect.left - wrapperRect.left,
                                 top: pillRect.top - wrapperRect.top,
                                 width: pillRect.width,
                                 height: pillRect.height,
+                            };
+
+                            const midState = {
+                                left: midRect.left - wrapperRect.left,
+                                top: midRect.top - wrapperRect.top,
+                                width: midRect.width,
+                                height: midRect.height,
+                            };
+
+                            const finalState = {
+                                left: targetRect.left - wrapperRect.left,
+                                top: targetRect.top - wrapperRect.top,
+                                width: targetRect.width,
+                                height: targetRect.height,
+                            };
+
+                            cardStates.set(card.id, {
+                                pill: pillState,
+                                mid: midState,
+                                final: finalState,
+                            });
+
+                            gsap.set(cardEl, {
+                                left: pillState.left,
+                                top: pillState.top,
+                                width: pillState.width,
+                                height: pillState.height,
                                 borderRadius: 58,
                                 opacity: 0,
                             });
@@ -189,17 +229,16 @@ export default function Des() {
                     const tl = gsap.timeline({
                         defaults: { ease: "none" },
                         scrollTrigger: {
-                            trigger: el,
+                            trigger: textContainer,
                             start: "top top",
-                            end: "+=460%",
-                            pin: true,
-                            scrub: 0.9,
+                            end: "+=500%",
+                            pin: el,
+                            pinSpacing: true,
+                            scrub: 1.0,
                             anticipatePin: 1,
-                            invalidateOnRefresh: true,
                         },
                     });
 
-                    // Text & Pill reveal reading sequence
                     let timelineCursor = 0;
                     const readSequence = el.querySelectorAll<HTMLElement>(
                         `.${styles.char}, [data-pill]`
@@ -246,7 +285,6 @@ export default function Des() {
                         }
                     });
 
-                    // Pill zoom & bloom
                     const PAUSE_BEFORE_ZOOM = 0.35;
                     const zoomStart = timelineCursor + FADE_DUR + PAUSE_BEFORE_ZOOM;
                     const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
@@ -295,7 +333,6 @@ export default function Des() {
                     });
 
                     const zoomEnd = zoomStart + (pills.length - 1) * STAGGER + ZOOM_DUR;
-
                     const PAUSE_BEFORE_SUCK = 0.25;
                     const gridStart = zoomEnd + PAUSE_BEFORE_SUCK;
                     const MID_DUR = 2.8;
@@ -313,50 +350,56 @@ export default function Des() {
 
                     cards.forEach((card, index) => {
                         const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
-                        const midSlot = el.querySelector<HTMLElement>(`[data-mid-target="${card.id}"]`);
                         const pill = el.querySelector<HTMLElement>(`[data-pill][data-id="${card.id}"]`);
                         const pillSvg = pill?.querySelector<SVGElement>("[data-pill-svg]");
+                        const states = cardStates.get(card.id);
                         const cardStart = gridStart + index * SUCK_STAGGER;
 
-                        if (cardEl && midSlot) {
-                            const midRect = midSlot.getBoundingClientRect();
-                            const midLeft = midRect.left - wrapperRect.left;
-                            const midTop = midRect.top - wrapperRect.top;
-                            const midWidth = midRect.width;
-                            const midHeight = midRect.height;
-
-                            tl.to(
+                        if (cardEl && states) {
+                            tl.fromTo(
                                 cardEl,
+                                { opacity: 0 },
                                 {
                                     opacity: 1,
-                                    duration: 0.08,
-                                    ease: "power2.out",
+                                    duration: 0.001,
+                                    ease: "none",
+                                    immediateRender: false,
                                 },
                                 cardStart
                             );
 
                             if (pillSvg) {
-                                tl.to(
+                                tl.fromTo(
                                     pillSvg,
+                                    { opacity: 1 },
                                     {
                                         opacity: 0,
-                                        duration: 0.15,
-                                        ease: "power2.out",
+                                        duration: 0.001,
+                                        ease: "none",
+                                        immediateRender: false,
                                     },
                                     cardStart
                                 );
                             }
 
-                            tl.to(
+                            tl.fromTo(
                                 cardEl,
                                 {
-                                    left: midLeft,
-                                    top: midTop,
-                                    width: midWidth,
-                                    height: midHeight,
+                                    left: states.pill.left,
+                                    top: states.pill.top,
+                                    width: states.pill.width,
+                                    height: states.pill.height,
+                                    borderRadius: 58,
+                                },
+                                {
+                                    left: states.mid.left,
+                                    top: states.mid.top,
+                                    width: states.mid.width,
+                                    height: states.mid.height,
                                     borderRadius: 8,
                                     duration: MID_DUR,
                                     ease: "gridForm",
+                                    immediateRender: false,
                                 },
                                 cardStart
                             );
@@ -365,45 +408,35 @@ export default function Des() {
 
                     const midGridEnd = gridStart + (cards.length - 1) * SUCK_STAGGER + MID_DUR;
                     const HOLD_MID_DUR = 0.85;
-                    tl.to({}, { duration: HOLD_MID_DUR }, midGridEnd);
-
                     const finalStart = midGridEnd + HOLD_MID_DUR;
-                    const FINAL_DUR = 1.15;
-                    const FINAL_STAGGER = 0.08;
 
-                    // Keep view stationary at the original text section above (no contentWrapper scroll)
-                    tl.to(
-                        textContainer,
-                        {
-                            opacity: 1,
-                            duration: FINAL_DUR * 0.6,
-                            ease: "power2.inOut",
-                        },
-                        finalStart
-                    );
+                    const FINAL_DUR = 3.2;
+                    const FINAL_STAGGER = 0.1;
 
                     cards.forEach((card, index) => {
                         const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
-                        const targetSlot = el.querySelector<HTMLElement>(`[data-grid-card="${card.id}"] .${styles.cardImageWrapper}`);
+                        const states = cardStates.get(card.id);
                         const cardFinalStart = finalStart + index * FINAL_STAGGER;
 
-                        if (cardEl && targetSlot) {
-                            const targetRect = targetSlot.getBoundingClientRect();
-                            const endLeft = targetRect.left - wrapperRect.left;
-                            const endTop = targetRect.top - wrapperRect.top;
-                            const endWidth = targetRect.width;
-                            const endHeight = targetRect.height;
-
-                            tl.to(
+                        if (cardEl && states) {
+                            tl.fromTo(
                                 cardEl,
                                 {
-                                    left: endLeft,
-                                    top: endTop,
-                                    width: endWidth,
-                                    height: endHeight,
+                                    left: states.mid.left,
+                                    top: states.mid.top,
+                                    width: states.mid.width,
+                                    height: states.mid.height,
+                                    borderRadius: 8,
+                                },
+                                {
+                                    left: states.final.left,
+                                    top: states.final.top,
+                                    width: states.final.width,
+                                    height: states.final.height,
                                     borderRadius: 8,
                                     duration: FINAL_DUR,
                                     ease: "sectionTransition",
+                                    immediateRender: false,
                                 },
                                 cardFinalStart
                             );
@@ -416,15 +449,14 @@ export default function Des() {
                             opacity: 1,
                             y: 0,
                             stagger: 0.08,
-                            duration: 0.45,
+                            duration: 0.65,
                             ease: "power2.out",
                         },
-                        finalStart + FINAL_DUR * 0.65
+                        finalStart + FINAL_DUR * 0.6
                     );
 
                     const totalEnd = finalStart + (cards.length - 1) * FINAL_STAGGER + FINAL_DUR;
-                    const HOLD_FINAL_DUR = 1.0;
-                    tl.to({}, { duration: HOLD_FINAL_DUR }, totalEnd);
+                    tl.to({}, { duration: 0.2 }, totalEnd);
                 }, el);
 
                 ScrollTrigger.sort();
@@ -478,19 +510,22 @@ export default function Des() {
                                 <span data-split>and </span>
                             </span>
                             <span className={styles.line}>
-                                <span data-split>premium </span><Pill id="craftsmanship" />{" "}
+                                <span data-split>premium </span>
+                                <Pill id="craftsmanship" />{" "}
                                 <span data-split>to create an </span>
                             </span>
                             <span className={styles.line}>
-                                <span data-split>experience that goes beyond illumination</span>
+                                <span data-split>
+                                    experience that goes beyond illumination
+                                </span>
                             </span>
                         </p>
                     </div>
 
                     <div className={styles.midGrid} aria-hidden="true">
-                        <div className={styles.midSlot} data-mid-target="timeless" />
-                        <div className={styles.midSlot} data-mid-target="intelligent" />
                         <div className={styles.midSlot} data-mid-target="lamp" />
+                        <div className={styles.midSlot} data-mid-target="intelligent" />
+                        <div className={styles.midSlot} data-mid-target="timeless" />
                         <div className={styles.midSlot} data-mid-target="craftsmanship" />
                     </div>
                 </section>
@@ -512,7 +547,11 @@ export default function Des() {
 
                 <div className={styles.cardsOverlay} aria-hidden="true">
                     {cards.map((card) => (
-                        <div key={card.id} className={styles.floatingCard} data-card={card.id}>
+                        <div
+                            key={card.id}
+                            className={styles.floatingCard}
+                            data-card={card.id}
+                        >
                             <Image
                                 src={card.src}
                                 alt={card.alt}
