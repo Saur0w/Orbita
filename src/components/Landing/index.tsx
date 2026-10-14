@@ -6,17 +6,17 @@ import Image from "next/image";
 const videoSrc = "/video/hero.mp4";
 
 export interface CardProps {
-    src: string,
-    alt: string,
-    title: string
+    src: string;
+    alt: string;
+    title: string;
 }
 
 const card: CardProps[] = [
     {
         src: "/images/lamp.jpg",
         alt: "Lamp preview",
-        title: "Pre-order now"
-    }
+        title: "Pre-order now",
+    },
 ];
 
 export default function Landing() {
@@ -25,11 +25,18 @@ export default function Landing() {
             <div className={styles.bg}>
                 <video src={videoSrc} autoPlay loop muted playsInline />
             </div>
+
             <div className={styles.cardContainer}>
                 {card.map((item, i) => (
                     <div key={i} className={styles.card}>
                         <div className={styles.imageWrapper}>
-                            <Image src={item.src} alt={item.alt} fill />
+                            <Image
+                                src={item.src}
+                                alt={item.alt}
+                                fill
+                                priority
+                                sizes="217px"
+                            />
                         </div>
                         <button type="button" className={styles.cardButton}>
                             {item.title}
@@ -38,5 +45,5 @@ export default function Landing() {
                 ))}
             </div>
         </section>
-    )
+    );
 }
