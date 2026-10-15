@@ -18,7 +18,7 @@ interface PreloaderProps {
 }
 
 const ICON_VIEWBOX_CENTER = 366.913;
-const INITIAL_ICON_SIZE = 28; // 28px icon between the two words
+const INITIAL_ICON_SIZE = 56; 
 
 export default function Preloader({ onComplete }: PreloaderProps) {
     const preloaderRef = useRef<HTMLDivElement>(null);
@@ -38,7 +38,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
             if (!el || !leftWord || !rightWord || !iconSlot || !maskLogo) return;
 
-            // Lock page scroll while preloader is running
             const prevOverflow = document.body.style.overflow;
             document.body.style.overflow = "hidden";
 
@@ -52,7 +51,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             });
             const allChars = [...splitLeft.chars, ...splitRight.chars];
 
-            // Position the SVG mask logo at the exact center of the viewport
             const updateMaskCenter = () => {
                 const vw = window.innerWidth;
                 const vh = window.innerHeight;
@@ -65,7 +63,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             updateMaskCenter();
 
             const baseScale = INITIAL_ICON_SIZE / 730;
-            // Center circle diameter in viewBox is ~225.4 units; compute scale needed to cover viewport diagonal
             const maxViewportHypotenuse = Math.hypot(
                 window.innerWidth,
                 window.innerHeight
@@ -91,7 +88,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 },
             });
 
-            // 1. Left-to-right character unblur reveal (00:00 -> 00:01.3)
             tl.to(allChars, {
                 opacity: 1,
                 filter: "blur(0px)",
@@ -101,7 +97,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 ease: "power2.out",
             });
 
-            // 2. Words part + center cutout Logo scales in showing Landing page inside (00:01.4 -> 00:02.4)
             const splitStart = "+=0.15";
             tl.to(
                 iconSlot,
@@ -124,33 +119,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 splitStart
             );
 
-            // 3. Hold with live video visible inside the spinning/stationary icon (00:02.4 -> 00:03.1)
-            const zoomStart = "+=0.55";
-
-            // 4. Expand cutout Logo until center circle reveals the full Landing section (00:03.1 -> 00:04.5)
-            tl.to(
-                leftWord,
-                {
-                    x: -90,
-                    opacity: 0,
-                    filter: "blur(8px)",
-                    duration: 0.55,
-                    ease: "power2.in",
-                },
-                zoomStart
-            );
-
-            tl.to(
-                rightWord,
-                {
-                    x: 90,
-                    opacity: 0,
-                    filter: "blur(8px)",
-                    duration: 0.55,
-                    ease: "power2.in",
-                },
-                zoomStart
-            );
 
             tl.to(
                 maskLogo,
@@ -160,14 +128,28 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                     duration: 1.35,
                     ease: "portalZoom",
                     onStart: () => {
-                        // Trigger Header / Landing entrance slightly before mask finishes clearing edges
                         gsap.delayedCall(0.75, () => {
                             onComplete?.();
                         });
                     },
                 },
-                zoomStart
             );
+
+            tl.to(
+                leftWord,
+                {
+                    opacity: 0,
+                },
+            );
+
+            tl.to(
+                rightWord,
+                {
+                    opacity: 0,
+                },
+            );
+
+            
 
             window.addEventListener("resize", updateMaskCenter);
             return () => {
@@ -188,9 +170,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             className={styles.preloader}
             aria-hidden="true"
         >
-            {/* Full-viewport SVG Mask Overlay:
-                White = #F7F1E8 cream background
-                Black (<LogoPaths />) = transparent cutout showing <Landing /> underneath */}
             <svg className={styles.maskSvg} xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <mask id="orbita-preloader-mask">
@@ -208,7 +187,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 />
             </svg>
 
-            {/* Centered Typography Layer */}
             <div className={styles.textLayer}>
                 <h1 className={styles.brandTitle}>
                     <span ref={leftWordRef} className={styles.word}>

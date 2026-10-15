@@ -14,29 +14,27 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect } from "react";
 import { appleEase } from "@/lib/scroll-easing";
 import Head from "next/head";
+import Preloader from "@/components/Preloader";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
     useEffect(() => {
-        // Ensure ScrollTrigger is registered
-        gsap.registerPlugin(ScrollTrigger);
 
-        // Refined Lenis instance with custom easing & smooth physics
         const lenis = new Lenis({
-            duration: 1.2, // Duration of scroll animation in seconds
-            easing: appleEase, // Custom easing curve (or try easeOutQuint for a velvet glide)
+            duration: 1.2, 
+            easing: appleEase,
             smoothWheel: true,
-            wheelMultiplier: 1.0, // Multiplier for mouse wheel events
+            wheelMultiplier: 1.0,
             touchMultiplier: 1.5,
             infinite: false,
-            syncTouch: false, // Keep native touch momentum on mobile devices
+            syncTouch: false,
             autoResize: true,
-            anchors: true, // Smooth scroll to hash anchor targets
+            anchors: true, 
         });
 
-        // Synchronize Lenis scroll position with GSAP ScrollTrigger
         lenis.on("scroll", ScrollTrigger.update);
 
-        // Drive Lenis through GSAP ticker for 100% frame synchronization with ScrollTrigger
         const updateTicker = (time: number) => {
             lenis.raf(time * 1000);
         };
@@ -51,6 +49,7 @@ export default function Home() {
     }, []);
   return (
     <main className={styles.main}>
+        <Preloader />
         <Header />
         <Landing />
         <Des />
