@@ -3,6 +3,7 @@
 import styles from "./style.module.scss";
 import Link from "next/link";
 import { Logo } from "@/components/Icons/logo"; 
+
 interface NavItem {
     label: string;
     href: string;
@@ -12,7 +13,7 @@ const navItems: NavItem[] = [
     { label: "The Lamp", href: "/" },
     { label: "Features", href: "/" },
     { label: "Pre-order", href: "/" },
-    { label: "Specification", href: "/" },
+    { label: "Specification", href: "/" }
 ];
 
 export default function Header() {
