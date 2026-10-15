@@ -7,11 +7,13 @@ import Atmos from "@/components/Atmos";
 import Features from "@/components/Features";
 import Des from "@/components/Des";
 import Landing from "@/components/Landing";
+import Header from "@/components/Header";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect } from "react";
 import { appleEase } from "@/lib/scroll-easing";
+import Head from "next/head";
 
 export default function Home() {
     useEffect(() => {
@@ -49,6 +51,7 @@ export default function Home() {
     }, []);
   return (
     <main className={styles.main}>
+        <Header />
         <Landing />
         <Des />
         <Atmos />
