@@ -26,6 +26,22 @@ export default function Landing() {
                 <video src={videoSrc} autoPlay loop muted playsInline />
             </div>
 
+            <div className={styles.heroTextOverlay}>
+                <h1 className={styles.leftHeading} data-split-lines>
+                    Light <br />
+                    designed <br />
+                    as an object
+                </h1>
+
+                <p className={styles.rightHeading} data-split-lines>
+                    Light in <br />
+                    perfect <br />
+                    balance
+                </p>
+            </div>
+
+            <span className={styles.scrollDown}>Scroll down</span>
+            
             <div className={styles.cardContainer}>
                 {card.map((item, i) => (
                     <div key={i} className={styles.card}>

@@ -19,6 +19,65 @@
     }
   }
 
+  .heroTextOverlay {
+    position: absolute;
+    top: 52%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    padding-inline: 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 5;
+    pointer-events: none;
+
+    .leftHeading,
+    .rightHeading {
+      margin: 0;
+      font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+      font-size: 56px;
+      font-weight: 400;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: #fff;
+      text-align: left;
+    }
+
+    .rightHeading {
+      padding-right: 4px;
+    }
+
+    .lineMask {
+      display: block;
+      overflow: hidden;
+      padding-bottom: 0.06em;
+      margin-bottom: -0.06em;
+    }
+
+    .lineInner {
+      display: block;
+      will-change: transform;
+    }
+  }
+
+  .scrollDown {
+    position: absolute;
+    bottom: 24px;
+    left: 20px;
+    z-index: 10;
+    font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: #F7F1E8;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
   .cardContainer {
     position: absolute;
     bottom: 24px;
