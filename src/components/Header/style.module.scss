@@ -1,7 +1,7 @@
 $cream: #F7F1E8;
 $ink: #232323;
 
-@mixin glass-pill {
+@mixin glass-surface {
   background: linear-gradient(
     180deg,
     rgba(247, 241, 232, 0.16) 0%,
@@ -10,6 +10,10 @@ $ink: #232323;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(247, 241, 232, 0.35);
+}
+
+@mixin glass-pill {
+  @include glass-surface;
   border-radius: 100px;
 }
 
@@ -25,7 +29,7 @@ $ink: #232323;
   align-items: center;
   justify-content: space-between;
   z-index: 100;
-  pointer-events: none; 
+  pointer-events: none;
 
   .logoLink {
     pointer-events: auto;
@@ -90,8 +94,13 @@ $ink: #232323;
       opacity: 0.72;
     }
   }
-  .rightPill {
+
+  .rightWrapper {
+    position: relative;
     pointer-events: auto;
+  }
+
+  .rightPill {
     height: 48px;
     padding: 4px 4px 4px 16px;
     box-sizing: border-box;
@@ -127,6 +136,68 @@ $ink: #232323;
     height: 6px;
     display: block;
     transform: translateY(0.5px);
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .chevronOpen {
+    transform: translateY(0.5px) rotate(180deg);
+  }
+
+  // Frame 214: 62px x 62px, radius 4px, 10px below rightPill (Top 84px in Figma)
+  .langDropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    width: 62px;
+    height: 62px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+    @include glass-surface;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition:
+      opacity 0.22s ease,
+      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0.22s ease;
+  }
+
+  .langDropdownOpen {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .langOption {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: rgba(247, 241, 232, 0.65);
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.18s ease, opacity 0.18s ease;
+
+    &:hover {
+      color: $cream;
+    }
+  }
+
+  .langOptionActive {
+    color: $cream;
   }
 
   .iconCircle {
@@ -153,19 +224,6 @@ $ink: #232323;
     }
   }
 
-  .globeIcon {
-    width: 20px;
-    height: 20px;
-    display: block;
-  }
-
-  .menuIcon {
-    width: 16px;
-    height: 11px;
-    display: none;
-  }
-
-  
   @media (max-width: 860px) {
     top: 24px;
     padding-inline: 20px;
@@ -189,14 +247,6 @@ $ink: #232323;
     .iconCircle {
       width: 32px;
       height: 32px;
-    }
-
-    .globeIcon {
-      display: none;
-    }
-
-    .menuIcon {
-      display: block;
     }
   }
 }
