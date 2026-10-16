@@ -25,7 +25,6 @@ export default function Header() {
     const [isLangOpen, setIsLangOpen] = useState(false);
     const rightWrapperRef = useRef<HTMLDivElement>(null);
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (
@@ -134,7 +133,6 @@ export default function Header() {
                     </button>
                 </div>
 
-                {/* 62x62 Language Dropdown (Frame 214) */}
                 <div
                     className={`${styles.langDropdown} ${isLangOpen ? styles.langDropdownOpen : ""}`}
                     role="menu"
