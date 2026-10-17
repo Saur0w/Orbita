@@ -22,7 +22,7 @@ export const cards: CardData[] = [
     id: 1,
     title: "1. Touch Control",
     description: "Minimal touch sensor located on the base allows seamless switching between lighting modes.",
-    src: "/images/cards/touchl.png",
+    src: "/images/cards/touch.png",
   },
   {
     id: 2,
@@ -57,6 +57,10 @@ export default function Features() {
                         Orbita integrates modern technology with intuitive controls
                     </h2>
                 </div>
+            </div>
+
+            <div className={styles.cardsViewport}>
+              
             </div>
         </section>
     )
