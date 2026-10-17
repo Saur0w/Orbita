@@ -13,7 +13,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect } from "react";
 import { appleEase } from "@/lib/scroll-easing";
-import Head from "next/head";
 import Preloader from "@/components/Preloader";
 import Upscale from "@/components/Upscale";
 
