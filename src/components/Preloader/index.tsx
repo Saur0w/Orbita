@@ -18,7 +18,7 @@ interface PreloaderProps {
 }
 
 const ICON_VIEWBOX_CENTER = 366.913;
-const INITIAL_ICON_SIZE = 56; 
+const INITIAL_ICON_SIZE = 56;
 
 export default function Preloader({ onComplete }: PreloaderProps) {
     const preloaderRef = useRef<HTMLDivElement>(null);
@@ -52,11 +52,13 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             const allChars = [...splitLeft.chars, ...splitRight.chars];
 
             const updateMaskCenter = () => {
-                const vw = window.innerWidth;
-                const vh = window.innerHeight;
+                const slotRect = iconSlot.getBoundingClientRect();
+                const centerX = slotRect.left + slotRect.width / 2;
+                const centerY = slotRect.top + slotRect.height / 2;
+
                 gsap.set(maskLogo, {
-                    x: vw / 2 - ICON_VIEWBOX_CENTER,
-                    y: vh / 2 - ICON_VIEWBOX_CENTER,
+                    x: centerX - ICON_VIEWBOX_CENTER,
+                    y: centerY - ICON_VIEWBOX_CENTER,
                     svgOrigin: `${ICON_VIEWBOX_CENTER} ${ICON_VIEWBOX_CENTER}`,
                 });
             };
@@ -69,16 +71,21 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             );
             const fullRevealScale = (maxViewportHypotenuse / 220) * 1.15;
 
-            // Initial states
             gsap.set(allChars, {
                 opacity: 0,
-                filter: "blur(12px)",
-                y: 4,
+                filter: "blur(8px)",
+                scale: 0.94,
+                transformOrigin: "50% 50%",
             });
+            gsap.set([leftWord, rightWord], {
+                autoAlpha: 1, 
+            });
+
             gsap.set(iconSlot, { width: 0 });
             gsap.set(maskLogo, {
                 scale: 0,
                 rotation: -90,
+                opacity: 1, 
             });
 
             const tl = gsap.timeline({
@@ -91,9 +98,12 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             tl.to(allChars, {
                 opacity: 1,
                 filter: "blur(0px)",
-                y: 0,
-                duration: 0.75,
-                stagger: 0.045,
+                scale: 1,
+                duration: 0.7,
+                stagger: {
+                    each: 0.04,
+                    from: "random",
+                },
                 ease: "power2.out",
             });
 
@@ -101,9 +111,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             tl.to(
                 iconSlot,
                 {
-                    width: INITIAL_ICON_SIZE + 16,
+                    width: INITIAL_ICON_SIZE + 20,
                     duration: 0.85,
                     ease: "wordSplit",
+                    onUpdate: updateMaskCenter,
                 },
                 splitStart
             );
@@ -119,7 +130,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 splitStart
             );
 
-
+            
+            const zoomStart = "+=0.25";
             tl.to(
                 maskLogo,
                 {
@@ -133,23 +145,19 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                         });
                     },
                 },
+                zoomStart
             );
 
             tl.to(
-                leftWord,
+                [leftWord, rightWord],
                 {
                     opacity: 0,
+                    filter: "blur(6px)",
+                    duration: 0.3,
+                    ease: "power2.in",
                 },
+                "<0.05"
             );
-
-            tl.to(
-                rightWord,
-                {
-                    opacity: 0,
-                },
-            );
-
-            
 
             window.addEventListener("resize", updateMaskCenter);
             return () => {
@@ -174,7 +182,11 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 <defs>
                     <mask id="orbita-preloader-mask">
                         <rect width="100%" height="100%" fill="white" />
-                        <g ref={maskLogoGroupRef} fill="black">
+                        <g
+                            ref={maskLogoGroupRef}
+                            fill="black"
+                            className={styles.maskLogo}
+                        >
                             <LogoPaths />
                         </g>
                     </mask>
@@ -189,11 +201,17 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
             <div className={styles.textLayer}>
                 <h1 className={styles.brandTitle}>
-                    <span ref={leftWordRef} className={styles.word}>
+                    <span
+                        ref={leftWordRef}
+                        className={`${styles.word} ${styles.leftWord}`}
+                    >
                         Orbital
                     </span>
                     <span ref={iconSlotRef} className={styles.iconSlot} />
-                    <span ref={rightWordRef} className={styles.word}>
+                    <span
+                        ref={rightWordRef}
+                        className={`${styles.word} ${styles.rightWord}`}
+                    >
                         Lamp
                     </span>
                 </h1>

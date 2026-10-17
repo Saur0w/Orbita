@@ -39,7 +39,7 @@ $ink: #232323;
   align-items: center;
   justify-content: center;
   font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
-  font-size: 56px;
+  font-size: 56px; 
   font-weight: 400;
   line-height: 1;
   letter-spacing: -0.01em;
@@ -49,14 +49,29 @@ $ink: #232323;
 
 .word {
   display: inline-block;
+  min-width: 4.5ch; 
+  opacity: 0; 
+  visibility: hidden;
   will-change: transform, opacity, filter;
+}
+
+.maskLogo {
+  opacity: 0; 
+}
+
+.leftWord {
+  text-align: right;
+}
+
+.rightWord {
+  text-align: left;
 }
 
 .iconSlot {
   display: inline-block;
   width: 0;
-  height: 28px;
-  margin-inline: 0.14em;
+  height: 1em;
+  margin-inline: 0.12em;
   flex-shrink: 0;
 }
 
