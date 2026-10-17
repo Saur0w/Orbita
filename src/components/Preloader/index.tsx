@@ -156,7 +156,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 [leftWord, rightWord],
                 {
                     opacity: 0,
-                    filter: "blur(6px)",
                     duration: 0.25,
                     ease: "power2.in",
                 },
