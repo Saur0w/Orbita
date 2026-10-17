@@ -78,14 +78,13 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 transformOrigin: "50% 50%",
             });
             gsap.set([leftWord, rightWord], {
-                autoAlpha: 1, 
+                autoAlpha: 1,
             });
 
             gsap.set(iconSlot, { width: 0 });
             gsap.set(maskLogo, {
                 scale: 0,
-                rotation: -90,
-                opacity: 1, 
+                opacity: 1,
             });
 
             const tl = gsap.timeline({
@@ -123,29 +122,34 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 maskLogo,
                 {
                     scale: baseScale,
-                    rotation: 0,
                     duration: 0.85,
-                    ease: "wordSplit",
+                    ease: "back.out(1.6)",
                 },
                 splitStart
             );
 
-            
-            const zoomStart = "+=0.25";
+            tl.to(
+                maskLogo,
+                {
+                    scale: baseScale * 0.72,
+                    duration: 0.25,
+                    ease: "power2.inOut",
+                },
+                "+=0.1"
+            );
+
             tl.to(
                 maskLogo,
                 {
                     scale: fullRevealScale,
-                    rotation: 45,
-                    duration: 1.35,
+                    duration: 1.3,
                     ease: "portalZoom",
                     onStart: () => {
-                        gsap.delayedCall(0.75, () => {
+                        gsap.delayedCall(0.7, () => {
                             onComplete?.();
                         });
                     },
-                },
-                zoomStart
+                }
             );
 
             tl.to(
@@ -153,10 +157,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                 {
                     opacity: 0,
                     filter: "blur(6px)",
-                    duration: 0.3,
+                    duration: 0.25,
                     ease: "power2.in",
                 },
-                "<0.05"
+                "<"
             );
 
             window.addEventListener("resize", updateMaskCenter);
