@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { appleEase } from "@/lib/scroll-easing";
 import Head from "next/head";
 import Preloader from "@/components/Preloader";
+import Upscale from "@/components/Upscale";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,6 +56,7 @@ export default function Home() {
         <Des />
         <Atmos />
         <Features />
+        <Upscale />
         <Footer />
     </main>
   );
