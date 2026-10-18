@@ -12,7 +12,6 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect } from "react";
-import { appleEase } from "@/lib/scroll-easing";
 import Preloader from "@/components/Preloader";
 import Upscale from "@/components/Upscale";
 
@@ -22,15 +21,12 @@ export default function Home() {
     useEffect(() => {
 
         const lenis = new Lenis({
-            duration: 1.2, 
-            easing: appleEase,
+            lerp: 0.1,
             smoothWheel: true,
             wheelMultiplier: 1.0,
-            touchMultiplier: 1.5,
-            infinite: false,
+            touchMultiplier: 1.0,
             syncTouch: false,
-            autoResize: true,
-            anchors: true, 
+            autoResize: true
         });
 
         lenis.on("scroll", ScrollTrigger.update);
