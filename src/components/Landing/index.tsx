@@ -2,7 +2,12 @@
 
 import styles from "./style.module.scss";
 import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const videoSrc = "/video/hero.mp4";
 
@@ -22,6 +27,11 @@ const card: CardProps[] = [
 
 export default function Landing() {
     const landingRef = useRef<HTMLElement>(null);
+
+    useGSAP(() => {
+        
+    }, { scope: landingRef });
+
     return (
         <section className={styles.landing} ref={landingRef}>
             <div className={styles.bg}>
