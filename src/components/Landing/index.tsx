@@ -29,7 +29,84 @@ export default function Landing() {
     const landingRef = useRef<HTMLElement>(null);
 
     useGSAP(() => {
-        
+        if (!landingRef.current) return;
+
+        const mm = gsap.matchMedia();
+
+        mm.add({
+            isDesktop: "(min-width: 768px)",
+            reduceMotion: "(prefers-reduced-motion: reduce)",
+        }, (context) => {
+            const { isDesktop, reduceMotion } = context.conditions!;
+
+            if (reduceMotion) return;
+
+            if (isDesktop) {
+                gsap.to(`.${styles.bg} video`, {
+                    yPercent: 20,
+                    scale: 1.14,
+                    filter: "brightness(0.7)",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: landingRef.current,
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
+
+                gsap.to(`.${styles.leftHeading}`, {
+                    yPercent: -45,
+                    opacity: 0,
+                    filter: "blur(6px)",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: landingRef.current,
+                        start: "top top",
+                        end: "70% top",
+                        scrub: true
+                    }
+                });
+
+                gsap.to(`.${styles.rightHeading}`, {
+                    yPercent: -30,
+                    opacity: 0,
+                    filter: "blur(4px)",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: landingRef.current,
+                        start: "top top",
+                        end: "70% top",
+                        scrub: true,
+                    },
+                });
+
+                gsap.to(`.${styles.cardContainer}`, {
+                    yPercent: -40,
+                    scale: 0.92,
+                    opacity: 0,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: landingRef.current,
+                        start: "top top",
+                        end: "50% top",
+                        scrub: true,
+                    },
+                })
+            }
+
+            gsap.to(`.${styles.scrollDown}`, {
+                y: -25,
+                opacity: 0,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: landingRef.current,
+                    start: "top top",
+                    end: "20% top",
+                    scrub: true,
+                },
+            });
+        });
     }, { scope: landingRef });
 
     return (
