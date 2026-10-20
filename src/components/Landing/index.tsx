@@ -45,7 +45,6 @@ export default function Landing() {
                 gsap.to(`.${styles.bg} video`, {
                     yPercent: 20,
                     scale: 1.14,
-                    filter: "brightness(0.7)",
                     ease: "none",
                     scrollTrigger: {
                         trigger: landingRef.current,
@@ -71,7 +70,7 @@ export default function Landing() {
                 gsap.to(`.${styles.rightHeading}`, {
                     yPercent: -30,
                     opacity: 0,
-                    filter: "blur(4px)",
+                    filter: "blur(6px)",
                     ease: "none",
                     scrollTrigger: {
                         trigger: landingRef.current,
