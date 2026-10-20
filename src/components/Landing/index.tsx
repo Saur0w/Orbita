@@ -2,6 +2,7 @@
 
 import styles from "./style.module.scss";
 import Image from "next/image";
+import { useRef } from "react";
 
 const videoSrc = "/video/hero.mp4";
 
@@ -20,8 +21,9 @@ const card: CardProps[] = [
 ];
 
 export default function Landing() {
+    const landingRef = useRef<HTMLElement>(null);
     return (
-        <section className={styles.landing}>
+        <section className={styles.landing} ref={landingRef}>
             <div className={styles.bg}>
                 <video src={videoSrc} autoPlay loop muted playsInline />
             </div>
