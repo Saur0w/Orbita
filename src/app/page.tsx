@@ -11,13 +11,15 @@ import Header from "@/components/Header";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Preloader from "@/components/Preloader";
 import Upscale from "@/components/Upscale";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
+    const [isReady, setIsReady] = useState(false);
+
     useEffect(() => {
 
         const lenis = new Lenis({
@@ -45,8 +47,8 @@ export default function Home() {
     }, []);
   return (
     <main className={styles.main}>
-        <Preloader />
-        <Header />
+        <Preloader onComplete={() => setIsReady(true)} />
+        <Header isReady={isReady} />
         <Landing />
         <Des />
         <Atmos />

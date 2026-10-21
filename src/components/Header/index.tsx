@@ -4,6 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import styles from "./style.module.scss";
 import Link from "next/link";
 import { Logo } from "@/components/Icons/logo";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
 
 interface NavItem {
     label: string;
@@ -20,7 +24,12 @@ const navItems: NavItem[] = [
 const languages = ["En", "Ger"] as const;
 type Language = (typeof languages)[number];
 
-export default function Header() {
+interface HeaderProps {
+    isReady: boolean;
+}
+
+export default function Header({ isReady }: HeaderProps) {
+    const headerRef = useRef<HTMLHeadElement>(null);
     const [selectedLang, setSelectedLang] = useState<Language>("En");
     const [isLangOpen, setIsLangOpen] = useState(false);
     const rightWrapperRef = useRef<HTMLDivElement>(null);
@@ -39,8 +48,30 @@ export default function Header() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    useGSAP(() => {
+        if (!isReady) {
+            gsap.set(headerRef.current, {
+                y: -24,
+                opacity: 0
+            });
+
+            return;
+        }
+
+        gsap.to(headerRef.current, {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            ease: "power3.out",
+            delay: 0.1,
+        });
+    }, {
+        dependencies: [isReady],
+        scope: headerRef
+    })
+
     return (
-        <header className={styles.header}>
+        <header className={styles.header} ref={headerRef}>
             <Link href="/" className={styles.logoLink} aria-label="Orbita Home">
                 <Logo className={styles.logo} />
             </Link>
