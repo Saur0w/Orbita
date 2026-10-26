@@ -14,6 +14,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useState } from "react";
 import Preloader from "@/components/Preloader";
 import Upscale from "@/components/Upscale";
+import Swtich from "@/components/Switch";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -54,6 +55,7 @@ export default function Home() {
         <Atmos />
         <Features />
         <Upscale />
+        <Swtich />
         <Footer />
     </main>
   );

@@ -3,7 +3,7 @@
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background-color: #706e65; 
+  background-color: #706e65;
 }
 
 .videoContainer {
@@ -23,5 +23,7 @@
   display: block;
   pointer-events: none;
   user-select: none;
-  transform: translateZ(0); 
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform;
 }

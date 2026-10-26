@@ -14,6 +14,7 @@ export default function Upscale() {
   const upscaleRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // 1. Preload entire video into memory as a Blob
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -24,32 +25,15 @@ export default function Upscale() {
     fetch(videoSrc)
       .then((res) => res.blob())
       .then((blob) => {
-        if (isCancelled || !videoRef.current) return;
+        if (isCancelled || !video) return;
         objectUrl = URL.createObjectURL(blob);
-        videoRef.current.src = objectUrl;
-        videoRef.current.load();
-
-        const playPromise = videoRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              if (!videoRef.current) return;
-              videoRef.current.pause();
-              videoRef.current.currentTime = 0;
-              ScrollTrigger.refresh();
-            })
-            .catch(() => {
-              if (videoRef.current) {
-                videoRef.current.pause();
-                videoRef.current.currentTime = 0;
-              }
-            });
-        }
+        video.src = objectUrl;
+        video.load();
       })
       .catch(() => {
-        if (videoRef.current) {
-          videoRef.current.src = videoSrc;
-          videoRef.current.load();
+        if (!isCancelled && video) {
+          video.src = videoSrc;
+          video.load();
         }
       });
 
@@ -59,6 +43,7 @@ export default function Upscale() {
     };
   }, []);
 
+  // 2. Sync ScrollTrigger to GSAP's RAF ticker
   useGSAP(
     () => {
       const section = upscaleRef.current;
@@ -67,47 +52,72 @@ export default function Upscale() {
       if (!section || !video) return;
 
       let targetTime = 0;
+      let isUnlocked = false;
 
-      const requestFrameUpdate = () => {
-        if (!video.duration || Number.isNaN(video.duration)) return;
-
-        if (!video.seeking && Math.abs(video.currentTime - targetTime) > 0.01) {
-          video.currentTime = targetTime;
-        }
-      };
-
-      const onSeeked = () => {
-        if (Math.abs(video.currentTime - targetTime) > 0.01) {
-          video.currentTime = targetTime;
+      // Unlock hardware decoder once metadata is ready
+      const unlockVideo = () => {
+        if (isUnlocked) return;
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              video.pause();
+              video.currentTime = targetTime;
+              isUnlocked = true;
+              ScrollTrigger.refresh();
+            })
+            .catch(() => {
+              isUnlocked = true;
+            });
         }
       };
 
       const onLoadedMetadata = () => {
+        unlockVideo();
         ScrollTrigger.refresh();
       };
 
-      video.addEventListener("seeked", onSeeked);
-      video.addEventListener("loadedmetadata", onLoadedMetadata);
+      if (video.readyState >= 1) {
+        onLoadedMetadata();
+      } else {
+        video.addEventListener("loadedmetadata", onLoadedMetadata, {
+          once: true,
+        });
+      }
+
+      // Tick on every animation frame instead of chaining "seeked" events
+      const syncVideoFrame = () => {
+        if (!video.duration || Number.isNaN(video.duration)) return;
+
+        if (!video.seeking && Math.abs(video.currentTime - targetTime) > 0.008) {
+          video.currentTime = targetTime;
+        }
+      };
+
+      gsap.ticker.add(syncVideoFrame);
 
       const st = ScrollTrigger.create({
         trigger: section,
         start: "top top",
-        end: "+=350%", 
+        end: "+=350%",
         pin: true,
-        scrub: true,
-        refreshPriority: -1, 
+        scrub: 0.4, // Smooths out discrete mouse-wheel ticks
+        refreshPriority: -1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           if (video.duration && !Number.isNaN(video.duration)) {
-            targetTime = self.progress * video.duration;
-            requestFrameUpdate();
+            // Clamp slightly below duration so EOF never flushes the video decoder
+            targetTime = Math.min(
+              video.duration - 0.05,
+              Math.max(0, self.progress * video.duration)
+            );
           }
         },
       });
 
       return () => {
         st.kill();
-        video.removeEventListener("seeked", onSeeked);
+        gsap.ticker.remove(syncVideoFrame);
         video.removeEventListener("loadedmetadata", onLoadedMetadata);
       };
     },
@@ -123,6 +133,8 @@ export default function Upscale() {
           muted
           playsInline
           preload="auto"
+          disablePictureInPicture
+          disableRemotePlayback
         />
       </div>
     </section>
