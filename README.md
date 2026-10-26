@@ -75,7 +75,7 @@
 ### 1. Clone the repository
 
 ```bash
-git clone [https://github.com/your-username/orbita.git](https://github.com/your-username/orbita.git)
+git clone [https://github.com/saur0w/orbita.git](https://github.com/saur0w/orbita.git)
 cd orbita
 ```
 
