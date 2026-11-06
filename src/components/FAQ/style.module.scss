@@ -21,20 +21,16 @@
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 2.25rem;
-    padding: 3.5rem 1.25rem 4rem;
+    gap: 1.25rem;
+    padding: 3rem 1.25rem 0;
   }
 }
 
 .labelCol {
   display: flex;
   align-items: flex-start;
-  margin-top: -0.65rem;
+  margin-top: 0;
   will-change: transform;
-
-  @media (max-width: 768px) {
-    margin-top: 0;
-  }
 }
 
 .labelMask {
@@ -48,7 +44,7 @@
   font-family: "Neue Montreal", sans-serif;
   font-size: 16px;
   font-weight: 500;
-  line-height: 0.94;
+  line-height: 1;
   letter-spacing: -0.02em;
   color: #232323;
   will-change: transform, opacity;
@@ -67,11 +63,23 @@
   will-change: transform;
 }
 
-.topBorder,
+.topBorder {
+  width: 100%;
+  height: 0.5px;
+  background-color: rgba(35, 35, 35, 0.24);
+  transform-origin: left center;
+  will-change: transform;
+  margin-top: 7px; 
+
+  @media (max-width: 768px) {
+    margin-top: 0;
+  }
+}
+
 .rowBorder {
   width: 100%;
-  height: 1px;
-  background-color: rgba(35, 35, 35, 0.14);
+  height: 0.5px;
+  background-color: rgba(35, 35, 35, 0.24);
   transform-origin: left center;
   will-change: transform;
 }
@@ -87,7 +95,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  padding: 1.625rem 0;
+  padding: 2.2rem 0;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -178,14 +186,14 @@
   }
 
   @media (max-width: 768px) {
-    padding: 0 1.25rem;
+    display: none; 
   }
 }
 
 .bottomBorder {
   width: 100%;
-  height: 1px;
-  background-color: rgba(35, 35, 35, 0.14);
+  height: 0.5px;
+  background-color: rgba(35, 35, 35, 0.24);
   transform-origin: left center;
   will-change: transform;
 }

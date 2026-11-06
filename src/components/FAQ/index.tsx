@@ -126,31 +126,16 @@ export default function FAQ() {
 
       mm.add("(min-width: 769px)", () => {
         gsap.fromTo(
-          labelColRef.current,
+          [labelColRef.current, accordionColRef.current],
           { y: 0 },
           {
-            y: -22,
+            y: -18,
             ease: "none",
             scrollTrigger: {
               trigger: sectionRef.current,
               start: "top bottom",
               end: "bottom top",
               scrub: 0.6,
-            },
-          }
-        );
-
-        gsap.fromTo(
-          accordionColRef.current,
-          { y: 20 },
-          {
-            y: -12,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 0.8,
             },
           }
         );
