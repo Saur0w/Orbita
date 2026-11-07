@@ -16,6 +16,7 @@ import Preloader from "@/components/Preloader";
 import Upscale from "@/components/Upscale";
 import Swtich from "@/components/Switch";
 import FAQ from "@/components/FAQ";
+import Philo from "@/components/Philo";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,7 +24,6 @@ export default function Home() {
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
-
         const lenis = new Lenis({
             lerp: 0.1,
             smoothWheel: true,
@@ -48,7 +48,6 @@ export default function Home() {
         };
     }, []);
 
-    // Refresh all ScrollTriggers once the Preloader completes and document.body overflow unlocks
     useEffect(() => {
         if (isReady) {
             const t1 = setTimeout(() => ScrollTrigger.refresh(), 100);
@@ -69,6 +68,7 @@ export default function Home() {
         <Features />
         <Upscale />
         <Swtich />
+        <Philo />
         <FAQ />
         <Footer />
     </main>

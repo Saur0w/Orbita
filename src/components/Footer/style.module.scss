@@ -37,7 +37,6 @@
 
 .topSection {
   display: grid;
-  /* 1.8fr matches FAQ left column; 3fr + 1.2fr + 1fr = 5.2fr matches FAQ right column */
   grid-template-columns: 1.8fr 3fr 1.2fr 1fr;
   align-items: flex-start;
   padding: 3rem 4rem 2.75rem;
@@ -88,7 +87,7 @@
 .columnLabel {
   display: block;
   font-family: "Neue Montreal", sans-serif;
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem; 
   font-weight: 400;
   color: rgba(35, 35, 35, 0.52);
   margin-bottom: 0.875rem;
