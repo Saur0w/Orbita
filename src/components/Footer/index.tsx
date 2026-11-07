@@ -22,6 +22,10 @@ const SOCIAL_LINKS = [
 export default function Footer() {
   return (
     <footer className={styles.footer}>
+      <div className={styles.topBorderWrapper}>
+        <div className={styles.topBorder} />
+      </div>
+
       <div className={styles.topSection}>
         <div className={styles.logoCol}>
           <Link href="/" aria-label="Orbita Home" className={styles.logoLink}>
@@ -95,9 +99,9 @@ export default function Footer() {
               />
             </div>
 
-            <button type="button" className={styles.cardButton}>
+            <Link href="/preorder" className={styles.cardButton}>
               Pre-order now
-            </button>
+            </Link>
           </div>
         </div>
       </div>

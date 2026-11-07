@@ -75,7 +75,7 @@ export default function Atmos() {
         headerTitleSplit = new SplitText(titleRef.current, {
           type: "lines",
           mask: "lines",
-          linesClass: styles.splitLine,
+          linesClass: `${styles.splitLine} splitLine`,
         });
 
         gsap.from(headerTitleSplit.lines, {
@@ -119,7 +119,7 @@ export default function Atmos() {
           const split = new SplitText(titleEl, {
             type: "lines",
             mask: "lines",
-            linesClass: styles.splitLine,
+            linesClass: `${styles.splitLine} splitLine`,
           });
           titleSplits.push(split);
         }
@@ -128,7 +128,7 @@ export default function Atmos() {
           const split = new SplitText(descEl, {
             type: "lines",
             mask: "lines",
-            linesClass: styles.splitLine,
+            linesClass: `${styles.splitLine} splitLine`,
           });
           descSplits.push(split);
         }

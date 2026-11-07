@@ -52,7 +52,6 @@ export default function FAQ() {
   const answerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const iconRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const dividerRef = useRef<HTMLDivElement | null>(null);
 
   const { contextSafe } = useGSAP(
     () => {
@@ -140,24 +139,6 @@ export default function FAQ() {
           }
         );
       });
-
-    
-      if (dividerRef.current) {
-        gsap.fromTo(
-          dividerRef.current,
-          { scaleX: 0 },
-          {
-            scaleX: 1,
-            duration: 1.2,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: dividerRef.current,
-              start: "top 96%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      }
     },
     { scope: sectionRef }
   );
@@ -259,10 +240,6 @@ export default function FAQ() {
             );
           })}
         </div>
-      </div>
-
-      <div className={styles.bottomBorderWrapper}>
-        <div ref={dividerRef} className={styles.bottomBorder} />
       </div>
     </section>
   );

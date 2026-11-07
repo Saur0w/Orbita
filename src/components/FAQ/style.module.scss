@@ -21,7 +21,7 @@
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 1.25rem;
-    padding: 3rem 1.25rem 0;
+    padding: 3rem 1.25rem 2.5rem;
   }
 }
 
@@ -174,25 +174,4 @@
     padding-bottom: 1.375rem;
     max-width: 38ch;
   }
-}
-
-.bottomBorderWrapper {
-  width: 100%;
-  padding: 0 4rem;
-
-  @media (max-width: 1024px) {
-    padding: 0 2rem;
-  }
-
-  @media (max-width: 768px) {
-    padding: 0 1.25rem;
-  }
-}
-
-.bottomBorder {
-  width: 100%;
-  height: 0.5px;
-  background-color: rgba(35, 35, 35, 0.24);
-  transform-origin: left center;
-  will-change: transform;
 }

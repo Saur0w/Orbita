@@ -38,18 +38,30 @@
             color: #232323;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: stretch;
+            width: 100%;
             margin: 0;
 
+            > div {
+                width: 100% !important;
+                overflow: visible clip !important;
+                overflow-x: visible !important;
+                overflow-y: clip !important;
+                text-align: center;
+            }
+
             span {
-                display: inline-block;
+                display: block;
+                width: 100%;
+                text-align: center;
             }
 
             .fourRow {
-                display: inline-flex;
+                display: flex;
                 align-items: flex-start;
                 justify-content: center;
                 position: relative;
+                width: 100%;
             }
 
             .sup {
@@ -60,6 +72,10 @@
                 margin-left: 0.12em;
                 position: relative;
                 top: 0.12em;
+            }
+
+            @media (max-width: 480px) {
+                font-size: clamp(2.35rem, 9vw, 3.25rem);
             }
         }
     }
@@ -237,12 +253,16 @@
 
 .splitLine {
     display: block;
+    width: 100%;
     will-change: transform, opacity;
 }
 
 :global(.splitLine-mask) {
-    overflow: hidden !important;
+    overflow: visible clip !important;
+    overflow-x: visible !important;
+    overflow-y: clip !important;
     display: block !important;
+    width: 100% !important;
     padding-bottom: 0.18em !important;
     margin-bottom: -0.18em !important;
 }
