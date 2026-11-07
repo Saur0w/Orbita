@@ -3,7 +3,6 @@
   background-color: #f7f1e8;
   color: #232323;
   position: relative;
-  overflow: hidden;
 }
 
 .container {
@@ -186,7 +185,7 @@
   }
 
   @media (max-width: 768px) {
-    display: none; 
+    padding: 0 1.25rem;
   }
 }
 

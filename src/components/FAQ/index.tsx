@@ -148,12 +148,12 @@ export default function FAQ() {
           { scaleX: 0 },
           {
             scaleX: 1,
-            ease: "power2.out",
+            duration: 1.2,
+            ease: "expo.out",
             scrollTrigger: {
               trigger: dividerRef.current,
               start: "top 96%",
-              end: "top 70%",
-              scrub: 0.5,
+              toggleActions: "play none none none",
             },
           }
         );

@@ -47,6 +47,18 @@ export default function Home() {
             lenis.destroy();
         };
     }, []);
+
+    // Refresh all ScrollTriggers once the Preloader completes and document.body overflow unlocks
+    useEffect(() => {
+        if (isReady) {
+            const t1 = setTimeout(() => ScrollTrigger.refresh(), 100);
+            const t2 = setTimeout(() => ScrollTrigger.refresh(), 450);
+            return () => {
+                clearTimeout(t1);
+                clearTimeout(t2);
+            };
+        }
+    }, [isReady]);
   return (
     <main className={styles.main}>
         <Preloader onComplete={() => setIsReady(true)} />
