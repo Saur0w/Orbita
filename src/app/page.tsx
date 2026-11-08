@@ -37,6 +37,9 @@ export default function Home() {
         });
 
         lenis.on("scroll", ScrollTrigger.update);
+        if (typeof window !== "undefined") {
+            (window as any).lenis = lenis;
+        }
 
         const updateTicker = (time: number) => {
             lenis.raf(time * 1000);
@@ -46,6 +49,9 @@ export default function Home() {
         gsap.ticker.lagSmoothing(0);
 
         return () => {
+            if (typeof window !== "undefined") {
+                (window as any).lenis = null;
+            }
             gsap.ticker.remove(updateTicker);
             lenis.destroy();
         };
