@@ -17,6 +17,7 @@ import Upscale from "@/components/Upscale";
 import Swtich from "@/components/Switch";
 import FAQ from "@/components/FAQ";
 import Philo from "@/components/Philo";
+import Mat from "@/components/Materials";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -67,6 +68,7 @@ export default function Home() {
         <Atmos />
         <Features />
         <Upscale />
+        <Mat />
         <Swtich />
         <Philo />
         <FAQ />
