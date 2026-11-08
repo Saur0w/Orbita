@@ -18,11 +18,13 @@ import Swtich from "@/components/Switch";
 import FAQ from "@/components/FAQ";
 import Philo from "@/components/Philo";
 import Mat from "@/components/Materials";
+import Sus from "@/components/Sus";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
     const [isReady, setIsReady] = useState(false);
+    const [isPortalOpen, setIsPortalOpen] = useState(false);
 
     useEffect(() => {
         const lenis = new Lenis({
@@ -61,15 +63,19 @@ export default function Home() {
     }, [isReady]);
   return (
     <main className={styles.main}>
-        <Preloader onComplete={() => setIsReady(true)} />
+        <Preloader
+            onStartReveal={() => setIsPortalOpen(true)}
+            onComplete={() => setIsReady(true)}
+        />
         <Header isReady={isReady} />
-        <Landing />
+        <Landing isPortalOpen={isPortalOpen} />
         <Des />
         <Atmos />
         <Features />
         <Upscale />
         <Mat />
         <Swtich />
+        <Sus />
         <Philo />
         <FAQ />
         <Footer />

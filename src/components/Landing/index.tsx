@@ -5,7 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -25,8 +25,73 @@ const card: CardProps[] = [
     },
 ];
 
-export default function Landing() {
+
+export const VIDEO_START_DELAY_MS = 750;
+
+interface LandingProps {
+    isPortalOpen?: boolean;
+}
+
+export default function Landing({ isPortalOpen }: LandingProps = {}) {
     const landingRef = useRef<HTMLElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [isTriggered, setIsTriggered] = useState(false);
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        const setInitialFrame = () => {
+            video.currentTime = 0;
+            video.pause();
+        };
+
+        if (video.readyState >= 1) {
+            setInitialFrame();
+        } else {
+            video.addEventListener("loadedmetadata", setInitialFrame, { once: true });
+        }
+
+        return () => {
+            video.removeEventListener("loadedmetadata", setInitialFrame);
+        };
+    }, []);
+
+    const playVideo = useCallback(() => {
+        const video = videoRef.current;
+        if (!video || !video.paused) return;
+
+        if (video.currentTime > 0) {
+            video.currentTime = 0;
+        }
+
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(() => {});
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isPortalOpen) {
+            setIsTriggered(true);
+        }
+    }, [isPortalOpen]);
+
+    useEffect(() => {
+        const handlePortalEvent = () => setIsTriggered(true);
+        window.addEventListener("orbita:portal-open", handlePortalEvent);
+        return () => window.removeEventListener("orbita:portal-open", handlePortalEvent);
+    }, []);
+
+    useEffect(() => {
+        if (!isTriggered) return;
+
+        const timer = setTimeout(() => {
+            playVideo();
+        }, VIDEO_START_DELAY_MS);
+
+        return () => clearTimeout(timer);
+    }, [isTriggered, playVideo]);
 
     useGSAP(() => {
         if (!landingRef.current) return;
@@ -111,7 +176,14 @@ export default function Landing() {
     return (
         <section className={styles.landing} ref={landingRef}>
             <div className={styles.bg}>
-                <video src={videoSrc} autoPlay loop muted playsInline />
+                <video
+                    ref={videoRef}
+                    src={videoSrc}
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                />
             </div>
 
             <div className={styles.heroTextOverlay}>

@@ -1,0 +1,170 @@
+.sus {
+  width: 100%;
+  background-color: #f7f1e8;
+  color: #232323;
+  position: relative;
+  overflow: hidden;
+}
+
+.container {
+  width: 100%;
+  padding: 5.5rem 1.25rem 6.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 7.5rem;
+
+  @media (max-width: 1024px) {
+    padding: 4.5rem 1.25rem 5rem;
+    gap: 4.5rem;
+  }
+
+  @media (max-width: 640px) {
+    padding: 3.5rem 1rem 4rem;
+    gap: 3rem;
+  }
+}
+
+.topHeader {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  align-items: flex-start;
+  width: 100%;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr 1.6fr;
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.labelCol {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0.35rem;
+}
+
+.labelMask {
+  overflow: hidden;
+  display: inline-block;
+  padding-bottom: 0.15rem;
+}
+
+.sectionLabel {
+  display: inline-block;
+  font-family: "Neue Montreal", sans-serif;
+  font-size: 1rem; 
+  font-weight: 500;
+  line-height: 0.94;
+  letter-spacing: -0.02em;
+  color: #232323;
+  will-change: transform, opacity;
+
+  @media (max-width: 768px) {
+    font-size: 0.875rem;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+}
+
+.heading {
+  font-family: "Neue Montreal", sans-serif;
+  font-size: clamp(2rem, 3.35vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: #232323;
+  max-width: 18ch;
+  margin: 0;
+}
+
+.splitLine {
+  overflow: hidden;
+  display: block;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.splitWord {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: start;
+  gap: 0.875rem;
+  width: 100%;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.25rem 1rem;
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  width: 100%;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.24;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: transparent;
+  will-change: clip-path;
+}
+
+.imageInner {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  will-change: transform;
+}
+
+.image {
+  object-fit: cover;
+  object-position: center;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cardTitle {
+  font-family: "Neue Montreal", sans-serif;
+  font-size: 1.0625rem; 
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: #232323;
+  margin: 0;
+}
+
+.cardDescription {
+  font-family: "Neue Montreal", sans-serif;
+  font-size: 0.875rem; 
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: rgba(35, 35, 35, 0.72);
+  max-width: 30ch;
+  margin: 0;
+}

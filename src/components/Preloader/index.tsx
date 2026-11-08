@@ -15,12 +15,13 @@ CustomEase.create("portalZoom", "0.65, 0, 0.25, 1");
 
 interface PreloaderProps {
     onComplete?: () => void;
+    onStartReveal?: () => void;
 }
 
 const ICON_VIEWBOX_CENTER = 366.913;
 const INITIAL_ICON_SIZE = 56;
 
-export default function Preloader({ onComplete }: PreloaderProps) {
+export default function Preloader({ onComplete, onStartReveal }: PreloaderProps) {
     const preloaderRef = useRef<HTMLDivElement>(null);
     const leftWordRef = useRef<HTMLSpanElement>(null);
     const rightWordRef = useRef<HTMLSpanElement>(null);
@@ -145,6 +146,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                     duration: 1.3,
                     ease: "portalZoom",
                     onStart: () => {
+                        onStartReveal?.();
+                        if (typeof window !== "undefined") {
+                            window.dispatchEvent(new CustomEvent("orbita:portal-open"));
+                        }
                         gsap.delayedCall(0.7, () => {
                             onComplete?.();
                         });
