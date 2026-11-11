@@ -71,13 +71,13 @@
 .batteryImg {
   display: block;
   width: 100%;
-  max-width: 250px;
+  max-width: 335px;
   height: auto;
   user-select: none;
   pointer-events: none;
 
   @media (max-width: 768px) {
-    max-width: 195px;
+    max-width: 260px;
   }
 }
 

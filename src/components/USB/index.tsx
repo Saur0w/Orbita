@@ -34,7 +34,7 @@ export default function USB() {
 
           <div className={styles.diagramCol}>
             <img
-              src="/images/dimensions/battery.png"
+              src="/images/dimensions/b.svg"
               alt="Orbita battery compartment diagram"
               className={styles.batteryImg}
               draggable={false}
