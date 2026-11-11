@@ -20,6 +20,7 @@ import Philo from "@/components/Philo";
 import Mat from "@/components/Materials";
 import Sus from "@/components/Sus";
 import Finish from "@/components/Finish";
+import Tech from "@/components/Tech";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -83,6 +84,7 @@ export default function Home() {
         <Mat />
         <Swtich />
         <Finish />
+        <Tech />
         <Sus />
         <Philo />
         <FAQ />
