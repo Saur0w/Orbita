@@ -4,6 +4,8 @@ import styles from "./style.module.scss";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 type ColorOption = "gold" | "silver";
 
@@ -44,6 +46,8 @@ export default function Preorder() {
   const handleIncrement = () => {
     setQuantity((prev) => prev + 1);
   };
+
+  
 
   return (
     <main className={styles.preorder}>
