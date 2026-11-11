@@ -1,0 +1,254 @@
+.preorder {
+  min-height: 100dvh;
+  width: 100%;
+  background-color: #f7f1e8;
+  color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  box-sizing: border-box;
+
+  @media (min-width: 900px) {
+    height: 100dvh;
+    flex-direction: row;
+    padding: 24px;
+    overflow: hidden;
+  }
+}
+
+// Left Image Column
+.imageSection {
+  width: 100%;
+  height: 52dvh;
+  flex-shrink: 0;
+
+  @media (min-width: 900px) {
+    width: 50%;
+    height: 100%;
+  }
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #dcdcdc;
+}
+
+.imageSlide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.03);
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 1;
+
+  &.activeImage {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+    z-index: 2;
+  }
+}
+
+.productImage {
+  object-fit: cover;
+  object-position: center;
+}
+
+// Right Content Column
+.content {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 16px;
+
+  @media (min-width: 900px) {
+    width: 50%;
+    padding: 0 6vw 0 8vw;
+  }
+}
+
+.contentInner {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: clamp(1.85rem, 2.6vw, 2.5rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin: 0 0 18px 0;
+  color: #1c1b19;
+}
+
+.price {
+  font-size: 1.125rem;
+  font-weight: 400;
+  margin: 0 0 38px 0;
+  color: #1c1b19;
+}
+
+.quantitySelector {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 36px;
+  user-select: none;
+}
+
+.qtyBtn {
+  background: transparent;
+  border: none;
+  padding: 4px 0;
+  font-size: 1.125rem;
+  color: #1c1b19;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    opacity: 0.6;
+  }
+}
+
+.qtyValue {
+  font-size: 0.95rem;
+  min-width: 16px;
+  text-align: center;
+}
+
+.colorGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.colorLabel {
+  font-size: 0.8rem;
+  color: #8c877e;
+  letter-spacing: -0.01em;
+}
+
+.swatches {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.swatchBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  padding: 4px;
+  background: transparent;
+  border: 1px solid #dfd9ce;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.25s ease, transform 0.2s ease;
+
+  &:hover {
+    border-color: #9e9990;
+  }
+
+  &.swatchActive {
+    border-color: #4a4742;
+  }
+}
+
+.swatchFill {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
+}
+
+.actionWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.preorderBtn {
+  width: 100%;
+  background-color: #c9c6bf;
+  border: none;
+  border-radius: 6px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+
+  &:hover {
+    background-color: #bdb9b1;
+
+    .btnText {
+      background-color: #faf7f2;
+    }
+  }
+}
+
+.btnText {
+  flex: 1;
+  height: 44px;
+  background-color: #f3efe6;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #1c1b19;
+  letter-spacing: -0.01em;
+  transition: background-color 0.25s ease;
+}
+
+.btnThumb {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.thumbImage {
+  object-fit: cover;
+}
+
+.disclaimer {
+  font-size: 0.72rem;
+  color: #8c877e;
+  margin: 0;
+  letter-spacing: -0.01em;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #1c1b19;
+    }
+  }
+}
