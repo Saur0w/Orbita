@@ -1,0 +1,220 @@
+.usbSection {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: #0a0a0a;
+  color: #f7f1e8;
+  padding: clamp(3.5rem, 5.5vw, 5.5rem) clamp(1.25rem, 4vw, 4.5rem) clamp(3rem, 5vw, 4.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    min-height: auto;
+    padding: 3.5rem 1.25rem 4rem;
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.contentRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  gap: clamp(2rem, 4vw, 5rem);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 3.75rem;
+    padding: 0;
+  }
+}
+
+.diagramCol {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.usbImg {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  user-select: none;
+  pointer-events: none;
+
+  @media (max-width: 768px) {
+    max-width: 230px;
+  }
+}
+
+.batteryImg {
+  display: block;
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  user-select: none;
+  pointer-events: none;
+
+  @media (max-width: 768px) {
+    max-width: 195px;
+  }
+}
+
+.tableCol {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: stretch;
+  }
+}
+
+.infoTable {
+  width: 100%;
+  max-width: 380px;
+  font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+  letter-spacing: -0.015em;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+}
+
+.tableHeader {
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 15px;
+  font-weight: 400;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+    font-weight: 500;
+    padding-bottom: 1rem;
+    color: #ffffff;
+  }
+}
+
+.tableList {
+  margin: 0;
+  padding: 0;
+}
+
+.tableRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 1.25rem 0;
+  }
+
+  dt {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 14.5px;
+    font-weight: 400;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  dd {
+    margin: 0;
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 400;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    line-height: 1.35;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+    }
+
+    span {
+      display: block;
+    }
+  }
+}
+
+.logoWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: clamp(4.5rem, 8vw, 7.5rem);
+  width: 100%;
+
+  @media (max-width: 768px) {
+    margin-top: 5rem;
+    padding-bottom: 2rem;
+  }
+}
+
+.logoGlow {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(247, 241, 232, 0.18) 0%,
+    rgba(247, 241, 232, 0.06) 40%,
+    transparent 70%
+  );
+  filter: blur(24px);
+  pointer-events: none;
+
+  @media (max-width: 768px) {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+.logo {
+  width: 120px;
+  height: 120px;
+  color: #f7f1e8;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: 768px) {
+    width: 96px;
+    height: 96px;
+  }
+}

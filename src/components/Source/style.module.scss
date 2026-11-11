@@ -1,0 +1,232 @@
+.source {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: #0A0A0A;
+  color: #F7F1E8;
+  padding: clamp(3.5rem, 6vw, 6rem) clamp(1.25rem, 4vw, 4.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    min-height: auto;
+    padding: 3.5rem 1.25rem 4rem;
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.diagramWrapper {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.diagramImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+.tableContainer {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: clamp(2.5rem, 4.5vw, 4.5rem);
+
+  @media (max-width: 768px) {
+    justify-content: stretch;
+    margin-top: 3.5rem;
+  }
+}
+
+.infoTable {
+  width: 100%;
+  max-width: 440px;
+  font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+  letter-spacing: -0.015em;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+}
+
+.tableHeader {
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 15px;
+  font-weight: 400;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+    font-weight: 500;
+    padding-bottom: 1rem;
+    color: #ffffff;
+  }
+}
+
+.tableList {
+  margin: 0;
+  padding: 0;
+}
+
+.tableRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    padding: 1.25rem 0;
+  }
+
+  dt {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 14.5px;
+    font-weight: 400;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  dd {
+    margin: 0;
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 400;
+    text-align: right;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+    }
+  }
+}
+
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.diagramWrapper {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.diagramImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+.tableContainer {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: clamp(2.5rem, 4.5vw, 4.5rem);
+
+  @media (max-width: 768px) {
+    justify-content: stretch;
+    margin-top: 3.5rem;
+  }
+}
+
+.infoTable {
+  width: 100%;
+  max-width: 440px;
+  font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+  letter-spacing: -0.015em;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+}
+
+.tableHeader {
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 15px;
+  font-weight: 400;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+    font-weight: 500;
+    padding-bottom: 1rem;
+    color: #ffffff;
+  }
+}
+
+.tableList {
+  margin: 0;
+  padding: 0;
+}
+
+.tableRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    padding: 1.25rem 0;
+  }
+
+  dt {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 14.5px;
+    font-weight: 400;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  dd {
+    margin: 0;
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 400;
+    text-align: right;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+    }
+  }
+}

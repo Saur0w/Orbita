@@ -1,7 +1,7 @@
 .specsSection {
   width: 100%;
-  background-color: #080808;
-  color: #ffffff;
+  background-color: #0A0A0A;
+  color: #F7F1E8;
   padding: clamp(4rem, 8vw, 7.5rem) clamp(1.25rem, 5vw, 4.5rem);
   overflow: hidden;
 }
@@ -23,7 +23,6 @@
   margin: 0 0 clamp(3.5rem, 6vw, 5.5rem) 0;
 }
 
-/* --- Schematics Layout --- */
 .schematicsRow {
   display: flex;
   flex-direction: row;
@@ -39,7 +38,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 5.5rem; // Generous vertical breathing room on mobile
+    gap: 5.5rem; 
     padding: 1rem 0 2.5rem;
   }
 }
@@ -63,7 +62,6 @@
   user-select: none;
 }
 
-/* Optional per-item mobile sizing to keep proportions crisp */
 @media (max-width: 768px) {
   .lamp .schematicImg {
     max-width: 280px;
@@ -79,12 +77,10 @@
 
   .stem .schematicImg {
     max-width: 75px;
-    // Slightly offsets the label on the right so the rod itself feels centered
     transform: translateX(-8px);
   }
 }
 
-/* --- Dimensions Table --- */
 .tableContainer {
   display: flex;
   justify-content: flex-end;
@@ -104,7 +100,7 @@
   letter-spacing: -0.01em;
 
   @media (max-width: 768px) {
-    max-width: 100%; // Full width on mobile
+    max-width: 100%; 
   }
 }
 

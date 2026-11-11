@@ -21,6 +21,8 @@ import Mat from "@/components/Materials";
 import Sus from "@/components/Sus";
 import Finish from "@/components/Finish";
 import Tech from "@/components/Tech";
+import Source from "@/components/Source";
+import USB from "@/components/USB";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -85,6 +87,8 @@ export default function Home() {
         <Swtich />
         <Finish />
         <Tech />
+        <Source />
+        <USB />
         <Sus />
         <Philo />
         <FAQ />
