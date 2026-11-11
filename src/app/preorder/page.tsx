@@ -4,8 +4,6 @@ import styles from "./style.module.scss";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 
 type ColorOption = "gold" | "silver";
 
@@ -51,6 +49,11 @@ export default function Preorder() {
 
   return (
     <main className={styles.preorder}>
+      <Link href="/" className={styles.homeBtn} aria-label="Go to home page">
+        <span className={styles.homeArrow}>←</span>
+        <span>Home</span>
+      </Link>
+
       <div className={styles.imageSection}>
         <div className={styles.imageWrapper}>
           {COLORS.map((color) => {

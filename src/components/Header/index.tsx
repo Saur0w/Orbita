@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import styles from "./style.module.scss";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { Logo } from "@/components/Icons/logo";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -17,7 +17,7 @@ interface NavItem {
 const navItems: NavItem[] = [
     { label: "The Lamp", href: "/" },
     { label: "Features", href: "/" },
-    { label: "Pre-order", href: "/" },
+    { label: "Pre-order", href: "/preorder" },
     { label: "Specification", href: "/" },
 ];
 

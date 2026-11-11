@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -100,7 +100,6 @@ export default function Footer() {
           },
         });
 
-        // 1. Top border hairline draws in smoothly
         if (topBorderRef.current) {
           revealTimeline.fromTo(
             topBorderRef.current,
@@ -115,7 +114,6 @@ export default function Footer() {
           );
         }
 
-        // 2. Logo floats up softly
         if (logoRef.current) {
           revealTimeline.from(
             logoRef.current,
@@ -129,7 +127,6 @@ export default function Footer() {
           );
         }
 
-        // 3. Section column labels reveal through mask
         if (labelSplit && labelSplit.lines.length > 0) {
           revealTimeline.from(
             labelSplit.lines,
@@ -144,7 +141,6 @@ export default function Footer() {
           );
         }
 
-        // 4. Large email address glides up through line mask
         if (emailSplit && emailSplit.lines.length > 0) {
           revealTimeline.from(
             emailSplit.lines,
@@ -157,7 +153,6 @@ export default function Footer() {
           );
         }
 
-        // 5. Navigation & Social links cascade up through line masks
         if (linksSplit && linksSplit.lines.length > 0) {
           revealTimeline.from(
             linksSplit.lines,
@@ -174,7 +169,6 @@ export default function Footer() {
 
       initSplitText();
 
-      // Card subtle entrance when image section enters
       if (cardRef.current && imageSectionRef.current) {
         gsap.from(cardRef.current, {
           opacity: 0,
@@ -189,7 +183,6 @@ export default function Footer() {
         });
       }
 
-      // Parallax scroll: very subtle, restrained and photographic
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 769px)", () => {
@@ -264,7 +257,6 @@ export default function Footer() {
         }
       });
 
-      // Recalculate accurately once web fonts are fully ready
       if (typeof document !== "undefined" && document.fonts?.ready) {
         document.fonts.ready.then(() => {
           initSplitText();

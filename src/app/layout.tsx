@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { ViewTransitions } from "next-view-transitions";
 
 const neueMontrealBold = localFont({
   src: "../../public/font/NeueMontreal-bold.woff2",
@@ -28,11 +29,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${neueMontrealBold.variable} ${neueMontrealMedium.variable} ${neueMontrealRegular.variable}`}
-    >
-      <body>{children}</body>
-    </html>
+    <ViewTransitions>
+      <html
+        lang="en"
+        className={`${neueMontrealBold.variable} ${neueMontrealMedium.variable} ${neueMontrealRegular.variable}`}
+      >
+        <body>{children}</body>
+      </html>
+    </ViewTransitions>
   );
 }
