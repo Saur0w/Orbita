@@ -41,6 +41,13 @@ export default function Switch() {
 
   const scrollToNextSection = useCallback(() => {
     const st = scrollTriggerRef.current;
+    const currentY = window.scrollY || window.pageYOffset || 0;
+
+    // Safety: only auto-scroll if the user is still within Switch (never scroll backwards/upwards)
+    if (st && currentY > st.end + 20) {
+      return;
+    }
+
     const pinSpacer =
       sectionRef.current?.closest(".pin-spacer") ||
       (sectionRef.current?.parentElement?.classList.contains("pin-spacer")
@@ -54,10 +61,15 @@ export default function Switch() {
       ? st.end + 2
       : nextSection
       ? nextSection.offsetTop
-      : window.scrollY + window.innerHeight;
+      : currentY + window.innerHeight;
+
+    // Strict downward-only check: never scroll if already at or past the target
+    if (targetPos <= currentY + 10) return;
 
     const lenis =
-      typeof window !== "undefined" ? (window as unknown as { lenis?: { scrollTo: (target: HTMLElement | number, opts?: unknown) => void } }).lenis : null;
+      typeof window !== "undefined"
+        ? (window as unknown as { lenis?: { scrollTo: (target: HTMLElement | number, opts?: unknown) => void } }).lenis
+        : null;
 
     if (lenis && typeof lenis.scrollTo === "function") {
       if (nextSection) {
@@ -88,6 +100,7 @@ export default function Switch() {
     if (!video) return;
 
     const handleEnded = () => {
+      // 1. Expand the sunburst mask to full reveal
       if (maskLogoGroupRef.current) {
         const maxHypot = Math.hypot(window.innerWidth, window.innerHeight);
         const fullScale = (maxHypot / 225) * 1.35;
@@ -98,6 +111,7 @@ export default function Switch() {
         });
       }
 
+      // 2. Smoothly scroll down to the next section (Finish)
       scrollToNextSection();
     };
 
@@ -157,6 +171,10 @@ export default function Switch() {
           },
           onEnterBack: () => {
             playVideo();
+          },
+          onLeave: () => {
+            const video = videoRef.current;
+            if (video) video.pause();
           },
           onLeaveBack: () => {
             pauseAndResetVideo();

@@ -1,5 +1,141 @@
-.tech {
-    height: 100dvh;
-    width: 100%;
-    background-color: #0A0A0A;
+.specsSection {
+  width: 100%;
+  background-color: #080808;
+  color: #ffffff;
+  padding: clamp(4rem, 8vw, 7.5rem) clamp(1.25rem, 5vw, 4.5rem);
+  overflow: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: clamp(1.85rem, 3.8vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: #f5f5f5;
+  margin: 0 0 clamp(3.5rem, 6vw, 5.5rem) 0;
+}
+
+/* --- Schematics Layout --- */
+.schematicsRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(0.5rem, 3vw, 2.5rem);
+  gap: clamp(2rem, 5vw, 5rem);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5.5rem; // Generous vertical breathing room on mobile
+    padding: 1rem 0 2.5rem;
+  }
+}
+
+.schematicItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    flex-shrink: 1;
+  }
+}
+
+.schematicImg {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  user-select: none;
+}
+
+/* Optional per-item mobile sizing to keep proportions crisp */
+@media (max-width: 768px) {
+  .lamp .schematicImg {
+    max-width: 280px;
+  }
+
+  .topView .schematicImg {
+    max-width: 210px;
+  }
+
+  .base .schematicImg {
+    max-width: 155px;
+  }
+
+  .stem .schematicImg {
+    max-width: 75px;
+    // Slightly offsets the label on the right so the rod itself feels centered
+    transform: translateX(-8px);
+  }
+}
+
+/* --- Dimensions Table --- */
+.tableContainer {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: clamp(3rem, 5vw, 4.5rem);
+
+  @media (max-width: 768px) {
+    justify-content: stretch;
+    margin-top: 3.5rem;
+  }
+}
+
+.dimensionsTable {
+  width: 100%;
+  max-width: 340px;
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
+
+  @media (max-width: 768px) {
+    max-width: 100%; // Full width on mobile
+  }
+}
+
+.tableHeader {
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.75rem;
+}
+
+.tableList {
+  margin: 0;
+  padding: 0;
+
+  .tableRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.05rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+
+    dt {
+      color: rgba(255, 255, 255, 0.78);
+      font-weight: 400;
+    }
+
+    dd {
+      margin: 0;
+      color: #ffffff;
+      font-weight: 400;
+      font-variant-numeric: tabular-nums;
+    }
+  }
 }
