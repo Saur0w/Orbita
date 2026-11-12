@@ -4,6 +4,13 @@ import styles from "./style.module.scss";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useRef } from "react";
+import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
+import { CustomEase } from "gsap/CustomEase";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(SplitText, CustomEase, useGSAP);
+CustomEase.create("luxuryMask", "0.16, 1, 0.3, 1");
 
 type ColorOption = "gold" | "silver";
 
@@ -32,7 +39,11 @@ const COLORS: ColorConfig[] = [
 export default function Preorder() {
   const [selectedColor, setSelectedColor] = useState<ColorOption>("gold");
   const [quantity, setQuantity] = useState<number>(1);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const priceRef = useRef<HTMLParagraphElement>(null);
+  const colorLabelRef = useRef<HTMLSpanElement>(null);
+  const disclaimerRef = useRef<HTMLParagraphElement>(null);
 
   const activeColorConfig =
     COLORS.find((c) => c.id === selectedColor) || COLORS[0];
@@ -45,7 +56,122 @@ export default function Preorder() {
     setQuantity((prev) => prev + 1);
   };
 
-  
+  useGSAP(
+    () => {
+      if (!titleRef.current) return;
+
+      const titleSplit = new SplitText(titleRef.current, {
+        type: "lines",
+        mask: "lines",
+        linesClass: `${styles.splitLine} splitLine`,
+      });
+
+      let priceSplit: SplitText | null = null;
+      if (priceRef.current) {
+        priceSplit = new SplitText(priceRef.current, {
+          type: "lines",
+          mask: "lines",
+          linesClass: `${styles.splitLine} splitLine`,
+        });
+      }
+
+      let colorLabelSplit: SplitText | null = null;
+      if (colorLabelRef.current) {
+        colorLabelSplit = new SplitText(colorLabelRef.current, {
+          type: "lines",
+          mask: "lines",
+          linesClass: `${styles.splitLine} splitLine`,
+        });
+      }
+
+      let disclaimerSplit: SplitText | null = null;
+      if (disclaimerRef.current) {
+        disclaimerSplit = new SplitText(disclaimerRef.current, {
+          type: "lines",
+          mask: "lines",
+          linesClass: `${styles.splitLine} splitLine`,
+        });
+      }
+
+      const allLines = [
+        ...titleSplit.lines,
+        ...(priceSplit ? priceSplit.lines : []),
+        ...(colorLabelSplit ? colorLabelSplit.lines : []),
+        ...(disclaimerSplit ? disclaimerSplit.lines : []),
+      ];
+
+      gsap.set(allLines, { yPercent: 115 });
+
+      const tl = gsap.timeline({
+        delay: 0.1,
+        onComplete: () => {
+          priceSplit?.revert();
+          colorLabelSplit?.revert();
+          disclaimerSplit?.revert();
+        },
+      });
+
+      if (titleSplit.lines.length) {
+        tl.to(
+          titleSplit.lines,
+          {
+            delay: 0.3,
+            yPercent: 0,
+            duration: 1.4,
+            stagger: 0.08,
+            ease: "luxuryMask",
+          },
+          0
+        );
+      }
+
+      if (priceSplit && priceSplit.lines.length) {
+        tl.to(
+          priceSplit.lines,
+          {
+            yPercent: 0,
+            duration: 1.35,
+            ease: "luxuryMask",
+          },
+          0.12
+        );
+      }
+
+      if (colorLabelSplit && colorLabelSplit.lines.length) {
+        tl.to(
+          colorLabelSplit.lines,
+          {
+            yPercent: 0,
+            duration: 1.25,
+            ease: "luxuryMask",
+          },
+          0.22
+        );
+      }
+
+      if (disclaimerSplit && disclaimerSplit.lines.length) {
+        tl.to(
+          disclaimerSplit.lines,
+          {
+            yPercent: 0,
+            duration: 1.25,
+            stagger: 0.06,
+            ease: "luxuryMask",
+          },
+          0.32
+        );
+      }
+
+      return () => {
+        tl.kill();
+        titleSplit.revert();
+        priceSplit?.revert();
+        colorLabelSplit?.revert();
+        disclaimerSplit?.revert();
+      };
+    },
+    { scope: contentRef }
+  );
 
   return (
     <main className={styles.preorder}>
@@ -78,10 +204,14 @@ export default function Preorder() {
         </div>
       </div>
 
-      <div className={styles.content}>
+      <div className={styles.content} ref={contentRef}>
         <div className={styles.contentInner}>
-          <h1 className={styles.title}>Pre-order Orbital Lamp</h1>
-          <p className={styles.price}>€{800 * quantity}</p>
+          <h1 className={styles.title} ref={titleRef}>
+            Pre-order Orbital Lamp
+          </h1>
+          <p className={styles.price} ref={priceRef}>
+            €{800 * quantity}
+          </p>
 
           <div className={styles.quantitySelector} aria-label="Quantity">
             <button
@@ -105,7 +235,9 @@ export default function Preorder() {
           </div>
 
           <div className={styles.colorGroup}>
-            <span className={styles.colorLabel}>Color</span>
+            <span className={styles.colorLabel} ref={colorLabelRef}>
+              Color
+            </span>
             <div className={styles.swatches}>
               {COLORS.map((color) => {
                 const isSelected = selectedColor === color.id;
@@ -144,7 +276,7 @@ export default function Preorder() {
               </span>
             </button>
 
-            <p className={styles.disclaimer}>
+            <p className={styles.disclaimer} ref={disclaimerRef}>
               By clicking &ldquo;Pre-order now&rdquo; you agree to the{" "}
               <Link href="/terms">terms</Link> and{" "}
               <Link href="/privacy">privacy policy</Link>
