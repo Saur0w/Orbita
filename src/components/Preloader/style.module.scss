@@ -6,12 +6,13 @@ $ink: #232323;
   inset: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   z-index: 9999;
   pointer-events: all;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
+  contain: layout style paint;
 }
 
 .maskSvg {
@@ -21,61 +22,81 @@ $ink: #232323;
   height: 100%;
   display: block;
   pointer-events: none;
+  shape-rendering: geometricPrecision;
+}
+
+.panel {
+  fill: $bg;
+}
+
+.maskLogo {
+  opacity: 0;
+  will-change: transform;
 }
 
 .textLayer {
   position: relative;
   z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding-inline: clamp(16px, 5vw, 48px);
   pointer-events: none;
   user-select: none;
 }
 
 .brandTitle {
   margin: 0;
-  display: inline-flex;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  column-gap: 0.14em; 
   align-items: center;
-  justify-content: center;
+
   font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
-  font-size: 56px; 
+  font-size: clamp(26px, 4.2vw + 12px, 56px);
   font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   color: $ink;
   white-space: nowrap;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .word {
   display: inline-block;
-  min-width: 4.5ch; 
-  opacity: 0; 
+  opacity: 0;
   visibility: hidden;
-  will-change: transform, opacity, filter;
-}
-
-.maskLogo {
-  opacity: 0; 
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .leftWord {
+  justify-self: end;
   text-align: right;
 }
 
 .rightWord {
+  justify-self: start;
   text-align: left;
 }
 
 .iconSlot {
-  display: inline-block;
+  display: block;
   width: 0;
   height: 1em;
-  margin-inline: 0.12em;
-  flex-shrink: 0;
+  pointer-events: none;
 }
 
 .char {
   display: inline-block;
   will-change: opacity, filter, transform;
+  backface-visibility: hidden;
+}
+
+@media (max-width: 480px) {
+  .brandTitle {
+    font-size: clamp(24px, 7.2vw, 32px);
+    letter-spacing: -0.01em;
+  }
 }
