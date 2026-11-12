@@ -25,6 +25,8 @@ const card: CardProps[] = [
     },
 ];
 
+const leftLines = ["Light", "designed", "as an object"];
+const rightLines = ["Light in", "perfect", "balance"];
 
 export const VIDEO_START_DELAY_MS = 750;
 
@@ -35,7 +37,14 @@ interface LandingProps {
 export default function Landing({ isPortalOpen }: LandingProps = {}) {
     const landingRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [isTriggered, setIsTriggered] = useState(false);
+
+    const leftLinesRef = useRef<(HTMLSpanElement | null)[]>([]);
+    const rightLinesRef = useRef<(HTMLSpanElement | null)[]>([]);
+    const cardRef = useRef<HTMLDivElement>(null);
+    const scrollDownInnerRef = useRef<HTMLSpanElement>(null);
+    const mobileBrandInnerRef = useRef<HTMLSpanElement>(null);
+
+    const [isTriggered, setIsTriggered] = useState(() => Boolean(isPortalOpen));
 
     useEffect(() => {
         const video = videoRef.current;
@@ -83,95 +92,206 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
         return () => window.removeEventListener("orbita:portal-open", handlePortalEvent);
     }, []);
 
+    // Set initial hidden states via GSAP on mount so CSS transforms never conflict
+    useGSAP(
+        () => {
+            const allLines = [
+                ...leftLinesRef.current,
+                ...rightLinesRef.current,
+            ].filter(Boolean);
+
+            gsap.set(allLines, {
+                yPercent: 115,
+                y: 0,
+                opacity: 1,
+            });
+
+            if (cardRef.current) {
+                gsap.set(cardRef.current, {
+                    y: 24,
+                    scale: 0.96,
+                    opacity: 0,
+                });
+            }
+
+            const bottomLabels = [
+                scrollDownInnerRef.current,
+                mobileBrandInnerRef.current,
+            ].filter(Boolean);
+
+            gsap.set(bottomLabels, {
+                y: 14,
+                opacity: 0,
+            });
+        },
+        { scope: landingRef }
+    );
+
+    // Trigger split-line text, card, and label reveal synced with video start
     useEffect(() => {
         if (!isTriggered) return;
 
-        const timer = setTimeout(() => {
-            playVideo();
-        }, VIDEO_START_DELAY_MS);
+        const leftEls = leftLinesRef.current.filter(Boolean);
+        const rightEls = rightLinesRef.current.filter(Boolean);
+        const bottomLabels = [
+            scrollDownInnerRef.current,
+            mobileBrandInnerRef.current,
+        ].filter(Boolean);
 
-        return () => clearTimeout(timer);
+        const tl = gsap.timeline({
+            delay: VIDEO_START_DELAY_MS / 1000,
+            onStart: () => {
+                playVideo();
+            },
+        });
+
+        tl.fromTo(
+            leftEls,
+            { yPercent: 115, y: 0, opacity: 1 },
+            {
+                yPercent: 0,
+                y: 0,
+                opacity: 1,
+                duration: 0.85,
+                stagger: 0.1,
+                ease: "power3.out",
+            },
+            0
+        );
+
+        tl.fromTo(
+            rightEls,
+            { yPercent: 115, y: 0, opacity: 1 },
+            {
+                yPercent: 0,
+                y: 0,
+                opacity: 1,
+                duration: 0.85,
+                stagger: 0.1,
+                ease: "power3.out",
+            },
+            0.1
+        );
+
+        if (cardRef.current) {
+            tl.fromTo(
+                cardRef.current,
+                { y: 24, opacity: 0, scale: 0.96 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.8,
+                    ease: "power3.out",
+                },
+                0.25
+            );
+        }
+
+        if (bottomLabels.length > 0) {
+            tl.fromTo(
+                bottomLabels,
+                { y: 14, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.7,
+                    stagger: 0.06,
+                    ease: "power3.out",
+                },
+                0.3
+            );
+        }
+
+        return () => {
+            tl.kill();
+        };
     }, [isTriggered, playVideo]);
 
-    useGSAP(() => {
-        if (!landingRef.current) return;
+    // ScrollTrigger scrub animations on outer wrappers
+    useGSAP(
+        () => {
+            if (!landingRef.current) return;
 
-        const mm = gsap.matchMedia();
+            const mm = gsap.matchMedia();
 
-        mm.add({
-            isDesktop: "(min-width: 768px)",
-            reduceMotion: "(prefers-reduced-motion: reduce)",
-        }, (context) => {
-            const { isDesktop, reduceMotion } = context.conditions!;
-
-            if (reduceMotion) return;
-
-            if (isDesktop) {
-                gsap.to(`.${styles.bg} video`, {
-                    yPercent: 20,
-                    scale: 1.14,
-                    ease: "none",
-                    scrollTrigger: {
-                        trigger: landingRef.current,
-                        start: "top top",
-                        end: "bottom top",
-                        scrub: true
-                    }
-                });
-
-                gsap.to(`.${styles.leftHeading}`, {
-                    yPercent: -45,
-                    opacity: 0,
-                    filter: "blur(6px)",
-                    ease: "none",
-                    scrollTrigger: {
-                        trigger: landingRef.current,
-                        start: "top top",
-                        end: "70% top",
-                        scrub: true
-                    }
-                });
-
-                gsap.to(`.${styles.rightHeading}`, {
-                    yPercent: -30,
-                    opacity: 0,
-                    filter: "blur(6px)",
-                    ease: "none",
-                    scrollTrigger: {
-                        trigger: landingRef.current,
-                        start: "top top",
-                        end: "70% top",
-                        scrub: true,
-                    },
-                });
-
-                gsap.to(`.${styles.cardContainer}`, {
-                    yPercent: -40,
-                    scale: 0.92,
-                    opacity: 0,
-                    ease: "none",
-                    scrollTrigger: {
-                        trigger: landingRef.current,
-                        start: "top top",
-                        end: "50% top",
-                        scrub: true,
-                    },
-                })
-            }
-
-            gsap.to(`.${styles.scrollDown}`, {
-                y: -25,
-                opacity: 0,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: landingRef.current,
-                    start: "top top",
-                    end: "20% top",
-                    scrub: true,
+            mm.add(
+                {
+                    isDesktop: "(min-width: 768px)",
+                    isMobile: "(max-width: 767px)",
                 },
-            });
-        });
-    }, { scope: landingRef });
+                (context) => {
+                    const { isDesktop } = context.conditions!;
+
+                    gsap.to(`.${styles.bg} video`, {
+                        yPercent: isDesktop ? 20 : 12,
+                        scale: isDesktop ? 1.14 : 1.08,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: landingRef.current,
+                            start: "top top",
+                            end: "bottom top",
+                            scrub: true,
+                        },
+                    });
+
+                    gsap.to(`.${styles.leftHeading}`, {
+                        yPercent: isDesktop ? -45 : -30,
+                        opacity: 0,
+                        filter: "blur(6px)",
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: landingRef.current,
+                            start: "top top",
+                            end: "70% top",
+                            scrub: true,
+                        },
+                    });
+
+                    if (isDesktop) {
+                        gsap.to(`.${styles.rightHeading}`, {
+                            yPercent: -30,
+                            opacity: 0,
+                            filter: "blur(6px)",
+                            ease: "none",
+                            scrollTrigger: {
+                                trigger: landingRef.current,
+                                start: "top top",
+                                end: "70% top",
+                                scrub: true,
+                            },
+                        });
+                    }
+
+                    gsap.to(`.${styles.cardContainer}`, {
+                        yPercent: isDesktop ? -40 : -25,
+                        scale: 0.94,
+                        opacity: 0,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: landingRef.current,
+                            start: "top top",
+                            end: "50% top",
+                            scrub: true,
+                        },
+                    });
+
+                    gsap.to([`.${styles.scrollDown}`, `.${styles.mobileBrand}`], {
+                        y: -25,
+                        opacity: 0,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: landingRef.current,
+                            start: "top top",
+                            end: "20% top",
+                            scrub: true,
+                        },
+                    });
+                }
+            );
+        },
+        { scope: landingRef }
+    );
 
     return (
         <section className={styles.landing} ref={landingRef}>
@@ -187,29 +307,46 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
             </div>
 
             <div className={styles.heroTextOverlay}>
-                <h1 className={styles.leftHeading} data-split-lines>
-                    Light <br />
-                    designed <br />
-                    as an object
+                <h1 className={styles.leftHeading}>
+                    {leftLines.map((line, index) => (
+                        <span key={index} className={styles.lineMask}>
+                            <span
+                                ref={(el) => {
+                                    leftLinesRef.current[index] = el;
+                                }}
+                                className={styles.lineInner}
+                            >
+                                {line}
+                            </span>
+                        </span>
+                    ))}
                 </h1>
 
-                <p className={styles.rightHeading} data-split-lines>
-                    Light in <br />
-                    perfect <br />
-                    balance
+                <p className={styles.rightHeading}>
+                    {rightLines.map((line, index) => (
+                        <span key={index} className={styles.lineMask}>
+                            <span
+                                ref={(el) => {
+                                    rightLinesRef.current[index] = el;
+                                }}
+                                className={styles.lineInner}
+                            >
+                                {line}
+                            </span>
+                        </span>
+                    ))}
                 </p>
             </div>
 
-            <span className={styles.scrollDown}>Scroll down</span>
-            
             <div className={styles.cardContainer}>
                 {card.map((item, i) => (
-                    <div key={i} className={styles.card}>
+                    <div key={i} ref={cardRef} className={styles.card}>
                         <div className={styles.imageWrapper}>
                             <Image
                                 src={item.src}
                                 alt={item.alt}
                                 fill
+                                sizes="(max-width: 767px) 56px, 217px"
                                 priority
                             />
                         </div>
@@ -219,6 +356,18 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
                     </div>
                 ))}
             </div>
+
+            <span className={styles.scrollDown}>
+                <span ref={scrollDownInnerRef} className={styles.scrollDownInner}>
+                    Scroll down
+                </span>
+            </span>
+
+            <span className={styles.mobileBrand}>
+                <span ref={mobileBrandInnerRef} className={styles.mobileBrandInner}>
+                    Orbita
+                </span>
+            </span>
         </section>
     );
 }
