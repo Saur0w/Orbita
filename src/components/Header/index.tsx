@@ -15,10 +15,10 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-    { label: "The Lamp", href: "/" },
-    { label: "Features", href: "/" },
-    { label: "Pre-order", href: "/preorder" },
-    { label: "Specification", href: "/" },
+    { label: "About", href: "#about" },
+    { label: "The Lamp", href: "#the-lamp" },
+    { label: "Features", href: "#features" },
+    { label: "Specification", href: "#specification" },
 ];
 
 const languages = ["En", "Ger"] as const;
@@ -68,7 +68,7 @@ export default function Header({ isReady }: HeaderProps) {
     }, {
         dependencies: [isReady],
         scope: headerRef
-    })
+    });
 
     return (
         <header className={styles.header} ref={headerRef}>
@@ -118,7 +118,8 @@ export default function Header({ isReady }: HeaderProps) {
                     <button
                         type="button"
                         className={styles.iconCircle}
-                        aria-label="Menu or region settings"
+                        aria-label="Language settings"
+                        onClick={() => setIsLangOpen((prev) => !prev)}
                     >
                         <svg
                             width="24"
@@ -126,8 +127,9 @@ export default function Header({ isReady }: HeaderProps) {
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true"
                         >
-                            <g clipPath="url(#clip0_749_1680)">
+                            <g clipPath="url(#globe_clip)">
                                 <path
                                     opacity="0.2"
                                     d="M1.72003 12.0002C1.72003 17.6777 6.32254 22.2802 12 22.2802C17.6775 22.2802 22.28 17.6777 22.28 12.0002C22.28 6.32273 17.6775 1.72021 12 1.72021C6.32254 1.72021 1.72003 6.32273 1.72003 12.0002Z"
@@ -156,7 +158,7 @@ export default function Header({ isReady }: HeaderProps) {
                                 />
                             </g>
                             <defs>
-                                <clipPath id="clip0_749_1680">
+                                <clipPath id="globe_clip">
                                     <rect width="24" height="24" fill="white" />
                                 </clipPath>
                             </defs>
