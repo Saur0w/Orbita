@@ -15,10 +15,10 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-    { label: "About", href: "#about" },
-    { label: "The Lamp", href: "#the-lamp" },
-    { label: "Features", href: "#features" },
-    { label: "Specification", href: "#specification" },
+    { label: "The Lamp", href: "/#the-lamp" },
+    { label: "Features", href: "/#features" },
+    { label: "Pre-order", href: "/preorder" },
+    { label: "Specification", href: "/#specification" },
 ];
 
 const languages = ["En", "Ger"] as const;
@@ -70,6 +70,29 @@ export default function Header({ isReady }: HeaderProps) {
         scope: headerRef
     });
 
+    const handleNavClick = (
+        e: React.MouseEvent<HTMLAnchorElement>,
+        href: string
+    ) => {
+        if (href.startsWith("/#") || href.startsWith("#")) {
+            const targetId = href.replace(/^\/?#/, "");
+            if (typeof window !== "undefined" && window.location.pathname === "/") {
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    e.preventDefault();
+                    if ((window as any).lenis) {
+                        (window as any).lenis.scrollTo(targetEl, {
+                            offset: -40,
+                            duration: 1.4,
+                        });
+                    } else {
+                        targetEl.scrollIntoView({ behavior: "smooth" });
+                    }
+                }
+            }
+        }
+    };
+
     return (
         <header className={styles.header} ref={headerRef}>
             <Link href="/" className={styles.logoLink} aria-label="Orbita Home">
@@ -80,7 +103,11 @@ export default function Header({ isReady }: HeaderProps) {
                 <ul className={styles.navList}>
                     {navItems.map((item) => (
                         <li key={item.label} className={styles.navItem}>
-                            <Link href={item.href} className={styles.navLink}>
+                            <Link
+                                href={item.href}
+                                className={styles.navLink}
+                                onClick={(e) => handleNavClick(e, item.href)}
+                            >
                                 {item.label}
                             </Link>
                         </li>

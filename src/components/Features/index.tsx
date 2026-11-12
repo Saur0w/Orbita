@@ -103,7 +103,7 @@ export default function Features() {
   );
 
   return (
-    <section className={styles.features} ref={featureRef}>
+    <section className={styles.features} ref={featureRef} id="features">
       <div className={styles.heading}>
         <span className={styles.subHeading}>(Smart Features)</span>
         <div className={styles.headingWrapper}>

@@ -34,7 +34,7 @@ const DIMENSIONS = [
 
 export default function TechnicalSpecs() {
   return (
-    <section className={styles.specsSection}>
+    <section className={styles.specsSection} id="specification">
       <div className={styles.container}>
         <h2 className={styles.title}>Technical Specifications</h2>
 
