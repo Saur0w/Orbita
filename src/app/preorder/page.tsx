@@ -10,6 +10,7 @@ import { CustomEase } from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(SplitText, CustomEase, useGSAP);
+
 CustomEase.create("luxuryMask", "0.16, 1, 0.3, 1");
 
 type ColorOption = "gold" | "silver";
