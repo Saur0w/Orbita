@@ -1,8 +1,20 @@
-.upscale {
+.upscaleSection {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background-color: #706e65;
+  background-color: #0a0b0e;
 }
 
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
