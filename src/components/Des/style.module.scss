@@ -20,6 +20,8 @@ $ink: #232323;
     position: relative;
   }
 
+  /* ---------- Text stage ---------- */
+
   .textContainer {
     min-height: 82vh;
     width: 100%;
@@ -52,9 +54,9 @@ $ink: #232323;
     white-space: nowrap;
   }
 
+  /* no will-change here: ~150 chars would each become their own GPU layer */
   .char {
     display: inline-block;
-    will-change: opacity;
   }
 
   .midGrid {
@@ -77,18 +79,25 @@ $ink: #232323;
     height: 100%;
   }
 
+  /* ---------- Final grid ---------- */
+
   .gridContainer {
+    /* fluid sizes: identical to the old fixed px values at 1440px+ */
+    --pad: min(10.4vw, 150px);
+    --small-w: min(23.3vw, 335px);
+    --big-w: min(47.9vw, 690px);
+
     width: 100%;
     height: auto;
     margin: 0;
-    padding: 2vh 150px 10vh;
+    padding: 2vh var(--pad) 10vh;
     box-sizing: border-box;
     position: relative;
     z-index: 1;
 
     .grid {
       display: grid;
-      grid-template-columns: 335px 1fr;
+      grid-template-columns: var(--small-w) minmax(0, 1fr);
       row-gap: 32vh;
       align-items: start;
       width: 100%;
@@ -98,56 +107,43 @@ $ink: #232323;
       display: flex;
       flex-direction: column;
       gap: 12px;
+      min-width: 0;
 
       &.lamp {
         grid-column: 1;
         grid-row: 1;
-        width: 335px;
-
-        .cardImageWrapper {
-          width: 335px;
-          height: 414px;
-        }
+        width: var(--small-w);
       }
 
       &.intelligent {
         grid-column: 2;
         grid-row: 1;
         justify-self: end;
-        width: 690px;
+        width: var(--big-w);
 
         .cardImageWrapper {
-          width: 690px;
-          height: 835px;
+          aspect-ratio: 690 / 835;
         }
       }
 
       &.timeless {
         grid-column: 1;
         grid-row: 2;
-        width: 335px;
-
-        .cardImageWrapper {
-          width: 335px;
-          height: 414px;
-        }
+        width: var(--small-w);
       }
 
       &.craftsmanship {
         grid-column: 2;
         grid-row: 2;
         justify-self: end;
-        width: 335px;
-
-        .cardImageWrapper {
-          width: 335px;
-          height: 414px;
-        }
+        width: var(--small-w);
       }
     }
 
     .cardImageWrapper {
       position: relative;
+      width: 100%;
+      aspect-ratio: 335 / 414;
       border-radius: 8px;
       overflow: hidden;
       background-color: transparent;
@@ -159,51 +155,100 @@ $ink: #232323;
       font-weight: 400;
       color: $ink;
       letter-spacing: -0.01em;
-      will-change: opacity, transform;
     }
 
-    @media (max-width: 1060px) {
-      padding: 6vh 10px 14vh;
+    /* Mobile: Timeless | Lamp, Intelligent full width, Craftsmanship below */
+    @media (max-width: 767px) {
+      padding: 7vh 12px 12vh;
+      padding: 7svh 12px 12svh;
 
       .grid {
-        grid-template-columns: 1fr;
-        row-gap: 8vh;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 12px;
+        row-gap: 56px;
       }
 
       .card {
-        &.timeless,
-        &.intelligent,
-        &.lamp,
+        gap: 8px;
+
+        &.timeless {
+          grid-column: 1;
+          grid-row: 1;
+        }
+
+        &.lamp {
+          grid-column: 2;
+          grid-row: 1;
+        }
+
+        &.intelligent {
+          grid-column: 1 / -1;
+          grid-row: 2;
+        }
+
         &.craftsmanship {
           grid-column: 1;
-          grid-row: auto;
+          grid-row: 3;
+        }
+
+        &.timeless,
+        &.lamp,
+        &.intelligent,
+        &.craftsmanship {
           width: 100%;
           justify-self: stretch;
-
-          .cardImageWrapper {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 4 / 3;
-          }
         }
+
+        .cardImageWrapper {
+          aspect-ratio: 10 / 11;
+        }
+
+        &.intelligent .cardImageWrapper {
+          aspect-ratio: 4 / 5;
+        }
+
+        &.craftsmanship .cardImageWrapper {
+          aspect-ratio: 5 / 6;
+        }
+      }
+
+      .cardCaption {
+        font-size: 13px;
       }
     }
   }
+
+  /* ---------- Floating cards (animated) ---------- */
 
   .cardsOverlay {
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 10;
+    contain: layout paint style;
   }
 
+  /* positioned with x / y transforms from GSAP, so top/left stay at 0 */
   .floatingCard {
     position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
     box-sizing: border-box;
     overflow: hidden;
+    isolation: isolate;
     background-color: #e5ded4;
     border: 1px solid rgba(26, 26, 26, 0.08);
-    will-change: left, top, width, height, border-radius;
+    will-change: transform, opacity;
+  }
+
+  .imageInner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    overflow: hidden;
   }
 
   .cardImage {
@@ -211,7 +256,21 @@ $ink: #232323;
     object-position: center center;
     pointer-events: none;
   }
+
+  /* ---------- prefers-reduced-motion: static layout ---------- */
+
+  &.reduced {
+    .cardsOverlay {
+      display: none;
+    }
+
+    .gridContainer .cardImageWrapper {
+      background: var(--img) center / cover no-repeat;
+    }
+  }
 }
+
+/* ---------- Pill ---------- */
 
 .pill {
   position: relative;
@@ -226,9 +285,8 @@ $ink: #232323;
   background-color: transparent;
   overflow: hidden;
   cursor: default;
-  will-change: border-color;
-  transition: border-color 0.25s ease;
   font-size: inherit;
+  /* no CSS transition here: it fights the scrubbed GSAP border-color tween */
 
   .pillGhost {
     display: inline-block;
@@ -258,10 +316,11 @@ $ink: #232323;
       font-size: 1em;
       letter-spacing: -0.025em;
       transform-origin: center center;
-      will-change: transform;
     }
   }
 }
+
+/* ---------- Responsive text ---------- */
 
 @media (max-width: 900px) {
   .des {
@@ -271,27 +330,34 @@ $ink: #232323;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .des {
     .textContainer {
-      padding-inline: 5vw;
+      min-height: 82vh;
+      min-height: 82svh;
+      padding-inline: 6vw;
     }
+
     .line {
       display: inline;
       white-space: normal;
     }
+
     .statement {
-      font-size: clamp(1.35rem, 5.2vw, 2rem);
-      line-height: 1.35;
+      font-size: clamp(1.5rem, 7.2vw, 2rem);
+      line-height: 1.34;
     }
+
     .pill {
       padding: 0.04em 0.46em;
       margin-inline: 0.08em;
     }
+
     .midGrid {
       gap: 12px;
       width: 92vw;
       height: min(60vh, 460px);
+      height: min(60svh, 460px);
     }
   }
 }

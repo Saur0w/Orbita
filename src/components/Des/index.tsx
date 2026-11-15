@@ -7,12 +7,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { CustomEase } from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 
-gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, useGSAP);
-
-CustomEase.create("gridForm", "0.22, 1, 0.36, 1");
-CustomEase.create("sectionTransition", "0.45, 0, 0.25, 1");
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, useGSAP);
+    CustomEase.create("gridForm", "0.22, 1, 0.36, 1");
+    CustomEase.create("sectionTransition", "0.45, 0, 0.25, 1");
+}
 
 export interface cardProps {
     id: string;
@@ -67,6 +68,44 @@ const CHAR_STEP = 0.035;
 const FADE_DUR = 0.22;
 const DIM_OPACITY = 0.18;
 
+const MOBILE_QUERY = "(max-width: 767px)";
+
+/**
+ * The pill <svg><image> was loading the raw JPGs (probably several MB each) and
+ * re-sampling them on every scrub frame. This routes them through the Next image
+ * optimizer at 640px instead. Set to false if you use a custom loader or
+ * `images.unoptimized`.
+ */
+const OPTIMIZE_PILL_IMAGES = true;
+const pillImageSrc = (src: string) =>
+    OPTIMIZE_PILL_IMAGES
+        ? `/_next/image?url=${encodeURIComponent(src)}&w=640&q=75`
+        : src;
+
+const PILL_ORIGINS: Record<string, string> = {
+    lamp: "56.5% 50%",
+    timeless: "45% 50%",
+    intelligent: "60.5% 50%",
+    craftsmanship: "52% 60%",
+};
+
+const CARD_ASPECT_RATIOS: Record<string, number> = {
+    lamp: 4096 / 3058,
+    timeless: 4096 / 3058,
+    intelligent: 4096 / 3072,
+    craftsmanship: 4096 / 3058,
+};
+
+type Rect = { x: number; y: number; w: number; h: number };
+
+type CardState = {
+    cardEl: HTMLElement;
+    pillSvg: SVGElement | null;
+    pill: Rect;
+    mid: Rect;
+    final: Rect;
+};
+
 function Pill({ id }: { id: string }) {
     const item = cards.find((i) => i.id === id);
     if (!item) return null;
@@ -77,11 +116,7 @@ function Pill({ id }: { id: string }) {
                 {item.title}
             </span>
 
-            <svg
-                className={styles.pillSvg}
-                data-pill-svg
-                aria-hidden="true"
-            >
+            <svg className={styles.pillSvg} data-pill-svg aria-hidden="true">
                 <defs>
                     <clipPath id={`pill-clip-${id}`}>
                         <text
@@ -105,7 +140,7 @@ function Pill({ id }: { id: string }) {
                     </clipPath>
                 </defs>
                 <image
-                    href={item.src}
+                    href={pillImageSrc(item.src)}
                     x="0"
                     y="0"
                     width="100%"
@@ -119,7 +154,7 @@ function Pill({ id }: { id: string }) {
 }
 
 export default function Des() {
-    const desRef = useRef<HTMLDivElement>(null);
+    const desRef = useRef<HTMLElement>(null);
 
     useGSAP(
         () => {
@@ -127,17 +162,32 @@ export default function Des() {
             if (!el) return;
 
             let ctx: gsap.Context | undefined;
-            let isUnmounted = false;
+            let disposed = false;
+            let resizeTimer = 0;
+            let lastW = window.innerWidth;
+            let lastH = window.innerHeight;
+            const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
 
-            const buildTimeline = () => {
-                if (isUnmounted || !desRef.current) return;
+            const measure = (node: HTMLElement, origin: DOMRect): Rect => {
+                const r = node.getBoundingClientRect();
+                return {
+                    x: r.left - origin.left,
+                    y: r.top - origin.top,
+                    w: r.width,
+                    h: r.height,
+                };
+            };
+
+            const build = () => {
+                if (disposed) return;
                 ctx?.revert();
 
-                ctx = gsap.context(() => {
-                    const prefersReducedMotion = window.matchMedia(
-                        "(prefers-reduced-motion: reduce)"
-                    ).matches;
+                const reduced = window.matchMedia(
+                    "(prefers-reduced-motion: reduce)"
+                ).matches;
+                el.classList.toggle(styles.reduced, reduced);
 
+                ctx = gsap.context(() => {
                     const splitTargets = el.querySelectorAll("[data-split]");
                     if (splitTargets.length > 0) {
                         SplitText.create(splitTargets, {
@@ -146,100 +196,114 @@ export default function Des() {
                         });
                     }
 
-                    if (prefersReducedMotion) return;
+                    if (reduced) {
+                        // static layout: letters filled with the image, no scroll animation
+                        gsap.set("[data-clip-fill]", { scale: 0 });
+                        return;
+                    }
 
-                    const contentWrapper = el.querySelector<HTMLElement>(`.${styles.contentWrapper}`);
-                    const textContainer = el.querySelector<HTMLElement>(`.${styles.textContainer}`);
-                    const gridContainer = el.querySelector<HTMLElement>(`.${styles.gridContainer}`);
+                    // Phones / touch devices skip the heavy letter-zoom and just
+                    // fill the pill. Desktop keeps the full effect.
+                    const lite =
+                        window.matchMedia(MOBILE_QUERY).matches || coarsePointer;
+
+                    const contentWrapper = el.querySelector<HTMLElement>(
+                        `.${styles.contentWrapper}`
+                    );
+                    const textContainer = el.querySelector<HTMLElement>(
+                        `.${styles.textContainer}`
+                    );
+                    const gridContainer = el.querySelector<HTMLElement>(
+                        `.${styles.gridContainer}`
+                    );
                     if (!contentWrapper || !textContainer || !gridContainer) return;
 
                     const wrapperRect = contentWrapper.getBoundingClientRect();
 
-                    // 1. Initial State
+                    // 1. Initial state
                     gsap.set(`.${styles.char}`, { opacity: DIM_OPACITY });
                     gsap.set("[data-pill-svg]", { opacity: DIM_OPACITY });
                     gsap.set("[data-clip-text]", { scale: 1 });
                     gsap.set("[data-clip-fill]", { scale: 0 });
-                    gsap.set("[data-pill]", {
-                        borderColor: "rgba(75, 72, 65, 0.15)",
-                    });
+                    gsap.set("[data-pill]", { borderColor: "rgba(75, 72, 65, 0.15)" });
                     gsap.set(textContainer, { opacity: 1 });
                     gsap.set(`.${styles.cardCaption}`, { opacity: 0, y: 14 });
 
-                    const cardStates = new Map<
-                        string,
-                        {
-                            pill: { left: number; top: number; width: number; height: number };
-                            mid: { left: number; top: number; width: number; height: number };
-                            final: { left: number; top: number; width: number; height: number };
-                        }
-                    >();
+                    // 2. Measure pill / mid / final rects once.
+                    //    Cards are moved with x/y transforms (not left/top).
+                    const states: CardState[] = [];
 
                     cards.forEach((card) => {
-                        const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
-                        const pill = el.querySelector<HTMLElement>(`[data-pill][data-id="${card.id}"]`);
-                        const midSlot = el.querySelector<HTMLElement>(`[data-mid-target="${card.id}"]`);
+                        const cardEl = el.querySelector<HTMLElement>(
+                            `[data-card="${card.id}"]`
+                        );
+                        const pill = el.querySelector<HTMLElement>(
+                            `[data-pill][data-id="${card.id}"]`
+                        );
+                        const midSlot = el.querySelector<HTMLElement>(
+                            `[data-mid-target="${card.id}"]`
+                        );
                         const targetSlot = el.querySelector<HTMLElement>(
                             `[data-grid-card="${card.id}"] .${styles.cardImageWrapper}`
                         );
+                        if (!cardEl || !pill || !midSlot || !targetSlot) return;
 
-                        if (cardEl && pill && midSlot && targetSlot) {
-                            const pillRect = pill.getBoundingClientRect();
-                            const midRect = midSlot.getBoundingClientRect();
-                            const targetRect = targetSlot.getBoundingClientRect();
+                        const state: CardState = {
+                            cardEl,
+                            pillSvg: pill.querySelector<SVGElement>("[data-pill-svg]"),
+                            pill: measure(pill, wrapperRect),
+                            mid: measure(midSlot, wrapperRect),
+                            final: measure(targetSlot, wrapperRect),
+                        };
+                        states.push(state);
 
-                            const pillState = {
-                                left: pillRect.left - wrapperRect.left,
-                                top: pillRect.top - wrapperRect.top,
-                                width: pillRect.width,
-                                height: pillRect.height,
-                            };
+                        const naturalRatio = CARD_ASPECT_RATIOS[card.id] ?? (4 / 3);
+                        const targetW = Math.max(state.mid.w, state.final.w);
+                        const targetH = Math.max(state.mid.h, state.final.h);
 
-                            const midState = {
-                                left: midRect.left - wrapperRect.left,
-                                top: midRect.top - wrapperRect.top,
-                                width: midRect.width,
-                                height: midRect.height,
-                            };
+                        let imgW = targetW;
+                        let imgH = targetW / naturalRatio;
+                        if (imgH < targetH) {
+                            imgH = targetH;
+                            imgW = targetH * naturalRatio;
+                        }
 
-                            const finalState = {
-                                left: targetRect.left - wrapperRect.left,
-                                top: targetRect.top - wrapperRect.top,
-                                width: targetRect.width,
-                                height: targetRect.height,
-                            };
-
-                            cardStates.set(card.id, {
-                                pill: pillState,
-                                mid: midState,
-                                final: finalState,
-                            });
-
-                            gsap.set(cardEl, {
-                                left: pillState.left,
-                                top: pillState.top,
-                                width: pillState.width,
-                                height: pillState.height,
-                                borderRadius: 58,
-                                opacity: 0,
+                        const imgInner = cardEl.querySelector<HTMLElement>(
+                            `[data-img-inner="${card.id}"]`
+                        );
+                        if (imgInner) {
+                            gsap.set(imgInner, {
+                                width: Math.ceil(imgW),
+                                height: Math.ceil(imgH),
                             });
                         }
+
+                        gsap.set(cardEl, {
+                            x: state.pill.x,
+                            y: state.pill.y,
+                            width: state.pill.w,
+                            height: state.pill.h,
+                            borderRadius: 58,
+                            opacity: 0,
+                        });
                     });
 
+                    // 3. Timeline
                     const tl = gsap.timeline({
                         defaults: { ease: "none" },
                         scrollTrigger: {
                             trigger: textContainer,
                             start: "top top",
-                            end: "+=500%",
+                            end: lite ? "+=400%" : "+=500%",
                             pin: el,
                             pinSpacing: true,
-                            scrub: 1.0,
+                            scrub: 0.6,
                             anticipatePin: 1,
                         },
                     });
 
-                    let timelineCursor = 0;
+                    // 3a. Read the text, letter by letter
+                    let cursor = 0;
                     const readSequence = el.querySelectorAll<HTMLElement>(
                         `.${styles.char}, [data-pill]`
                     );
@@ -253,59 +317,34 @@ export default function Des() {
 
                             tl.to(
                                 node,
-                                {
-                                    borderColor: "rgba(35, 35, 35, 0.45)",
-                                    duration: pillDuration,
-                                },
-                                timelineCursor
+                                { borderColor: "rgba(35, 35, 35, 0.45)", duration: pillDuration },
+                                cursor
                             );
-
                             if (svg) {
-                                tl.to(
-                                    svg,
-                                    {
-                                        opacity: 1,
-                                        duration: pillDuration,
-                                    },
-                                    timelineCursor
-                                );
+                                tl.to(svg, { opacity: 1, duration: pillDuration }, cursor);
                             }
-
-                            timelineCursor += charCount * CHAR_STEP;
+                            cursor += charCount * CHAR_STEP;
                         } else {
-                            tl.to(
-                                node,
-                                {
-                                    opacity: 1,
-                                    duration: FADE_DUR,
-                                },
-                                timelineCursor
-                            );
-                            timelineCursor += CHAR_STEP;
+                            tl.to(node, { opacity: 1, duration: FADE_DUR }, cursor);
+                            cursor += CHAR_STEP;
                         }
                     });
 
+                    // 3b. Pills fill with their image
                     const PAUSE_BEFORE_ZOOM = 0.35;
-                    const zoomStart = timelineCursor + FADE_DUR + PAUSE_BEFORE_ZOOM;
+                    const zoomStart = cursor + FADE_DUR + PAUSE_BEFORE_ZOOM;
                     const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
-                    const ZOOM_DUR = 4.8;
-                    const STAGGER = 0.22;
-
-                    const pillOrigins: Record<string, string> = {
-                        lamp: "56.5% 50%",
-                        timeless: "45% 50%",
-                        intelligent: "60.5% 50%",
-                        craftsmanship: "52% 60%",
-                    };
+                    const ZOOM_DUR = lite ? 1.4 : 4.8;
+                    const ZOOM_STAGGER = lite ? 0.12 : 0.22;
 
                     pills.forEach((pill, index) => {
-                        const id = pill.getAttribute("data-id") || "";
-                        const origin = pillOrigins[id] || "50% 50%";
+                        const origin = PILL_ORIGINS[pill.dataset.id ?? ""] ?? "50% 50%";
                         const clipText = pill.querySelector<SVGTextElement>("[data-clip-text]");
                         const clipFill = pill.querySelector<SVGRectElement>("[data-clip-fill]");
-                        const pillStart = zoomStart + index * STAGGER;
+                        const start = zoomStart + index * ZOOM_STAGGER;
+                        if (!clipText || !clipFill) return;
 
-                        if (clipText && clipFill) {
+                        if (!lite) {
                             tl.fromTo(
                                 clipText,
                                 { scale: 1, transformOrigin: origin },
@@ -315,24 +354,26 @@ export default function Des() {
                                     duration: ZOOM_DUR,
                                     ease: "power2.inOut",
                                 },
-                                pillStart
-                            );
-
-                            tl.fromTo(
-                                clipFill,
-                                { scale: 0, transformOrigin: origin },
-                                {
-                                    scale: 1,
-                                    transformOrigin: origin,
-                                    duration: ZOOM_DUR * 0.85,
-                                    ease: "power2.inOut",
-                                },
-                                pillStart + ZOOM_DUR * 0.15
+                                start
                             );
                         }
+
+                        tl.fromTo(
+                            clipFill,
+                            { scale: 0, transformOrigin: origin },
+                            {
+                                scale: 1,
+                                transformOrigin: origin,
+                                duration: ZOOM_DUR * 0.85,
+                                ease: "power2.inOut",
+                            },
+                            start + ZOOM_DUR * 0.15
+                        );
                     });
 
-                    const zoomEnd = zoomStart + (pills.length - 1) * STAGGER + ZOOM_DUR;
+                    const zoomEnd = zoomStart + (pills.length - 1) * ZOOM_STAGGER + ZOOM_DUR;
+
+                    // 3c. Pills -> mid 2x2 grid
                     const PAUSE_BEFORE_SUCK = 0.25;
                     const gridStart = zoomEnd + PAUSE_BEFORE_SUCK;
                     const MID_DUR = 2.8;
@@ -340,107 +381,69 @@ export default function Des() {
 
                     tl.to(
                         textContainer,
-                        {
-                            opacity: 0.35,
-                            duration: MID_DUR * 0.7,
-                            ease: "power2.inOut",
-                        },
+                        { opacity: 0.35, duration: MID_DUR * 0.7, ease: "power2.inOut" },
                         gridStart
                     );
 
-                    cards.forEach((card, index) => {
-                        const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
-                        const pill = el.querySelector<HTMLElement>(`[data-pill][data-id="${card.id}"]`);
-                        const pillSvg = pill?.querySelector<SVGElement>("[data-pill-svg]");
-                        const states = cardStates.get(card.id);
-                        const cardStart = gridStart + index * SUCK_STAGGER;
+                    states.forEach((s, index) => {
+                        const t = gridStart + index * SUCK_STAGGER;
 
-                        if (cardEl && states) {
-                            tl.fromTo(
-                                cardEl,
-                                { opacity: 0 },
-                                {
-                                    opacity: 1,
-                                    duration: 0.001,
-                                    ease: "none",
-                                    immediateRender: false,
-                                },
-                                cardStart
-                            );
+                        // instant swap: pill svg -> floating card
+                        tl.set(s.cardEl, { opacity: 1 }, t);
+                        if (s.pillSvg) tl.set(s.pillSvg, { opacity: 0 }, t);
 
-                            if (pillSvg) {
-                                tl.fromTo(
-                                    pillSvg,
-                                    { opacity: 1 },
-                                    {
-                                        opacity: 0,
-                                        duration: 0.001,
-                                        ease: "none",
-                                        immediateRender: false,
-                                    },
-                                    cardStart
-                                );
-                            }
-
-                            tl.fromTo(
-                                cardEl,
-                                {
-                                    left: states.pill.left,
-                                    top: states.pill.top,
-                                    width: states.pill.width,
-                                    height: states.pill.height,
-                                    borderRadius: 58,
-                                },
-                                {
-                                    left: states.mid.left,
-                                    top: states.mid.top,
-                                    width: states.mid.width,
-                                    height: states.mid.height,
-                                    borderRadius: 8,
-                                    duration: MID_DUR,
-                                    ease: "gridForm",
-                                    immediateRender: false,
-                                },
-                                cardStart
-                            );
-                        }
+                        tl.fromTo(
+                            s.cardEl,
+                            {
+                                x: s.pill.x,
+                                y: s.pill.y,
+                                width: s.pill.w,
+                                height: s.pill.h,
+                                borderRadius: 58,
+                            },
+                            {
+                                x: s.mid.x,
+                                y: s.mid.y,
+                                width: s.mid.w,
+                                height: s.mid.h,
+                                borderRadius: 8,
+                                duration: MID_DUR,
+                                ease: "gridForm",
+                                immediateRender: false,
+                            },
+                            t
+                        );
                     });
 
-                    const midGridEnd = gridStart + (cards.length - 1) * SUCK_STAGGER + MID_DUR;
+                    // 3d. Mid grid -> final layout
+                    const midGridEnd = gridStart + (states.length - 1) * SUCK_STAGGER + MID_DUR;
                     const HOLD_MID_DUR = 0.85;
                     const finalStart = midGridEnd + HOLD_MID_DUR;
-
                     const FINAL_DUR = 3.2;
-                    const FINAL_STAGGER = 0.1;
+                    const FINAL_STAGGER = 0;
 
-                    cards.forEach((card, index) => {
-                        const cardEl = el.querySelector<HTMLElement>(`[data-card="${card.id}"]`);
-                        const states = cardStates.get(card.id);
-                        const cardFinalStart = finalStart + index * FINAL_STAGGER;
-
-                        if (cardEl && states) {
-                            tl.fromTo(
-                                cardEl,
-                                {
-                                    left: states.mid.left,
-                                    top: states.mid.top,
-                                    width: states.mid.width,
-                                    height: states.mid.height,
-                                    borderRadius: 8,
-                                },
-                                {
-                                    left: states.final.left,
-                                    top: states.final.top,
-                                    width: states.final.width,
-                                    height: states.final.height,
-                                    borderRadius: 8,
-                                    duration: FINAL_DUR,
-                                    ease: "sectionTransition",
-                                    immediateRender: false,
-                                },
-                                cardFinalStart
-                            );
-                        }
+                    states.forEach((s, index) => {
+                        tl.fromTo(
+                            s.cardEl,
+                            {
+                                x: s.mid.x,
+                                y: s.mid.y,
+                                width: s.mid.w,
+                                height: s.mid.h,
+                                borderRadius: 8,
+                            },
+                            {
+                                x: s.final.x,
+                                y: s.final.y,
+                                width: s.final.w,
+                                height: s.final.h,
+                                borderRadius: 8,
+                                duration: FINAL_DUR,
+                                ease: "sectionTransition",
+                                immediateRender: false,
+                            },
+                            finalStart + index * FINAL_STAGGER
+                        );
                     });
 
                     tl.to(
@@ -455,7 +458,7 @@ export default function Des() {
                         finalStart + FINAL_DUR * 0.6
                     );
 
-                    const totalEnd = finalStart + (cards.length - 1) * FINAL_STAGGER + FINAL_DUR;
+                    const totalEnd = finalStart + (states.length - 1) * FINAL_STAGGER + FINAL_DUR;
                     tl.to({}, { duration: 0.2 }, totalEnd);
                 }, el);
 
@@ -463,28 +466,36 @@ export default function Des() {
                 ScrollTrigger.refresh();
             };
 
-            buildTimeline();
+            build();
 
-            if (document.fonts?.ready) {
-                document.fonts.ready.then(() => {
-                    if (!isUnmounted) buildTimeline();
-                });
+            // Only re-measure once, after fonts are in (pill widths depend on them)
+            if (document.fonts && document.fonts.status !== "loaded") {
+                document.fonts.ready.then(() => build());
             }
 
-            let resizeTimer: number;
+            // Mobile browsers fire resize whenever the URL bar collapses.
+            // Rebuilding mid-scroll caused jumps, so only react to real changes.
             const onResize = () => {
-                clearTimeout(resizeTimer);
+                window.clearTimeout(resizeTimer);
                 resizeTimer = window.setTimeout(() => {
-                    if (!isUnmounted) buildTimeline();
-                }, 200);
+                    const w = window.innerWidth;
+                    const h = window.innerHeight;
+                    const widthChanged = w !== lastW;
+                    const heightChanged = !coarsePointer && h !== lastH;
+                    if (!widthChanged && !heightChanged) return;
+                    lastW = w;
+                    lastH = h;
+                    build();
+                }, 250);
             };
             window.addEventListener("resize", onResize);
 
             return () => {
-                isUnmounted = true;
-                clearTimeout(resizeTimer);
+                disposed = true;
+                window.clearTimeout(resizeTimer);
                 window.removeEventListener("resize", onResize);
                 ctx?.revert();
+                el.classList.remove(styles.reduced);
             };
         },
         { scope: desRef }
@@ -538,7 +549,10 @@ export default function Des() {
                                 className={`${styles.card} ${styles[card.id]}`}
                                 data-grid-card={card.id}
                             >
-                                <div className={styles.cardImageWrapper} />
+                                <div
+                                    className={styles.cardImageWrapper}
+                                    style={{ "--img": `url(${card.src})` } as CSSProperties}
+                                />
                                 <span className={styles.cardCaption}>{card.caption}</span>
                             </div>
                         ))}
@@ -552,14 +566,19 @@ export default function Des() {
                             className={styles.floatingCard}
                             data-card={card.id}
                         >
-                            <Image
-                                src={card.src}
-                                alt={card.alt}
-                                fill
-                                priority
-                                sizes="(max-width: 768px) 90vw, 55vw"
-                                className={styles.cardImage}
-                            />
+                            <div
+                                className={styles.imageInner}
+                                data-img-inner={card.id}
+                            >
+                                <Image
+                                    src={card.src}
+                                    alt={card.alt}
+                                    fill
+                                    loading="eager"
+                                    sizes="(max-width: 768px) 90vw, 55vw"
+                                    className={styles.cardImage}
+                                />
+                            </div>
                         </div>
                     ))}
                 </div>
