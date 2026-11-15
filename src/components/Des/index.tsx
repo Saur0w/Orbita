@@ -2,6 +2,7 @@
 
 import styles from "./style.module.scss";
 import Image from "next/image";
+import { Link } from "next-view-transitions";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -227,7 +228,10 @@ export default function Des() {
                     gsap.set("[data-clip-fill]", { scale: 0 });
                     gsap.set("[data-pill]", { borderColor: "rgba(75, 72, 65, 0.15)" });
                     gsap.set(textContainer, { opacity: 1 });
-                    gsap.set(`.${styles.cardCaption}`, { opacity: 0, y: 14 });
+                    gsap.set([`.${styles.cardCaption}`, `.${styles.mobilePreorderCard}`], {
+                        opacity: 0,
+                        y: 14,
+                    });
 
                     // 2. Measure pill / mid / final rects once.
                     //    Cards are moved with x/y transforms (not left/top).
@@ -447,7 +451,7 @@ export default function Des() {
                     });
 
                     tl.to(
-                        `.${styles.cardCaption}`,
+                        [`.${styles.cardCaption}`, `.${styles.mobilePreorderCard}`],
                         {
                             opacity: 1,
                             y: 0,
@@ -556,6 +560,22 @@ export default function Des() {
                                 <span className={styles.cardCaption}>{card.caption}</span>
                             </div>
                         ))}
+
+                        <div className={styles.mobilePreorderCard}>
+                            <div className={styles.mobilePreorderThumbWrapper}>
+                                <Image
+                                    src="/images/lamp.jpg"
+                                    alt="Orbita Lamp preview"
+                                    fill
+                                    loading="eager"
+                                    sizes="(max-width: 768px) 50vw, 250px"
+                                    className={styles.mobilePreorderThumb}
+                                />
+                            </div>
+                            <Link href="/preorder" className={styles.mobilePreorderBtn}>
+                                Pre-order now
+                            </Link>
+                        </div>
                     </div>
                 </section>
 
