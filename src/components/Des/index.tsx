@@ -221,7 +221,7 @@ export default function Des() {
 
                     const wrapperRect = contentWrapper.getBoundingClientRect();
 
-                    // 1. Initial state
+                    // Initial state
                     gsap.set(`.${styles.char}`, { opacity: DIM_OPACITY });
                     gsap.set("[data-pill-svg]", { opacity: DIM_OPACITY });
                     gsap.set("[data-clip-text]", { scale: 1 });
@@ -233,8 +233,6 @@ export default function Des() {
                         y: 14,
                     });
 
-                    // 2. Measure pill / mid / final rects once.
-                    //    Cards are moved with x/y transforms (not left/top).
                     const states: CardState[] = [];
 
                     cards.forEach((card) => {
@@ -292,7 +290,6 @@ export default function Des() {
                         });
                     });
 
-                    // 3. Timeline
                     const tl = gsap.timeline({
                         defaults: { ease: "none" },
                         scrollTrigger: {
@@ -306,7 +303,7 @@ export default function Des() {
                         },
                     });
 
-                    // 3a. Read the text, letter by letter
+                    // text reveal
                     let cursor = 0;
                     const readSequence = el.querySelectorAll<HTMLElement>(
                         `.${styles.char}, [data-pill]`
@@ -334,7 +331,7 @@ export default function Des() {
                         }
                     });
 
-                    // 3b. Pills fill with their image
+                    // Pills fill with their image
                     const PAUSE_BEFORE_ZOOM = 0.35;
                     const zoomStart = cursor + FADE_DUR + PAUSE_BEFORE_ZOOM;
                     const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
@@ -377,7 +374,7 @@ export default function Des() {
 
                     const zoomEnd = zoomStart + (pills.length - 1) * ZOOM_STAGGER + ZOOM_DUR;
 
-                    // 3c. Pills -> mid 2x2 grid
+                    // mid 2x2 grid
                     const PAUSE_BEFORE_SUCK = 0.25;
                     const gridStart = zoomEnd + PAUSE_BEFORE_SUCK;
                     const MID_DUR = 2.8;
@@ -392,7 +389,6 @@ export default function Des() {
                     states.forEach((s, index) => {
                         const t = gridStart + index * SUCK_STAGGER;
 
-                        // instant swap: pill svg -> floating card
                         tl.set(s.cardEl, { opacity: 1 }, t);
                         if (s.pillSvg) tl.set(s.pillSvg, { opacity: 0 }, t);
 
@@ -419,7 +415,6 @@ export default function Des() {
                         );
                     });
 
-                    // 3d. Mid grid -> final layout
                     const midGridEnd = gridStart + (states.length - 1) * SUCK_STAGGER + MID_DUR;
                     const HOLD_MID_DUR = 0.85;
                     const finalStart = midGridEnd + HOLD_MID_DUR;
@@ -472,13 +467,10 @@ export default function Des() {
 
             build();
 
-            // Only re-measure once, after fonts are in (pill widths depend on them)
             if (document.fonts && document.fonts.status !== "loaded") {
                 document.fonts.ready.then(() => build());
             }
 
-            // Mobile browsers fire resize whenever the URL bar collapses.
-            // Rebuilding mid-scroll caused jumps, so only react to real changes.
             const onResize = () => {
                 window.clearTimeout(resizeTimer);
                 resizeTimer = window.setTimeout(() => {
