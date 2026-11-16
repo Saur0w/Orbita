@@ -78,25 +78,31 @@ export default function Features() {
         },
       });
 
-      const getScrollAmount = () => {
-        return -(track.scrollWidth - viewport.clientWidth);
-      };
+      const mm = gsap.matchMedia();
 
-      gsap.to(track, {
-        x: getScrollAmount,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "bottom bottom", 
-          end: () => `+=${track.scrollWidth - viewport.clientWidth}`,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
+      // Desktop: Horizontal pinning slider
+      mm.add("(min-width: 769px)", () => {
+        const getScrollAmount = () => {
+          return -(track.scrollWidth - viewport.clientWidth);
+        };
+
+        gsap.to(track, {
+          x: getScrollAmount,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "bottom bottom",
+            end: () => `+=${track.scrollWidth - viewport.clientWidth}`,
+            pin: true,
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        });
       });
 
       return () => {
         split.revert();
+        mm.revert();
       };
     },
     { scope: featureRef }
@@ -122,6 +128,7 @@ export default function Features() {
                   src={card.src}
                   alt={card.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className={styles.cardImage}
                 />
               </div>
