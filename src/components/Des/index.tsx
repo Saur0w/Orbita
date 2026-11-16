@@ -203,11 +203,6 @@ export default function Des() {
                         return;
                     }
 
-                    // Phones / touch devices skip the heavy letter-zoom and just
-                    // fill the pill. Desktop keeps the full effect.
-                    const lite =
-                        window.matchMedia(MOBILE_QUERY).matches || coarsePointer;
-
                     const contentWrapper = el.querySelector<HTMLElement>(
                         `.${styles.contentWrapper}`
                     );
@@ -295,7 +290,7 @@ export default function Des() {
                         scrollTrigger: {
                             trigger: textContainer,
                             start: "top top",
-                            end: lite ? "+=400%" : "+=500%",
+                            end: "+=500%",
                             pin: el,
                             pinSpacing: true,
                             scrub: 0.6,
@@ -335,8 +330,8 @@ export default function Des() {
                     const PAUSE_BEFORE_ZOOM = 0.35;
                     const zoomStart = cursor + FADE_DUR + PAUSE_BEFORE_ZOOM;
                     const pills = el.querySelectorAll<HTMLElement>("[data-pill]");
-                    const ZOOM_DUR = lite ? 1.4 : 4.8;
-                    const ZOOM_STAGGER = lite ? 0.12 : 0.22;
+                    const ZOOM_DUR = 4.8;
+                    const ZOOM_STAGGER = 0.22;
 
                     pills.forEach((pill, index) => {
                         const origin = PILL_ORIGINS[pill.dataset.id ?? ""] ?? "50% 50%";
@@ -345,19 +340,17 @@ export default function Des() {
                         const start = zoomStart + index * ZOOM_STAGGER;
                         if (!clipText || !clipFill) return;
 
-                        if (!lite) {
-                            tl.fromTo(
-                                clipText,
-                                { scale: 1, transformOrigin: origin },
-                                {
-                                    scale: 150,
-                                    transformOrigin: origin,
-                                    duration: ZOOM_DUR,
-                                    ease: "power2.inOut",
-                                },
-                                start
-                            );
-                        }
+                        tl.fromTo(
+                            clipText,
+                            { scale: 1, transformOrigin: origin },
+                            {
+                                scale: 150,
+                                transformOrigin: origin,
+                                duration: ZOOM_DUR,
+                                ease: "power2.inOut",
+                            },
+                            start
+                        );
 
                         tl.fromTo(
                             clipFill,
