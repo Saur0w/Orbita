@@ -350,7 +350,7 @@ export default function Des() {
                                 scale: TEXT_SCALE,
                                 transformOrigin: origin,
                                 duration: ZOOM_DUR,
-                                ease: "power2.inOut",
+                                ease: "power4.inOut",
                             },
                             start
                         );
@@ -361,8 +361,8 @@ export default function Des() {
                             {
                                 scale: 1,
                                 transformOrigin: origin,
-                                duration: ZOOM_DUR * 0.85,
-                                ease: "power2.inOut",
+                                duration: ZOOM_DUR * 1.85,
+                                ease: "power4.inOut",
                             },
                             start + ZOOM_DUR * 0.15
                         );
