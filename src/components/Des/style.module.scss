@@ -20,8 +20,6 @@ $ink: #232323;
     position: relative;
   }
 
-  /* ---------- Text stage ---------- */
-
   .textContainer {
     min-height: 82vh;
     width: 100%;
@@ -54,7 +52,6 @@ $ink: #232323;
     white-space: nowrap;
   }
 
-  /* no will-change here: ~150 chars would each become their own GPU layer */
   .char {
     display: inline-block;
   }
@@ -79,10 +76,8 @@ $ink: #232323;
     height: 100%;
   }
 
-  /* ---------- Final grid ---------- */
 
   .gridContainer {
-    /* fluid sizes: identical to the old fixed px values at 1440px+ */
     --pad: min(10.4vw, 150px);
     --small-w: min(23.3vw, 335px);
     --big-w: min(47.9vw, 690px);
@@ -161,10 +156,9 @@ $ink: #232323;
       display: none;
     }
 
-    /* Mobile: Timeless | Lamp, Intelligent full width, Craftsmanship below */
     @media (max-width: 767px) {
-      padding: 9vh 12px 12vh;
-      padding: 9svh 12px 12svh;
+      padding: 9vh 12px 3vh;
+      padding: 9svh 12px 3svh;
 
       .grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -281,7 +275,6 @@ $ink: #232323;
     }
   }
 
-  /* ---------- Floating cards (animated) ---------- */
 
   .cardsOverlay {
     position: absolute;
@@ -291,7 +284,6 @@ $ink: #232323;
     contain: layout paint style;
   }
 
-  /* positioned with x / y transforms from GSAP, so top/left stay at 0 */
   .floatingCard {
     position: absolute;
     top: 0;

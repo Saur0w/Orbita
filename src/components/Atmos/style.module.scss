@@ -16,6 +16,15 @@
         align-items: center;
         justify-content: center;
 
+        @media (max-width: 768px) {
+            min-height: auto;
+            padding: 24px 1.5rem 60px;
+
+            .tag {
+                margin-bottom: 1.5rem;
+            }
+        }
+
         .tag {
             font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
             font-size: 20px;
