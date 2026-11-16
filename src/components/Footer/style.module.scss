@@ -25,7 +25,7 @@
   }
 
   @media (max-width: 768px) {
-    padding: 0 1.25rem;
+    padding: 1.5rem 1.25rem 0;
   }
 }
 
@@ -52,39 +52,57 @@
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem 1.5rem;
-    padding: 2.25rem 1.25rem 2rem;
-  }
-
-  @media (max-width: 480px) {
     grid-template-columns: 1fr;
-    gap: 1.75rem;
-    padding: 2rem 1.25rem 1.75rem;
+    gap: 2.25rem;
+    padding: 2.25rem 1.25rem 2rem;
   }
 }
 
 .logoCol {
   display: flex;
   align-items: flex-start;
+  width: 100%;
   will-change: transform, opacity;
+
+  @media (max-width: 768px) {
+    margin-bottom: 0.25rem;
+  }
 }
 
 .logoLink {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
   transition: transform 0.3s ease;
 
   &:hover {
     transform: rotate(15deg);
+  }
+
+  @media (max-width: 768px) {
+    width: 48px;
+    height: 48px;
   }
 }
 
 .logo {
   width: 52px;
   height: 52px;
+  min-width: 52px;
+  min-height: 52px;
+  display: block;
+  flex-shrink: 0;
   color: #232323;
+
+  @media (max-width: 768px) {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+  }
 }
 
 .columnLabel {
@@ -116,6 +134,13 @@
 
   &:hover {
     opacity: 0.65;
+  }
+
+  @media (max-width: 768px) {
+    font-size: clamp(1.15rem, 5.2vw, 1.35rem);
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    white-space: nowrap;
   }
 }
 

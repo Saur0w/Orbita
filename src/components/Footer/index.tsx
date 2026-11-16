@@ -115,13 +115,15 @@ export default function Footer() {
         }
 
         if (logoRef.current) {
-          revealTimeline.from(
+          revealTimeline.fromTo(
             logoRef.current,
+            { opacity: 0, y: 16 },
             {
-              opacity: 0,
-              y: 20,
-              duration: 1.3,
+              opacity: 1,
+              y: 0,
+              duration: 1.2,
               ease: "power2.out",
+              clearProps: "opacity,transform",
             },
             0.15
           );
