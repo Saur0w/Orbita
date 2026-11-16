@@ -127,51 +127,57 @@ export default function Materials() {
               );
             }
 
-            imageWrapRefs.current.forEach((wrap, idx) => {
-              if (!wrap) return;
+            if (isDesktop) {
+              imageWrapRefs.current.forEach((wrap, idx) => {
+                if (!wrap) return;
 
-              const startTopInset = isDesktop ? STAIRCASE_TOP_INSETS[idx] : 16;
+                const startTopInset = STAIRCASE_TOP_INSETS[idx];
 
-              gsap.fromTo(
-                wrap,
-                {
-                  clipPath: `inset(${startTopInset}% 0% 0% 0% round 8px)`,
-                },
-                {
-                  clipPath: "inset(0% 0% 0% 0% round 8px)",
-                  ease: "none",
-                  scrollTrigger: {
-                    trigger: gridRef.current,
-                    start: "top 95%",
-                    end: "center 52%",
-                    scrub: 0.8,
+                gsap.fromTo(
+                  wrap,
+                  {
+                    clipPath: `inset(${startTopInset}% 0% 0% 0% round 8px)`,
                   },
-                }
-              );
-            });
+                  {
+                    clipPath: "inset(0% 0% 0% 0% round 8px)",
+                    ease: "none",
+                    scrollTrigger: {
+                      trigger: gridRef.current,
+                      start: "top 95%",
+                      end: "center 52%",
+                      scrub: 0.8,
+                    },
+                  }
+                );
+              });
 
-            imageInnerRefs.current.forEach((inner, idx) => {
-              if (!inner) return;
+              imageInnerRefs.current.forEach((inner, idx) => {
+                if (!inner) return;
 
-              gsap.fromTo(
-                inner,
-                {
-                  yPercent: -8,
-                  scale: 1.12,
-                },
-                {
-                  yPercent: 8,
-                  scale: 1.02,
-                  ease: "none",
-                  scrollTrigger: {
-                    trigger: gridRef.current,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: 0.7 + idx * 0.06,
+                gsap.fromTo(
+                  inner,
+                  {
+                    yPercent: -8,
+                    scale: 1.12,
                   },
-                }
-              );
-            });
+                  {
+                    yPercent: 8,
+                    scale: 1.02,
+                    ease: "none",
+                    scrollTrigger: {
+                      trigger: gridRef.current,
+                      start: "top bottom",
+                      end: "bottom top",
+                      scrub: 0.7 + idx * 0.06,
+                    },
+                  }
+                );
+              });
+            } else {
+              imageWrapRefs.current.forEach((wrap) => {
+                if (wrap) gsap.set(wrap, { clipPath: "none" });
+              });
+            }
 
             // 4. SplitText line reveal for card titles and descriptions
             cardRefs.current.forEach((card, index) => {
@@ -197,11 +203,11 @@ export default function Materials() {
                   autoAlpha: 1,
                   duration: 0.8,
                   stagger: 0.06,
-                  delay: index * 0.06,
+                  delay: isDesktop ? index * 0.06 : 0,
                   ease: "power3.out",
                   scrollTrigger: {
-                    trigger: gridRef.current,
-                    start: "top 82%",
+                    trigger: isDesktop ? gridRef.current : card,
+                    start: isDesktop ? "top 82%" : "top 88%",
                     toggleActions: "play none none none",
                   },
                 }
@@ -265,6 +271,7 @@ export default function Materials() {
                     src={item.image}
                     alt={item.alt}
                     fill
+                    sizes="(max-width: 768px) 100vw, 25vw"
                     className={styles.image}
                   />
                 </div>

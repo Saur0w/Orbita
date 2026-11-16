@@ -18,9 +18,9 @@
     gap: 4.5rem;
   }
 
-  @media (max-width: 640px) {
-    padding: 3.5rem 1rem 4rem;
-    gap: 3rem;
+  @media (max-width: 768px) {
+    padding: 3.5rem 1.25rem 4rem;
+    gap: 2.75rem;
   }
 }
 
@@ -37,7 +37,7 @@
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 }
 
@@ -45,6 +45,10 @@
   display: flex;
   align-items: flex-start;
   padding-top: 0.35rem;
+
+  @media (max-width: 768px) {
+    padding-top: 0;
+  }
 }
 
 .labelMask {
@@ -79,6 +83,13 @@
   color: #232323;
   max-width: 18ch;
   margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: clamp(26px, 7.5vw, 34px);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    max-width: 100%;
+  }
 }
 
 .splitLine {
@@ -105,9 +116,9 @@
     gap: 2.25rem 1rem;
   }
 
-  @media (max-width: 560px) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 3.25rem;
   }
 }
 
@@ -116,6 +127,10 @@
   flex-direction: column;
   gap: 1.125rem;
   width: 100%;
+
+  @media (max-width: 768px) {
+    gap: 1rem;
+  }
 }
 
 .imageWrapper {
@@ -126,6 +141,11 @@
   overflow: hidden;
   background-color: transparent;
   will-change: clip-path;
+
+  @media (max-width: 768px) {
+    aspect-ratio: 4 / 5;
+    will-change: auto;
+  }
 }
 
 .imageInner {
@@ -135,6 +155,12 @@
   width: 100%;
   height: 120%;
   will-change: transform;
+
+  @media (max-width: 768px) {
+    top: 0;
+    height: 100%;
+    will-change: auto;
+  }
 }
 
 .image {
@@ -146,6 +172,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  @media (max-width: 768px) {
+    padding-top: 14px;
+    gap: 0.5rem;
+  }
 }
 
 .cardTitle {
@@ -156,6 +187,11 @@
   letter-spacing: -0.015em;
   color: #232323;
   margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: clamp(22px, 5.8vw, 26px);
+    font-weight: 500;
+  }
 }
 
 .cardDescription {
@@ -167,4 +203,11 @@
   color: rgba(35, 35, 35, 0.72);
   max-width: 30ch;
   margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+    line-height: 1.42;
+    color: rgba(35, 35, 35, 0.78);
+    max-width: 100%;
+  }
 }
