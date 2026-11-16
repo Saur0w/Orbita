@@ -333,6 +333,9 @@ export default function Des() {
                     const ZOOM_DUR = 4.8;
                     const ZOOM_STAGGER = 0.22;
 
+                    const isMobile = window.matchMedia(MOBILE_QUERY).matches;
+                    const TEXT_SCALE = isMobile ? 210 : 150;
+
                     pills.forEach((pill, index) => {
                         const origin = PILL_ORIGINS[pill.dataset.id ?? ""] ?? "50% 50%";
                         const clipText = pill.querySelector<SVGTextElement>("[data-clip-text]");
@@ -344,7 +347,7 @@ export default function Des() {
                             clipText,
                             { scale: 1, transformOrigin: origin },
                             {
-                                scale: 150,
+                                scale: TEXT_SCALE,
                                 transformOrigin: origin,
                                 duration: ZOOM_DUR,
                                 ease: "power2.inOut",
