@@ -19,7 +19,7 @@ interface MaterialItem {
 
 const MATERIALS_DATA: MaterialItem[] = [
   {
-    title: "1. Brushed Aluminum Body",
+    title: "Brushed Aluminum Body",
     description:
       "Precision-machined aluminum creates a refined industrial texture and durability.",
     image: "/images/mat/alu.png",
@@ -48,7 +48,6 @@ const MATERIALS_DATA: MaterialItem[] = [
   },
 ];
 
-
 const STAIRCASE_TOP_INSETS = [38, 26, 14, 4];
 
 export default function Materials() {
@@ -66,22 +65,23 @@ export default function Materials() {
   useGSAP(
     (_, contextSafe) => {
       let isCancelled = false;
-      const splits: SplitText[] = [];
+      const mm = gsap.matchMedia();
 
       const initAnimations = contextSafe!(() => {
         if (isCancelled || !sectionRef.current) return;
 
-        const mm = gsap.matchMedia();
-
         mm.add(
           {
             isDesktop: "(min-width: 1025px)",
-            isTabletOrMobile: "(max-width: 1024px)",
+            isTablet: "(min-width: 769px) and (max-width: 1024px)",
+            isMobile: "(max-width: 768px)",
             reduceMotion: "(prefers-reduced-motion: reduce)",
           },
           (context) => {
             const { isDesktop, reduceMotion } = context.conditions!;
             if (reduceMotion) return;
+
+            const localSplits: SplitText[] = [];
 
             if (labelRef.current) {
               gsap.fromTo(
@@ -107,7 +107,7 @@ export default function Materials() {
                 linesClass: styles.splitLine,
                 wordsClass: styles.splitWord,
               });
-              splits.push(headingSplit);
+              localSplits.push(headingSplit);
 
               gsap.fromTo(
                 headingSplit.words,
@@ -177,9 +177,11 @@ export default function Materials() {
               imageWrapRefs.current.forEach((wrap) => {
                 if (wrap) gsap.set(wrap, { clipPath: "none" });
               });
+              imageInnerRefs.current.forEach((inner) => {
+                if (inner) gsap.set(inner, { clearProps: "transform" });
+              });
             }
 
-            // 4. SplitText line reveal for card titles and descriptions
             cardRefs.current.forEach((card, index) => {
               const titleEl = cardTitleRefs.current[index];
               const descEl = cardDescRefs.current[index];
@@ -193,7 +195,7 @@ export default function Materials() {
                 type: "lines",
                 linesClass: styles.splitLine,
               });
-              splits.push(titleSplit, descSplit);
+              localSplits.push(titleSplit, descSplit);
 
               gsap.fromTo(
                 [...titleSplit.lines, ...descSplit.lines],
@@ -215,6 +217,10 @@ export default function Materials() {
             });
 
             ScrollTrigger.refresh();
+
+            return () => {
+              localSplits.forEach((s) => s.revert());
+            };
           }
         );
       });
@@ -223,7 +229,7 @@ export default function Materials() {
 
       return () => {
         isCancelled = true;
-        splits.forEach((s) => s.revert());
+        mm.revert();
       };
     },
     { scope: sectionRef }
@@ -271,7 +277,7 @@ export default function Materials() {
                     src={item.image}
                     alt={item.alt}
                     fill
-                    sizes="(max-width: 768px) 100vw, 25vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     className={styles.image}
                   />
                 </div>
