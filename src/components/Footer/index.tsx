@@ -95,7 +95,7 @@ export default function Footer() {
         revealTimeline = gsap.timeline({
           scrollTrigger: {
             trigger: footerRef.current,
-            start: "top 72%",
+            start: "top 90%",
             toggleActions: "play none none reverse",
           },
         });

@@ -49,7 +49,7 @@
   will-change: transform, opacity;
 
   @media (max-width: 768px) {
-    font-size: 0.875rem; 
+    font-size: 0.875rem;
     letter-spacing: 0;
   }
 }
@@ -62,25 +62,38 @@
   will-change: transform;
 }
 
-.topBorder {
+.lineContainer {
+  position: relative;
   width: 100%;
-  height: 0.5px;
-  background-color: rgba(35, 35, 35, 0.24);
+  height: 28px;
+  margin: -14px 0;
+  display: flex;
+  align-items: center;
   transform-origin: left center;
   will-change: transform;
-  margin-top: 7px; 
+  z-index: 2;
 
   @media (max-width: 768px) {
-    margin-top: 0;
+    height: 16px;
+    margin: -8px 0;
+    pointer-events: none;
   }
 }
 
-.rowBorder {
+.topBorder {
+  margin-top: -7px;
+
+  @media (max-width: 768px) {
+    margin-top: -8px;
+  }
+}
+
+.lineSvg {
   width: 100%;
-  height: 0.5px;
-  background-color: rgba(35, 35, 35, 0.24);
-  transform-origin: left center;
-  will-change: transform;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
 }
 
 .faqItem {
@@ -89,6 +102,8 @@
 }
 
 .questionButton {
+  position: relative;
+  z-index: 1;
   width: 100%;
   display: flex;
   align-items: center;
@@ -123,18 +138,26 @@
 
 .questionText {
   font-family: "Neue Montreal", sans-serif;
-  font-size: 1.25rem; 
+  font-size: 1.25rem;
   font-weight: 500;
-  line-height: 1; 
-  letter-spacing: -0.01em; 
+  line-height: 1;
+  letter-spacing: -0.01em;
   color: #232323;
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 
   @media (max-width: 768px) {
-    font-size: 1rem; 
-    line-height: 1; 
-    letter-spacing: 0; 
+    font-size: 1rem;
+    line-height: 1;
+    letter-spacing: 0;
   }
+}
+
+.iconHitbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  margin: -12px;
 }
 
 .icon {
@@ -158,7 +181,7 @@
 
 .answerText {
   font-family: "Neue Montreal", sans-serif;
-  font-size: 0.9375rem; 
+  font-size: 0.9375rem;
   font-weight: 400;
   color: #232323;
   line-height: 1.45;
@@ -168,7 +191,7 @@
   margin: 0;
 
   @media (max-width: 768px) {
-    font-size: 0.875rem; 
+    font-size: 0.875rem;
     line-height: 1.4;
     letter-spacing: 0;
     padding-bottom: 1.375rem;

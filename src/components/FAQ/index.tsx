@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, forwardRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import Magnetic from "@/ui/Magnetic";
 import styles from "./style.module.scss";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -40,6 +41,123 @@ const FAQ_DATA: FAQItem[] = [
       "Orbita is intentionally designed as a tactile, distraction-free object and operates independently without Wi-Fi or apps.",
   },
 ];
+
+interface MagneticLineProps {
+  className?: string;
+}
+
+const MagneticDivider = forwardRef<HTMLDivElement, MagneticLineProps>(
+  ({ className = "" }, forwardedRef) => {
+    const internalRef = useRef<HTMLDivElement | null>(null);
+    const pathRef = useRef<SVGPathElement | null>(null);
+
+    const setRefs = (el: HTMLDivElement | null) => {
+      internalRef.current = el;
+      if (typeof forwardedRef === "function") {
+        forwardedRef(el);
+      } else if (forwardedRef) {
+        forwardedRef.current = el;
+      }
+    };
+
+    useGSAP(
+      () => {
+        const container = internalRef.current;
+        const path = pathRef.current;
+        if (!container || !path) return;
+
+        const mm = gsap.matchMedia();
+
+        mm.add(
+          "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+          () => {
+            const state = { x: 500, y: 50 };
+
+            const render = () => {
+              const { x, y } = state;
+              const leftLimit = Math.max(0, x - 150);
+              const rightLimit = Math.min(1000, x + 150);
+
+              const cp1x = x - 80;
+              const cp2x = x - 40;
+              const cp3x = x + 40;
+              const cp4x = x + 80;
+
+              path.setAttribute(
+                "d",
+                `M 0 50 L ${leftLimit} 50 C ${cp1x} 50, ${cp2x} ${y}, ${x} ${y} C ${cp3x} ${y}, ${cp4x} 50, ${rightLimit} 50 L 1000 50`
+              );
+            };
+
+            const xTo = gsap.quickTo(state, "x", {
+              duration: 0.65,
+              ease: "power3.out",
+              onUpdate: render,
+            });
+
+            const yTo = gsap.quickTo(state, "y", {
+              duration: 0.9,
+              ease: "elastic.out(1, 0.45)",
+              onUpdate: render,
+            });
+
+            const handleMouseMove = (e: MouseEvent) => {
+              const rect = container.getBoundingClientRect();
+              const rawX = ((e.clientX - rect.left) / rect.width) * 1000;
+              const rawY = ((e.clientY - rect.top) / rect.height) * 100;
+
+              const offsetFromCenter = rawY - 50;
+              const pushY = 50 + offsetFromCenter * 0.9;
+
+              xTo(gsap.utils.clamp(90, 910, rawX));
+              yTo(gsap.utils.clamp(12, 88, pushY));
+            };
+
+            const handleMouseLeave = () => {
+              yTo(50);
+            };
+
+            container.addEventListener("mousemove", handleMouseMove);
+            container.addEventListener("mouseleave", handleMouseLeave);
+
+            return () => {
+              container.removeEventListener("mousemove", handleMouseMove);
+              container.removeEventListener("mouseleave", handleMouseLeave);
+            };
+          }
+        );
+
+        return () => mm.revert();
+      },
+      { scope: internalRef }
+    );
+
+    return (
+      <div
+        ref={setRefs}
+        className={`${styles.lineContainer} ${className}`.trim()}
+      >
+        <svg
+          viewBox="0 0 1000 100"
+          preserveAspectRatio="none"
+          className={styles.lineSvg}
+          aria-hidden="true"
+        >
+          <path
+            ref={pathRef}
+            d="M 0 50 L 1000 50"
+            fill="none"
+            stroke="rgba(35, 35, 35, 0.24)"
+            strokeWidth="1"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+      </div>
+    );
+  }
+);
+
+MagneticDivider.displayName = "MagneticDivider";
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -139,6 +257,8 @@ export default function FAQ() {
           }
         );
       });
+
+      return () => mm.revert();
     },
     { scope: sectionRef }
   );
@@ -193,7 +313,7 @@ export default function FAQ() {
         </div>
 
         <div ref={accordionColRef} className={styles.accordionCol}>
-          <div ref={topLineRef} className={styles.topBorder} />
+          <MagneticDivider ref={topLineRef} className={styles.topBorder} />
 
           {FAQ_DATA.map((item, index) => {
             const isOpen = openIndex === index;
@@ -206,19 +326,35 @@ export default function FAQ() {
                   aria-expanded={isOpen}
                 >
                   <span className={styles.questionText}>{item.question}</span>
-                  <span
-                    ref={(el) => {
-                      iconRefs.current[index] = el;
-                    }}
-                    className={styles.icon}
-                    aria-hidden="true"
-                  >
-                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7.73438 0H9.14062C9.26562 0 9.32812 0.0625 9.32812 0.1875V16.6875C9.32812 16.8125 9.26562 16.875 9.14062 16.875H7.73438C7.60937 16.875 7.54688 16.8125 7.54688 16.6875V0.1875C7.54688 0.0625 7.60937 0 7.73438 0Z" fill="#232323"/>
-                        <path d="M0.9375 7.54688H16.6875C16.8125 7.54688 16.875 7.60937 16.875 7.73438V9.14062C16.875 9.26562 16.8125 9.32812 16.6875 9.32812H0.1875C0.0625 9.32812 0 9.26562 0 9.14062V7.73438C0 7.60937 0.0625 7.54688 0.1875 7.54688H0.9375Z" fill="#232323"/>
-                    </svg>
 
-                  </span>
+                  <Magnetic>
+                    <span className={styles.iconHitbox}>
+                      <span
+                        ref={(el) => {
+                          iconRefs.current[index] = el;
+                        }}
+                        className={styles.icon}
+                        aria-hidden="true"
+                      >
+                        <svg
+                          width="17"
+                          height="17"
+                          viewBox="0 0 17 17"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M7.73438 0H9.14062C9.26562 0 9.32812 0.0625 9.32812 0.1875V16.6875C9.32812 16.8125 9.26562 16.875 9.14062 16.875H7.73438C7.60937 16.875 7.54688 16.8125 7.54688 16.6875V0.1875C7.54688 0.0625 7.60937 0 7.73438 0Z"
+                            fill="#232323"
+                          />
+                          <path
+                            d="M0.9375 7.54688H16.6875C16.8125 7.54688 16.875 7.60937 16.875 7.73438V9.14062C16.875 9.26562 16.8125 9.32812 16.6875 9.32812H0.1875C0.0625 9.32812 0 9.26562 0 9.14062V7.73438C0 7.60937 0.0625 7.54688 0.1875 7.54688H0.9375Z"
+                            fill="#232323"
+                          />
+                        </svg>
+                      </span>
+                    </span>
+                  </Magnetic>
                 </button>
 
                 <div
@@ -230,11 +366,10 @@ export default function FAQ() {
                   <p className={styles.answerText}>{item.answer}</p>
                 </div>
 
-                <div
+                <MagneticDivider
                   ref={(el) => {
                     lineRefs.current[index] = el;
                   }}
-                  className={styles.rowBorder}
                 />
               </div>
             );
