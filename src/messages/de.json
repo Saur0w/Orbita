@@ -1,0 +1,11 @@
+{
+  "Header": {
+    "theLamp": "Die Lampe",
+    "features": "Funktionen",
+    "preorder": "Vorbestellen",
+    "specification": "Spezifikation"
+  },
+  "Hero": {
+    "title": "Für das Licht entworfen"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "Header": {
+    "theLamp": "The Lamp",
+    "features": "Features",
+    "preorder": "Pre-order",
+    "specification": "Specification"
+  },
+  "Hero": {
+    "title": "Designed for light"
+  }
+}
