@@ -15,5 +15,17 @@
     "cardAlt": "Lamp preview",
     "cardTitle": "Pre-order now",
     "scrollDown": "Scroll down"
+  },
+  "Preorder": {
+    "backHome": "Home",
+    "title": "Pre-order Orbital Lamp",
+    "colorLabel": "Color",
+    "ctaButton": "Pre-order now",
+    "disclaimer": "By clicking \"Pre-order now\" you agree to the <terms>terms</terms> and <privacy>privacy policy</privacy>",
+    "imageAlt": "Orbital Lamp",
+    "colors": {
+      "bronze": "Bronze",
+      "silver": "Silver"
+    }
   }
 }

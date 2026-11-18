@@ -15,5 +15,17 @@
     "cardAlt": "Lampenvorschau",
     "cardTitle": "Jetzt vorbestellen",
     "scrollDown": "Nach unten scrollen"
+  },
+  "Preorder": {
+    "backHome": "Startseite",
+    "title": "Orbital Lamp vorbestellen",
+    "colorLabel": "Farbe",
+    "ctaButton": "Jetzt vorbestellen",
+    "disclaimer": "Mit einem Klick auf „Jetzt vorbestellen“ stimmen Sie den <terms>AGB</terms> und der <privacy>Datenschutzerklärung</privacy> zu",
+    "imageAlt": "Orbital Lamp",
+    "colors": {
+      "bronze": "Bronze",
+      "silver": "Silber"
+    }
   }
 }

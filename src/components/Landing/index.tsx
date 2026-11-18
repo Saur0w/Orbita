@@ -203,7 +203,7 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
             tl.kill();
         };
     }, [isTriggered, playVideo]);
-    
+
     useGSAP(
         () => {
             if (!landingRef.current) return;
