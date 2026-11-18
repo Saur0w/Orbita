@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ViewTransitions } from "next-view-transitions";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 const neueMontrealBold = localFont({
   src: "../../public/font/NeueMontreal-bold.woff2",
@@ -27,14 +29,20 @@ export const metadata: Metadata = {
     "Designed to shape the atmosphere of your space, Orbita Lamp combines timeless form, intelligent lighting, and premium craftsmanship.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default  async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
   return (
     <ViewTransitions>
       <html
         lang="en"
         className={`${neueMontrealBold.variable} ${neueMontrealMedium.variable} ${neueMontrealRegular.variable}`}
       >
-        <body>{children}</body>
+        <body>
+          <NextIntlClientProvider messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+        </body>
       </html>
     </ViewTransitions>
   );
