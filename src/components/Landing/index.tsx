@@ -90,7 +90,6 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
         return () => window.removeEventListener("orbita:portal-open", handlePortalEvent);
     }, []);
 
-    // Set initial hidden states via GSAP on mount so CSS transforms never conflict
     useGSAP(
         () => {
             const allLines = [
@@ -125,7 +124,6 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
         { scope: landingRef }
     );
 
-    // Trigger split-line text, card, and label reveal synced with video start
     useEffect(() => {
         if (!isTriggered) return;
 
@@ -205,8 +203,7 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
             tl.kill();
         };
     }, [isTriggered, playVideo]);
-
-    // ScrollTrigger scrub animations on outer wrappers
+    
     useGSAP(
         () => {
             if (!landingRef.current) return;
