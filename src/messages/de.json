@@ -5,7 +5,15 @@
     "preorder": "Vorbestellen",
     "specification": "Spezifikation"
   },
-  "Hero": {
-    "title": "Für das Licht entworfen"
+  "Landing": {
+    "leftLine1": "Licht",
+    "leftLine2": "entworfen",
+    "leftLine3": "als Objekt",
+    "rightLine1": "Licht in",
+    "rightLine2": "perfekter",
+    "rightLine3": "Balance",
+    "cardAlt": "Lampenvorschau",
+    "cardTitle": "Jetzt vorbestellen",
+    "scrollDown": "Nach unten scrollen"
   }
 }

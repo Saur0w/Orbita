@@ -5,7 +5,15 @@
     "preorder": "Pre-order",
     "specification": "Specification"
   },
-  "Hero": {
-    "title": "Designed for light"
+  "Landing": {
+    "leftLine1": "Light",
+    "leftLine2": "designed",
+    "leftLine3": "as an object",
+    "rightLine1": "Light in",
+    "rightLine2": "perfect",
+    "rightLine3": "balance",
+    "cardAlt": "Lamp preview",
+    "cardTitle": "Pre-order now",
+    "scrollDown": "Scroll down"
   }
 }

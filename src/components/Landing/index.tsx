@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useRef, useEffect, useCallback, useState } from "react";
+import { useTranslations } from "next-intl";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -17,17 +18,6 @@ export interface CardProps {
     title: string;
 }
 
-const card: CardProps[] = [
-    {
-        src: "/images/lamp.jpg",
-        alt: "Lamp preview",
-        title: "Pre-order now",
-    },
-];
-
-const leftLines = ["Light", "designed", "as an object"];
-const rightLines = ["Light in", "perfect", "balance"];
-
 export const VIDEO_START_DELAY_MS = 750;
 
 interface LandingProps {
@@ -35,6 +25,19 @@ interface LandingProps {
 }
 
 export default function Landing({ isPortalOpen }: LandingProps = {}) {
+    const t = useTranslations("Landing");
+
+    const card: CardProps[] = [
+        {
+            src: "/images/lamp.jpg",
+            alt: t("cardAlt"),
+            title: t("cardTitle"),
+        },
+    ];
+
+    const leftLines = [t("leftLine1"), t("leftLine2"), t("leftLine3")];
+    const rightLines = [t("rightLine1"), t("rightLine2"), t("rightLine3")];
+
     const landingRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -44,7 +47,8 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
     const scrollDownInnerRef = useRef<HTMLSpanElement>(null);
     const mobileBrandInnerRef = useRef<HTMLSpanElement>(null);
 
-    const [isTriggered, setIsTriggered] = useState(() => Boolean(isPortalOpen));
+    const [isEventTriggered, setIsEventTriggered] = useState(false);
+    const isTriggered = Boolean(isPortalOpen) || isEventTriggered;
 
     useEffect(() => {
         const video = videoRef.current;
@@ -81,13 +85,7 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
     }, []);
 
     useEffect(() => {
-        if (isPortalOpen) {
-            setIsTriggered(true);
-        }
-    }, [isPortalOpen]);
-
-    useEffect(() => {
-        const handlePortalEvent = () => setIsTriggered(true);
+        const handlePortalEvent = () => setIsEventTriggered(true);
         window.addEventListener("orbita:portal-open", handlePortalEvent);
         return () => window.removeEventListener("orbita:portal-open", handlePortalEvent);
     }, []);
@@ -359,7 +357,7 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
 
             <span className={styles.scrollDown}>
                 <span ref={scrollDownInnerRef} className={styles.scrollDownInner}>
-                    Scroll down
+                    {t("scrollDown")}
                 </span>
             </span>
 

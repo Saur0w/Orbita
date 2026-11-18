@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import styles from "./style.module.scss";
 import { Link } from "next-view-transitions";
 import { Logo } from "@/components/Icons/logo";
@@ -9,30 +11,55 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP);
 
-interface NavItem {
-    label: string;
-    href: string;
+interface WindowWithLenis {
+    lenis?: {
+        scrollTo?: (
+            target: HTMLElement | number | string,
+            options?: { offset?: number; duration?: number }
+        ) => void;
+    };
 }
 
-const navItems: NavItem[] = [
-    { label: "The Lamp", href: "/#the-lamp" },
-    { label: "Features", href: "/#features" },
-    { label: "Pre-order", href: "/preorder" },
-    { label: "Specification", href: "/#specification" },
-];
+const languages = [
+    { label: "En", code: "en" },
+    { label: "Ger", code: "de" },
+] as const;
 
-const languages = ["En", "Ger"] as const;
-type Language = (typeof languages)[number];
+type LanguageLabel = (typeof languages)[number]["label"];
+type LocaleCode = (typeof languages)[number]["code"];
+
+function setLocaleCookie(code: LocaleCode) {
+    document.cookie = `NEXT_LOCALE=${code}; path=/; max-age=31536000; SameSite=Lax`;
+}
 
 interface HeaderProps {
     isReady: boolean;
 }
 
 export default function Header({ isReady }: HeaderProps) {
-    const headerRef = useRef<HTMLHeadElement>(null);
-    const [selectedLang, setSelectedLang] = useState<Language>("En");
-    const [isLangOpen, setIsLangOpen] = useState(false);
+    const headerRef = useRef<HTMLElement>(null);
     const rightWrapperRef = useRef<HTMLDivElement>(null);
+    const [isLangOpen, setIsLangOpen] = useState(false);
+
+    const router = useRouter();
+    const currentLocale = useLocale() as LocaleCode;
+    const t = useTranslations("Header");
+
+    const selectedLang: LanguageLabel =
+        languages.find((l) => l.code === currentLocale)?.label ?? "En";
+
+    const navItems = [
+        { label: t("theLamp"), href: "/#the-lamp" },
+        { label: t("features"), href: "/#features" },
+        { label: t("preorder"), href: "/preorder" },
+        { label: t("specification"), href: "/#specification" },
+    ];
+
+    const handleLanguageChange = (code: LocaleCode) => {
+        setLocaleCookie(code);
+        setIsLangOpen(false);
+        router.refresh();
+    };
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -48,27 +75,29 @@ export default function Header({ isReady }: HeaderProps) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    useGSAP(() => {
-        if (!isReady) {
-            gsap.set(headerRef.current, {
-                y: -24,
-                opacity: 0
+    useGSAP(
+        () => {
+            if (!isReady) {
+                gsap.set(headerRef.current, {
+                    y: -24,
+                    opacity: 0,
+                });
+                return;
+            }
+
+            gsap.to(headerRef.current, {
+                y: 0,
+                opacity: 1,
+                duration: 0.9,
+                ease: "power3.out",
+                delay: 0.1,
             });
-
-            return;
+        },
+        {
+            dependencies: [isReady],
+            scope: headerRef,
         }
-
-        gsap.to(headerRef.current, {
-            y: 0,
-            opacity: 1,
-            duration: 0.9,
-            ease: "power3.out",
-            delay: 0.1,
-        });
-    }, {
-        dependencies: [isReady],
-        scope: headerRef
-    });
+    );
 
     const handleNavClick = (
         e: React.MouseEvent<HTMLAnchorElement>,
@@ -80,8 +109,9 @@ export default function Header({ isReady }: HeaderProps) {
                 const targetEl = document.getElementById(targetId);
                 if (targetEl) {
                     e.preventDefault();
-                    if ((window as any).lenis) {
-                        (window as any).lenis.scrollTo(targetEl, {
+                    const lenis = (window as unknown as WindowWithLenis).lenis;
+                    if (lenis?.scrollTo) {
+                        lenis.scrollTo(targetEl, {
                             offset: -40,
                             duration: 1.4,
                         });
@@ -102,7 +132,7 @@ export default function Header({ isReady }: HeaderProps) {
             <nav className={styles.navPill} aria-label="Primary Navigation">
                 <ul className={styles.navList}>
                     {navItems.map((item) => (
-                        <li key={item.label} className={styles.navItem}>
+                        <li key={item.href} className={styles.navItem}>
                             <Link
                                 href={item.href}
                                 className={styles.navLink}
@@ -200,18 +230,15 @@ export default function Header({ isReady }: HeaderProps) {
                 >
                     {languages.map((lang) => (
                         <button
-                            key={lang}
+                            key={lang.code}
                             type="button"
                             role="menuitem"
                             className={`${styles.langOption} ${
-                                selectedLang === lang ? styles.langOptionActive : ""
+                                selectedLang === lang.label ? styles.langOptionActive : ""
                             }`}
-                            onClick={() => {
-                                setSelectedLang(lang);
-                                setIsLangOpen(false);
-                            }}
+                            onClick={() => handleLanguageChange(lang.code)}
                         >
-                            {lang}
+                            {lang.label}
                         </button>
                     ))}
                 </div>
