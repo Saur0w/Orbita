@@ -114,5 +114,27 @@
         "description": "Portable use with long-lasting rechargeable battery."
       }
     }
+  },
+  "Materials": {
+    "label": "(Materials)",
+    "heading": "Orbita is constructed using carefully selected premium materials.",
+    "items": {
+      "aluminum": {
+        "title": "Brushed Aluminum Body",
+        "description": "Precision-machined aluminum creates a refined industrial texture and durability."
+      },
+      "diffuser": {
+        "title": "Optical Diffuser Disc",
+        "description": "Engineered to create smooth and uniform light distribution."
+      },
+      "finish": {
+        "title": "Anodized Surface Finish",
+        "description": "Ensures resistance to scratches and fingerprints."
+      },
+      "core": {
+        "title": "Precision Steel Core",
+        "description": "Provides structural stability and perfect balance."
+      }
+    }
   }
 }

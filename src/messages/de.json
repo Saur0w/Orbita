@@ -114,5 +114,27 @@
         "description": "Kabellose Nutzung dank langlebigem, wiederaufladbarem Akku."
       }
     }
+  },
+  "Materials": {
+    "label": "(Materialien)",
+    "heading": "Orbita wird aus sorgfältig ausgewählten, hochwertigen Materialien gefertigt.",
+    "items": {
+      "aluminum": {
+        "title": "Gebürstetes Aluminiumgehäuse",
+        "description": "Präzisionsgefertigtes Aluminium sorgt für eine edle industrielle Textur und Langlebigkeit."
+      },
+      "diffuser": {
+        "title": "Optische Diffusorscheibe",
+        "description": "Entwickelt für eine sanfte und gleichmäßige Lichtverteilung."
+      },
+      "finish": {
+        "title": "Eloxierte Oberfläche",
+        "description": "Schützt zuverlässig vor Kratzern und Fingerabdrücken."
+      },
+      "core": {
+        "title": "Präzisions-Stahlkern",
+        "description": "Sorgt für strukturelle Stabilität und perfekte Balance."
+      }
+    }
   }
 }
