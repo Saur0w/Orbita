@@ -282,7 +282,6 @@ export default function Materials() {
                           src={item.image}
                           alt={item.alt}
                           fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           className={styles.image}
                       />
                     </div>
