@@ -233,5 +233,26 @@
         "description": "Der Lampenkörper besteht überwiegend aus recycelbarem Aluminium."
       }
     }
+  },
+  "Philo": {
+    "tag": "(Designphilosophie)",
+    "title": {
+      "line1": "Inspiriert von",
+      "line2": "der Moderne des",
+      "line3": "20. Jahrhunderts"
+    },
+    "imageAlt": "Orbita Lampe auf Steinsockel",
+    "infoHeading": {
+      "line1": "Jedes Element wurde",
+      "line2": "auf seine wesentlichste",
+      "line3": "Form reduziert"
+    },
+    "elements": {
+      "circle": "Kreis",
+      "axis": "Achse",
+      "cylinder": "Zylinder"
+    },
+    "infoDesc": "Diese Schlichtheit ermöglicht es Orbita, sowohl als funktionales Objekt als auch als skulpturale Präsenz im Raum zu wirken",
+    "cta": "Jetzt vorbestellen"
   }
 }

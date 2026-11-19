@@ -8,6 +8,7 @@
 
 .upperSection {
   width: 100%;
+  box-sizing: border-box;
   min-height: 50vh;
   background-color: #f7f1e8;
   padding: 100px 1.5rem 80px;
@@ -74,7 +75,6 @@
 
 :global(.splitLine-mask) {
   width: 100% !important;
-  overflow: visible clip !important;
   overflow-x: visible !important;
   overflow-y: clip !important;
   display: block !important;
@@ -124,12 +124,13 @@
     right: auto;
     transform: none;
     width: 100%;
+    box-sizing: border-box;
     padding: 3rem 1.25rem 2.5rem;
     background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(15, 16, 18, 0.78) 30%,
-      rgba(15, 16, 18, 0.94) 100%
+            180deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(15, 16, 18, 0.78) 30%,
+            rgba(15, 16, 18, 0.94) 100%
     );
   }
 }
@@ -174,8 +175,11 @@
   }
 
   @media (max-width: 768px) {
-    font-size: 15px;
     margin-bottom: 1.25rem;
+
+    span {
+      font-size: 15px;
+    }
   }
 }
 

@@ -233,5 +233,26 @@
         "description": "The lamp body is made primarily from recyclable aluminum."
       }
     }
+  },
+  "Philo": {
+    "tag": "(Design Philosophy)",
+    "title": {
+      "line1": "Inspired by",
+      "line2": "twentieth-century",
+      "line3": "Modernism"
+    },
+    "imageAlt": "Orbita lamp on stone base",
+    "infoHeading": {
+      "line1": "Every element has",
+      "line2": "been reduced to its",
+      "line3": "most essential form"
+    },
+    "elements": {
+      "circle": "Circle",
+      "axis": "Axis",
+      "cylinder": "Cylinder"
+    },
+    "infoDesc": "This simplicity allows Orbita to exist both as a functional object and as a sculptural presence in the space",
+    "cta": "Pre-Order Now"
   }
 }
