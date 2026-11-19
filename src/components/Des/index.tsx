@@ -3,6 +3,7 @@
 import styles from "./style.module.scss";
 import Image from "next/image";
 import { Link } from "next-view-transitions";
+import { useLocale, useTranslations } from "next-intl";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -16,8 +17,10 @@ if (typeof window !== "undefined") {
     CustomEase.create("sectionTransition", "0.45, 0, 0.25, 1");
 }
 
+export type CardId = "lamp" | "timeless" | "intelligent" | "craftsmanship";
+
 export interface cardProps {
-    id: string;
+    id: CardId;
     title: string;
     caption: string;
     src: string;
@@ -71,26 +74,28 @@ const DIM_OPACITY = 0.18;
 
 const MOBILE_QUERY = "(max-width: 767px)";
 
-/**
- * The pill <svg><image> was loading the raw JPGs (probably several MB each) and
- * re-sampling them on every scrub frame. This routes them through the Next image
- * optimizer at 640px instead. Set to false if you use a custom loader or
- * `images.unoptimized`.
- */
 const OPTIMIZE_PILL_IMAGES = true;
 const pillImageSrc = (src: string) =>
     OPTIMIZE_PILL_IMAGES
         ? `/_next/image?url=${encodeURIComponent(src)}&w=640&q=75`
         : src;
 
-const PILL_ORIGINS: Record<string, string> = {
-    lamp: "56.5% 50%",
-    timeless: "45% 50%",
-    intelligent: "60.5% 50%",
-    craftsmanship: "52% 60%",
+const PILL_ORIGINS: Record<string, Record<CardId, string>> = {
+    en: {
+        lamp: "56.5% 50%",
+        timeless: "45% 50%",
+        intelligent: "60.5% 50%",
+        craftsmanship: "52% 60%",
+    },
+    de: {
+        lamp: "56.5% 50%",
+        timeless: "48% 50%",
+        intelligent: "51.5% 50%",
+        craftsmanship: "56% 55%",
+    },
 };
 
-const CARD_ASPECT_RATIOS: Record<string, number> = {
+const CARD_ASPECT_RATIOS: Record<CardId, number> = {
     lamp: 4096 / 3058,
     timeless: 4096 / 3058,
     intelligent: 4096 / 3072,
@@ -107,19 +112,16 @@ type CardState = {
     final: Rect;
 };
 
-function Pill({ id }: { id: string }) {
-    const item = cards.find((i) => i.id === id);
-    if (!item) return null;
-
+function Pill({ card }: { card: cardProps }) {
     return (
-        <span className={styles.pill} data-pill data-id={id} aria-label={item.alt}>
+        <span className={styles.pill} data-pill data-id={card.id} aria-label={card.alt}>
             <span className={styles.pillGhost} aria-hidden="true">
-                {item.title}
+                {card.title}
             </span>
 
             <svg className={styles.pillSvg} data-pill-svg aria-hidden="true">
                 <defs>
-                    <clipPath id={`pill-clip-${id}`}>
+                    <clipPath id={`pill-clip-${card.id}`}>
                         <text
                             x="50%"
                             y="50%"
@@ -128,7 +130,7 @@ function Pill({ id }: { id: string }) {
                             className={styles.clipText}
                             data-clip-text
                         >
-                            {item.title}
+                            {card.title}
                         </text>
                         <rect
                             x="0"
@@ -141,13 +143,13 @@ function Pill({ id }: { id: string }) {
                     </clipPath>
                 </defs>
                 <image
-                    href={pillImageSrc(item.src)}
+                    href={pillImageSrc(card.src)}
                     x="0"
                     y="0"
                     width="100%"
                     height="100%"
                     preserveAspectRatio="xMidYMid slice"
-                    clipPath={`url(#pill-clip-${id})`}
+                    clipPath={`url(#pill-clip-${card.id})`}
                 />
             </svg>
         </span>
@@ -156,6 +158,19 @@ function Pill({ id }: { id: string }) {
 
 export default function Des() {
     const desRef = useRef<HTMLElement>(null);
+    const t = useTranslations("Des");
+    const locale = useLocale();
+
+    const localizedCards: cardProps[] = cards.map((card) => ({
+        ...card,
+        title: t(`cards.${card.id}.title`),
+        caption: t(`cards.${card.id}.caption`),
+        alt: t(`cards.${card.id}.alt`),
+    }));
+
+    const cardMap = Object.fromEntries(
+        localizedCards.map((c) => [c.id, c])
+    ) as Record<CardId, cardProps>;
 
     useGSAP(
         () => {
@@ -168,6 +183,7 @@ export default function Des() {
             let lastW = window.innerWidth;
             let lastH = window.innerHeight;
             const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+            const localeOrigins = PILL_ORIGINS[locale] ?? PILL_ORIGINS.en;
 
             const measure = (node: HTMLElement, origin: DOMRect): Rect => {
                 const r = node.getBoundingClientRect();
@@ -198,7 +214,6 @@ export default function Des() {
                     }
 
                     if (reduced) {
-                        // static layout: letters filled with the image, no scroll animation
                         gsap.set("[data-clip-fill]", { scale: 0 });
                         return;
                     }
@@ -254,7 +269,7 @@ export default function Des() {
                         };
                         states.push(state);
 
-                        const naturalRatio = CARD_ASPECT_RATIOS[card.id] ?? (4 / 3);
+                        const naturalRatio = CARD_ASPECT_RATIOS[card.id] ?? 4 / 3;
                         const targetW = Math.max(state.mid.w, state.final.w);
                         const targetH = Math.max(state.mid.h, state.final.h);
 
@@ -298,7 +313,7 @@ export default function Des() {
                         },
                     });
 
-                    // text reveal
+                    // Text reveal
                     let cursor = 0;
                     const readSequence = el.querySelectorAll<HTMLElement>(
                         `.${styles.char}, [data-pill]`
@@ -337,7 +352,8 @@ export default function Des() {
                     const TEXT_SCALE = isMobile ? 210 : 150;
 
                     pills.forEach((pill, index) => {
-                        const origin = PILL_ORIGINS[pill.dataset.id ?? ""] ?? "50% 50%";
+                        const pillId = pill.dataset.id as CardId | undefined;
+                        const origin = (pillId && localeOrigins[pillId]) || "50% 50%";
                         const clipText = pill.querySelector<SVGTextElement>("[data-clip-text]");
                         const clipFill = pill.querySelector<SVGRectElement>("[data-clip-fill]");
                         const start = zoomStart + index * ZOOM_STAGGER;
@@ -370,7 +386,7 @@ export default function Des() {
 
                     const zoomEnd = zoomStart + (pills.length - 1) * ZOOM_STAGGER + ZOOM_DUR;
 
-                    // mid 2x2 grid
+                    // Mid 2x2 grid
                     const PAUSE_BEFORE_SUCK = 0.25;
                     const gridStart = zoomEnd + PAUSE_BEFORE_SUCK;
                     const MID_DUR = 2.8;
@@ -383,10 +399,10 @@ export default function Des() {
                     );
 
                     states.forEach((s, index) => {
-                        const t = gridStart + index * SUCK_STAGGER;
+                        const startTime = gridStart + index * SUCK_STAGGER;
 
-                        tl.set(s.cardEl, { opacity: 1 }, t);
-                        if (s.pillSvg) tl.set(s.pillSvg, { opacity: 0 }, t);
+                        tl.set(s.cardEl, { opacity: 1 }, startTime);
+                        if (s.pillSvg) tl.set(s.pillSvg, { opacity: 0 }, startTime);
 
                         tl.fromTo(
                             s.cardEl,
@@ -407,7 +423,7 @@ export default function Des() {
                                 ease: "gridForm",
                                 immediateRender: false,
                             },
-                            t
+                            startTime
                         );
                     });
 
@@ -464,7 +480,7 @@ export default function Des() {
             build();
 
             if (document.fonts && document.fonts.status !== "loaded") {
-                document.fonts.ready.then(() => build());
+                void document.fonts.ready.then(() => build());
             }
 
             const onResize = () => {
@@ -490,7 +506,7 @@ export default function Des() {
                 el.classList.remove(styles.reduced);
             };
         },
-        { scope: desRef }
+        { scope: desRef, dependencies: [locale], revertOnUpdate: true }
     );
 
     return (
@@ -498,29 +514,29 @@ export default function Des() {
             <div className={styles.contentWrapper}>
                 <section className={styles.textContainer}>
                     <div className={styles.text}>
-                        <p className={styles.statement}>
+                        <p className={styles.statement} key={locale}>
                             <span className={styles.line}>
-                                <span data-split>Meet</span> <Pill id="lamp" />{" "}
+                                <span data-split>{t("statement.line1")}</span>{" "}
+                                <Pill card={cardMap.lamp} />{" "}
                             </span>
                             <span className={styles.line}>
-                                <span data-split>Designed to shape the atmosphere </span>
+                                <span data-split>{t("statement.line2")} </span>
                             </span>
                             <span className={styles.line}>
-                                <span data-split>of your space, Orbita Lamp combines </span>
+                                <span data-split>{t("statement.line3")} </span>
                             </span>
                             <span className={styles.line}>
-                                <Pill id="timeless" /> <Pill id="intelligent" />{" "}
-                                <span data-split>and </span>
+                                <Pill card={cardMap.timeless} />{" "}
+                                <Pill card={cardMap.intelligent} />{" "}
+                                <span data-split>{t("statement.line4End")} </span>
                             </span>
                             <span className={styles.line}>
-                                <span data-split>premium </span>
-                                <Pill id="craftsmanship" />{" "}
-                                <span data-split>to create an </span>
+                                <span data-split>{t("statement.line5Start")} </span>
+                                <Pill card={cardMap.craftsmanship} />{" "}
+                                <span data-split>{t("statement.line5End")} </span>
                             </span>
                             <span className={styles.line}>
-                                <span data-split>
-                                    experience that goes beyond illumination
-                                </span>
+                                <span data-split>{t("statement.line6")}</span>
                             </span>
                         </p>
                     </div>
@@ -535,7 +551,7 @@ export default function Des() {
 
                 <section className={styles.gridContainer}>
                     <div className={styles.grid}>
-                        {cards.map((card) => (
+                        {localizedCards.map((card) => (
                             <div
                                 key={card.id}
                                 className={`${styles.card} ${styles[card.id]}`}
@@ -553,7 +569,7 @@ export default function Des() {
                             <div className={styles.mobilePreorderThumbWrapper}>
                                 <Image
                                     src="/images/lamp.jpg"
-                                    alt="Orbita Lamp preview"
+                                    alt={t("mobilePreorder.alt")}
                                     fill
                                     loading="eager"
                                     sizes="(max-width: 768px) 50vw, 250px"
@@ -561,14 +577,14 @@ export default function Des() {
                                 />
                             </div>
                             <Link href="/preorder" className={styles.mobilePreorderBtn}>
-                                Pre-order now
+                                {t("mobilePreorder.cta")}
                             </Link>
                         </div>
                     </div>
                 </section>
 
                 <div className={styles.cardsOverlay} aria-hidden="true">
-                    {cards.map((card) => (
+                    {localizedCards.map((card) => (
                         <div
                             key={card.id}
                             className={styles.floatingCard}
