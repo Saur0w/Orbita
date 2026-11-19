@@ -136,5 +136,22 @@
         "description": "Provides structural stability and perfect balance."
       }
     }
+  },
+  "Finish": {
+    "marquee": "AVAILABLE IN TWO FINISHES",
+    "preorderCta": "Pre-order now",
+    "previewAlt": "Orbita lamp interior preview",
+    "finishes": {
+      "silver": {
+        "title": "Silver",
+        "description": "A brushed aluminum finish with a cool industrial character.",
+        "alt": "Orbita Lamp Silver Finish"
+      },
+      "gold": {
+        "title": "Gold",
+        "description": "A warm anodized finish designed to complement natural interiors.",
+        "alt": "Orbita Lamp Gold Finish"
+      }
+    }
   }
 }

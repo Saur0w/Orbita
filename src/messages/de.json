@@ -136,5 +136,22 @@
         "description": "Sorgt für strukturelle Stabilität und perfekte Balance."
       }
     }
+  },
+  "Finish": {
+    "marquee": "IN ZWEI AUSFÜHRUNGEN ERHÄLTLICH",
+    "preorderCta": "Jetzt vorbestellen",
+    "previewAlt": "Orbita Lamp Raumvorschau",
+    "finishes": {
+      "silver": {
+        "title": "Silber",
+        "description": "Gebürstetes Aluminium mit kühlem, industriellem Charakter.",
+        "alt": "Orbita Lamp in Silber"
+      },
+      "gold": {
+        "title": "Gold",
+        "description": "Eine warme eloxierte Oberfläche, perfekt für natürliche Wohnräume.",
+        "alt": "Orbita Lamp in Gold"
+      }
+    }
   }
 }
