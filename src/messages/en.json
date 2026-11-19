@@ -27,5 +27,42 @@
       "gold": "Gold",
       "silver": "Silver"
     }
+  },
+  "Des": {
+    "statement": {
+      "line1": "Meet",
+      "line2": "Designed to shape the atmosphere",
+      "line3": "of your space, Orbita Lamp combines",
+      "line4End": "and",
+      "line5Start": "premium",
+      "line5End": "to create an",
+      "line6": "experience that goes beyond illumination"
+    },
+    "cards": {
+      "lamp": {
+        "title": "Orbita Lamp",
+        "caption": "Orbita Lamp",
+        "alt": "Orbita Lamp minimalist silhouette"
+      },
+      "timeless": {
+        "title": "timeless form,",
+        "caption": "Timeless Form",
+        "alt": "Timeless circular brushed metallic form"
+      },
+      "intelligent": {
+        "title": "intelligent lighting,",
+        "caption": "Intelligent Lighting",
+        "alt": "Intelligent warm lighting on wood surface"
+      },
+      "craftsmanship": {
+        "title": "craftsmanship",
+        "caption": "Craftsmanship",
+        "alt": "Close-up detail of brushed aluminum craftsmanship"
+      }
+    },
+    "mobilePreorder": {
+      "alt": "Orbita Lamp preview",
+      "cta": "Pre-order now"
+    }
   }
 }

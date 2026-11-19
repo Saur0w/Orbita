@@ -27,5 +27,42 @@
       "gold": "Gold",
       "silver": "Silber"
     }
+  },
+  "Des": {
+    "statement": {
+      "line1": "Erleben Sie",
+      "line2": "Geschaffen für die Atmosphäre",
+      "line3": "Ihres Raums, vereint Orbita Lamp",
+      "line4End": "und",
+      "line5Start": "feinste",
+      "line5End": "für ein",
+      "line6": "Erlebnis, das weit über Licht hinausgeht"
+    },
+    "cards": {
+      "lamp": {
+        "title": "Orbita Lamp",
+        "caption": "Orbita Lamp",
+        "alt": "Orbita Lamp minimalistische Silhouette"
+      },
+      "timeless": {
+        "title": "zeitlose Form,",
+        "caption": "Zeitlose Form",
+        "alt": "Zeitlose runde Form aus gebürstetem Metall"
+      },
+      "intelligent": {
+        "title": "intelligentes Licht,",
+        "caption": "Intelligentes Licht",
+        "alt": "Intelligentes warmes Licht auf Holzoberfläche"
+      },
+      "craftsmanship": {
+        "title": "Handwerkskunst",
+        "caption": "Handwerkskunst",
+        "alt": "Nahaufnahme der Verarbeitung aus gebürstetem Aluminium"
+      }
+    },
+    "mobilePreorder": {
+      "alt": "Orbita Lamp Vorschau",
+      "cta": "Jetzt vorbestellen"
+    }
   }
 }
