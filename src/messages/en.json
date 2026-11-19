@@ -153,5 +153,21 @@
         "alt": "Orbita Lamp Gold Finish"
       }
     }
+  },
+  "TechnicalSpecs": {
+    "title": "Technical Specifications",
+    "tableHeader": "Dimensions",
+    "schematics": {
+      "lamp": "Full lamp dimensions: 38cm height, 26cm disc diameter, 12cm base diameter",
+      "topView": "Top disc view: 26cm diameter",
+      "base": "Lamp base view: 18cm height",
+      "stem": "Lamp stem view: 18cm height"
+    },
+    "dimensions": {
+      "height": "Height",
+      "discDiameter": "Disc Diameter",
+      "baseDiameter": "Base Diameter",
+      "weight": "Weight"
+    }
   }
 }

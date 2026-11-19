@@ -153,5 +153,21 @@
         "alt": "Orbita Lamp in Gold"
       }
     }
+  },
+  "TechnicalSpecs": {
+    "title": "Technische Daten",
+    "tableHeader": "Abmessungen",
+    "schematics": {
+      "lamp": "Gesamtmaße der Lampe: 38 cm Höhe, 26 cm Scheibendurchmesser, 12 cm Sockeldurchmesser",
+      "topView": "Draufsicht der Scheibe: 26 cm Durchmesser",
+      "base": "Ansicht des Lampensockels: 18 cm Höhe",
+      "stem": "Ansicht des Lampenschafts: 18 cm Höhe"
+    },
+    "dimensions": {
+      "height": "Höhe",
+      "discDiameter": "Scheibendurchmesser",
+      "baseDiameter": "Sockeldurchmesser",
+      "weight": "Gewicht"
+    }
   }
 }

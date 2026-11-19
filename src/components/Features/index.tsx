@@ -97,7 +97,7 @@ export default function Features() {
 
         const mm = gsap.matchMedia();
 
-        // Desktop: Horizontal pinning slider
+        // Desktop
         mm.add("(min-width: 769px)", () => {
           const getScrollAmount = () => {
             return -(track.scrollWidth - viewport.clientWidth);
@@ -147,7 +147,6 @@ export default function Features() {
                         src={card.src}
                         alt={card.title}
                         fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
                         className={styles.cardImage}
                     />
                   </div>
