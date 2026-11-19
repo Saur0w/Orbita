@@ -187,5 +187,29 @@
         "value": "Adjustable (2700K – 4000K)"
       }
     }
+  },
+  "USB": {
+    "diagrams": {
+      "usbAlt": "Orbita USB-C fast charging port diagram",
+      "batteryAlt": "Orbita battery compartment diagram"
+    },
+    "tableHeader": "Other Info",
+    "items": {
+      "batteryLife": {
+        "label": "Battery Life",
+        "line1": "Up to 12 hours",
+        "line2": "of continuous use"
+      },
+      "charging": {
+        "label": "Charging",
+        "line1": "USB-C fast charging"
+      },
+      "materials": {
+        "label": "Materials",
+        "line1": "Brushed aluminum",
+        "line2": "Steel core",
+        "line3": "Optical diffuser"
+      }
+    }
   }
 }

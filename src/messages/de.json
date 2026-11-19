@@ -187,5 +187,29 @@
         "value": "Einstellbar (2700K – 4000K)"
       }
     }
+  },
+  "USB": {
+    "diagrams": {
+      "usbAlt": "Diagramm des Orbita USB-C-Schnellladeanschlusses",
+      "batteryAlt": "Diagramm des Orbita Batteriefachs"
+    },
+    "tableHeader": "Weitere Infos",
+    "items": {
+      "batteryLife": {
+        "label": "Akkulaufzeit",
+        "line1": "Bis zu 12 Stunden",
+        "line2": "Dauerbetrieb"
+      },
+      "charging": {
+        "label": "Laden",
+        "line1": "USB-C-Schnellladung"
+      },
+      "materials": {
+        "label": "Materialien",
+        "line1": "Gebürstetes Aluminium",
+        "line2": "Stahlkern",
+        "line3": "Optischer Diffusor"
+      }
+    }
   }
 }

@@ -1,7 +1,7 @@
 .usbSection {
   width: 100%;
-  min-height: 100vh;
   min-height: 100dvh;
+  box-sizing: border-box;
   background-color: #0a0a0a;
   color: #f7f1e8;
   padding: clamp(3.5rem, 5.5vw, 5.5rem) clamp(1.25rem, 4vw, 4.5rem) clamp(3rem, 5vw, 4.5rem);
@@ -189,10 +189,10 @@
   height: 250px;
   border-radius: 50%;
   background: radial-gradient(
-    circle,
-    rgba(247, 241, 232, 0.18) 0%,
-    rgba(247, 241, 232, 0.06) 40%,
-    transparent 70%
+          circle,
+          rgba(247, 241, 232, 0.18) 0%,
+          rgba(247, 241, 232, 0.06) 40%,
+          transparent 70%
   );
   filter: blur(24px);
   pointer-events: none;
