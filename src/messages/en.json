@@ -64,5 +64,33 @@
       "alt": "Orbita Lamp preview",
       "cta": "Pre-order now"
     }
+  },
+  "Atmos": {
+    "tag": "(Key Features)",
+    "titleLine1": "ONE LAMP",
+    "titleLine2": "FOUR",
+    "titleLine3": "ATMOSPHERES",
+    "modes": {
+      "ambient": {
+        "title": "Ambient Mode",
+        "description": "Soft indirect illumination that creates a calm, relaxing atmosphere.",
+        "alt": "Modern circular desk lamp casting soft, warm indirect ambient illumination across a bedroom setup"
+      },
+      "focus": {
+        "title": "Focus Mode",
+        "description": "Directed lighting for reading, working, and everyday productivity.",
+        "alt": "Focused downward task lighting from a table lamp illuminating a desk workspace and camera equipment"
+      },
+      "night": {
+        "title": "Night Mode",
+        "description": "Warm, low-intensity light designed for evening environments.",
+        "alt": "Low-glare warm night lighting from a minimalist lamp creating a dim, relaxed atmosphere in a dark room"
+      },
+      "halo": {
+        "title": "Halo Mode",
+        "description": "A subtle glowing ring that transforms the lamp into an atmospheric design object.",
+        "alt": "Diffuse accent lighting from a circular lamp casting a soft perimeter halo glow onto the surface"
+      }
+    }
   }
 }

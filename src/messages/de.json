@@ -64,5 +64,33 @@
       "alt": "Orbita Lamp Vorschau",
       "cta": "Jetzt vorbestellen"
     }
+  },
+  "Atmos": {
+    "tag": "(Hauptmerkmale)",
+    "titleLine1": "EINE LAMPE",
+    "titleLine2": "VIER",
+    "titleLine3": "ATMOSPHÄREN",
+    "modes": {
+      "ambient": {
+        "title": "Ambiente-Modus",
+        "description": "Sanftes indirektes Licht für eine ruhige, entspannte Atmosphäre.",
+        "alt": "Moderne runde Tischlampe mit sanftem, warmem indirektem Umgebungslicht im Schlafzimmer"
+      },
+      "focus": {
+        "title": "Fokus-Modus",
+        "description": "Gezieltes Licht zum Lesen, Arbeiten und für den produktiven Alltag.",
+        "alt": "Gezieltes Arbeitslicht einer Tischlampe über einem Schreibtisch mit Kameraausrüstung"
+      },
+      "night": {
+        "title": "Nacht-Modus",
+        "description": "Warmes, gedimmtes Licht speziell für die Abendstunden.",
+        "alt": "Blendfreies, warmes Nachtlicht einer minimalistischen Lampe in einem dunklen Raum"
+      },
+      "halo": {
+        "title": "Halo-Modus",
+        "description": "Ein feiner leuchtender Ring, der die Lampe in ein atmosphärisches Designobjekt verwandelt.",
+        "alt": "Diffuses Akzentlicht einer runden Lampe, das einen sanften Lichtring auf die Oberfläche wirft"
+      }
+    }
   }
 }
