@@ -92,5 +92,27 @@
         "alt": "Diffuse accent lighting from a circular lamp casting a soft perimeter halo glow onto the surface"
       }
     }
+  },
+  "Features": {
+    "subHeading": "(Smart Features)",
+    "mainHeading": "Orbita integrates modern technology with intuitive controls",
+    "cards": {
+      "touch": {
+        "title": "1. Touch Control",
+        "description": "Minimal touch sensor located on the base allows seamless switching between lighting modes."
+      },
+      "smart": {
+        "title": "2. Smart Connectivity",
+        "description": "Compatible with smart home systems via Bluetooth."
+      },
+      "adaptive": {
+        "title": "3. Adaptive Brightness",
+        "description": "Automatic brightness adjustment depending on ambient light conditions."
+      },
+      "battery": {
+        "title": "4. Battery Powered",
+        "description": "Portable use with long-lasting rechargeable battery."
+      }
+    }
   }
 }

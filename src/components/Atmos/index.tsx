@@ -72,7 +72,7 @@ export default function Atmos() {
 
   useGSAP(
       () => {
-        // Split Line Mask Reveal 
+        // Split Line Mask Reveal
         let headerTitleSplit: SplitText | null = null;
         if (titleRef.current) {
           headerTitleSplit = new SplitText(titleRef.current, {

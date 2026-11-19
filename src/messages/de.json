@@ -92,5 +92,27 @@
         "alt": "Diffuses Akzentlicht einer runden Lampe, das einen sanften Lichtring auf die Oberfläche wirft"
       }
     }
+  },
+  "Features": {
+    "subHeading": "(Smarte Funktionen)",
+    "mainHeading": "Orbita verbindet moderne Technologie mit intuitiver Bedienung",
+    "cards": {
+      "touch": {
+        "title": "1. Touch-Steuerung",
+        "description": "Ein minimalistischer Touch-Sensor im Sockel ermöglicht den nahtlosen Wechsel zwischen den Lichtmodi."
+      },
+      "smart": {
+        "title": "2. Smarte Konnektivität",
+        "description": "Kompatibel mit Smart-Home-Systemen über Bluetooth."
+      },
+      "adaptive": {
+        "title": "3. Adaptive Helligkeit",
+        "description": "Automatische Helligkeitsanpassung je nach Umgebungslicht."
+      },
+      "battery": {
+        "title": "4. Akkubetrieb",
+        "description": "Kabellose Nutzung dank langlebigem, wiederaufladbarem Akku."
+      }
+    }
   }
 }
