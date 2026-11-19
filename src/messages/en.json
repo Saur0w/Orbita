@@ -169,5 +169,23 @@
       "baseDiameter": "Base Diameter",
       "weight": "Weight"
     }
+  },
+  "Source": {
+    "diagramAlt": "Light Source Integrated LED Module",
+    "tableHeader": "Light source info",
+    "items": {
+      "lightSource": {
+        "label": "Light Source",
+        "value": "Integrated LED module"
+      },
+      "brightness": {
+        "label": "Brightness",
+        "value": "Up to 850 lumens"
+      },
+      "colorTemperature": {
+        "label": "Color Temperature",
+        "value": "Adjustable (2700K – 4000K)"
+      }
+    }
   }
 }

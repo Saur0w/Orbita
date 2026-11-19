@@ -169,5 +169,23 @@
       "baseDiameter": "Sockeldurchmesser",
       "weight": "Gewicht"
     }
+  },
+  "Source": {
+    "diagramAlt": "Lichtquelle Integriertes LED-Modul",
+    "tableHeader": "Lichtquellen-Info",
+    "items": {
+      "lightSource": {
+        "label": "Lichtquelle",
+        "value": "Integriertes LED-Modul"
+      },
+      "brightness": {
+        "label": "Helligkeit",
+        "value": "Bis zu 850 Lumen"
+      },
+      "colorTemperature": {
+        "label": "Farbtemperatur",
+        "value": "Einstellbar (2700K – 4000K)"
+      }
+    }
   }
 }
