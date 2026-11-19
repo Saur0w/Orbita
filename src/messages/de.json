@@ -211,5 +211,27 @@
         "line3": "Optischer Diffusor"
       }
     }
+  },
+  "Sustainability": {
+    "label": "(Nachhaltigkeit)",
+    "heading": "Orbita wurde mit Blick auf Umweltverantwortung entworfen.",
+    "items": {
+      "led": {
+        "title": "Energieeffiziente LED-Technologie",
+        "description": "Verbraucht deutlich weniger Strom als herkömmliche Beleuchtung."
+      },
+      "life": {
+        "title": "Langlebige Komponenten",
+        "description": "LED-Module, ausgelegt für über 50.000 Betriebsstunden."
+      },
+      "battery": {
+        "title": "Austauschbares Akkusystem",
+        "description": "Verlängert die Lebensdauer des Produkts."
+      },
+      "recyclable": {
+        "title": "Recycelbare Materialien",
+        "description": "Der Lampenkörper besteht überwiegend aus recycelbarem Aluminium."
+      }
+    }
   }
 }

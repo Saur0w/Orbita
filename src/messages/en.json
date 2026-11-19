@@ -211,5 +211,27 @@
         "line3": "Optical diffuser"
       }
     }
+  },
+  "Sustainability": {
+    "label": "(Sustainability)",
+    "heading": "Orbita was designed with environmental responsibility in mind.",
+    "items": {
+      "led": {
+        "title": "Low Energy LED Technology",
+        "description": "Consumes significantly less power than traditional lighting."
+      },
+      "life": {
+        "title": "Long-Life Components",
+        "description": "LED modules designed for over 50,000 hours of operation."
+      },
+      "battery": {
+        "title": "Replaceable Battery System",
+        "description": "Extends product lifespan."
+      },
+      "recyclable": {
+        "title": "Recyclable Materials",
+        "description": "The lamp body is made primarily from recyclable aluminum."
+      }
+    }
   }
 }
