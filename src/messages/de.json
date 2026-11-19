@@ -254,5 +254,30 @@
     },
     "infoDesc": "Diese Schlichtheit ermöglicht es Orbita, sowohl als funktionales Objekt als auch als skulpturale Präsenz im Raum zu wirken",
     "cta": "Jetzt vorbestellen"
+  },
+  "FAQ": {
+    "label": "(Häufig gestellte Fragen)",
+    "items": {
+      "portable": {
+        "question": "Ist Orbita tragbar?",
+        "answer": "Ja. Orbita verfügt über einen wiederaufladbaren Akku, der bis zu 12 Stunden kabellosen Betrieb ermöglicht."
+      },
+      "brightness": {
+        "question": "Kann ich die Helligkeit anpassen?",
+        "answer": "Ja. Orbita bietet eine stufenlose Touch-Dimmung, mit der Sie sanft von weichem Umgebungslicht zu fokussiertem Arbeitslicht wechseln können."
+      },
+      "control": {
+        "question": "Wie bediene ich die Lampe?",
+        "answer": "Über einen dezenten kapazitiven Touch-Sensor am Sockel schalten Sie die Lampe per Tippen ein und aus und passen die Helligkeit durch Gedrückthalten mühelos an."
+      },
+      "led": {
+        "question": "Ist die LED austauschbar?",
+        "answer": "Orbita nutzt ein integriertes, hocheffizientes LED-Modul mit einer Lebensdauer von über 50.000 Stunden – entwickelt für Jahrzehnte ohne Austausch."
+      },
+      "smartHome": {
+        "question": "Funktioniert Orbita mit Smart-Home-Systemen?",
+        "answer": "Orbita ist bewusst als taktiles, ablenkungsfreies Objekt konzipiert und funktioniert unabhängig ohne WLAN oder Apps."
+      }
+    }
   }
 }
