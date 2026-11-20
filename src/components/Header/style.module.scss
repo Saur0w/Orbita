@@ -27,7 +27,6 @@ $ink: #232323;
   justify-content: space-between;
   z-index: 100;
   pointer-events: none;
-  border: none;
 
   .logoLink {
     pointer-events: auto;
@@ -107,7 +106,6 @@ $ink: #232323;
     justify-content: space-between;
     gap: 12px;
     @include glass-pill;
-    border: none;
   }
 
   .langButton {
@@ -191,9 +189,9 @@ $ink: #232323;
     transform: translateY(-6px);
     pointer-events: none;
     transition:
-      opacity 0.22s ease,
-      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-      visibility 0.22s ease;
+            opacity 0.22s ease,
+            transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+            visibility 0.22s ease;
   }
 
   .langDropdownOpen {
@@ -225,6 +223,20 @@ $ink: #232323;
   .langOptionActive {
     color: $cream;
     font-weight: 500;
+  }
+
+  @media (max-width: 1024px) {
+    .navPill {
+      padding: 0 18px;
+    }
+
+    .navList {
+      gap: 16px;
+    }
+
+    .navLink {
+      font-size: 13.5px;
+    }
   }
 
   @media (max-width: 860px) {

@@ -510,7 +510,7 @@ export default function Des() {
     );
 
     return (
-        <section className={styles.des} ref={desRef} id="the-lamp">
+        <section className={styles.des} ref={desRef} id="about">
             <div className={styles.contentWrapper}>
                 <section className={styles.textContainer}>
                     <div className={styles.text}>

@@ -380,22 +380,22 @@ export default function Footer() {
                 </div>
 
                 <div className={styles.emailCol}>
-          <span ref={emailLabelRef} className={styles.columnLabel}>
-            {t("labels.email")}
-          </span>
+                    <span ref={emailLabelRef} className={styles.columnLabel}>
+                        {t("labels.email")}
+                    </span>
                     <Magnetic>
                         <a href={`mailto:${t("email")}`} className={styles.emailLink}>
-              <span ref={emailTextRef} className={styles.emailText}>
-                {t("email")}
-              </span>
+                            <span ref={emailTextRef} className={styles.emailText}>
+                                {t("email")}
+                            </span>
                         </a>
                     </Magnetic>
                 </div>
 
                 <div className={styles.navCol}>
-          <span ref={navLabelRef} className={styles.columnLabel}>
-            {t("labels.navs")}
-          </span>
+                    <span ref={navLabelRef} className={styles.columnLabel}>
+                        {t("labels.navs")}
+                    </span>
                     <ul className={styles.linkList}>
                         {NAV_LINKS.map((link, idx) => (
                             <li key={link.key}>
@@ -404,14 +404,14 @@ export default function Footer() {
                                     onClick={(e) => handleSectionScroll(e, link.href)}
                                     className={styles.linkItem}
                                 >
-                  <span
-                      ref={(el) => {
-                          navLinksRef.current[idx] = el;
-                      }}
-                      className={styles.linkText}
-                  >
-                    {t(`nav.${link.key}`)}
-                  </span>
+                                    <span
+                                         ref={(el) => {
+                                            navLinksRef.current[idx] = el;
+                                        }}
+                                        className={styles.linkText}
+                                    >
+                                        {t(`nav.${link.key}`)}
+                                    </span>
                                 </a>
                             </li>
                         ))}
@@ -431,14 +431,14 @@ export default function Footer() {
                                     rel="noopener noreferrer"
                                     className={styles.linkItem}
                                 >
-                  <span
-                      ref={(el) => {
-                          socialLinksRef.current[idx] = el;
-                      }}
-                      className={styles.linkText}
-                  >
-                    {t(`socials.${link.key}`)}
-                  </span>
+                                    <span
+                                        ref={(el) => {
+                                            socialLinksRef.current[idx] = el;
+                                        }}
+                                        className={styles.linkText}
+                                    >
+                                        {t(`socials.${link.key}`)}
+                                    </span>
                                 </a>
                             </li>
                         ))}

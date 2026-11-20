@@ -1,24 +1,29 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type MouseEvent as ReactMouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import styles from "./style.module.scss";
-import { Link } from "next-view-transitions";
-import { Logo } from "@/components/Icons/logo";
+import { Link, useTransitionRouter } from "next-view-transitions";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { Logo } from "@/components/Icons/logo";
+import styles from "./style.module.scss";
 
-gsap.registerPlugin(useGSAP);
-
-interface WindowWithLenis {
-    lenis?: {
-        scrollTo?: (
-            target: HTMLElement | number | string,
-            options?: { offset?: number; duration?: number }
-        ) => void;
-    };
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(useGSAP, ScrollTrigger);
 }
+
+interface LenisLike {
+    scrollTo?: (
+        target: HTMLElement | number | string,
+        options?: { immediate?: boolean; force?: boolean; offset?: number; duration?: number }
+    ) => void;
+}
+
+type DocumentWithTransition = Document & {
+    startViewTransition?: (callback: () => void) => unknown;
+};
 
 const languages = [
     { label: "En", code: "en" },
@@ -42,6 +47,7 @@ export default function Header({ isReady }: HeaderProps) {
     const [isLangOpen, setIsLangOpen] = useState(false);
 
     const router = useRouter();
+    const transitionRouter = useTransitionRouter();
     const currentLocale = useLocale() as LocaleCode;
     const t = useTranslations("Header");
 
@@ -49,11 +55,43 @@ export default function Header({ isReady }: HeaderProps) {
         languages.find((l) => l.code === currentLocale)?.label ?? "En";
 
     const navItems = [
-        { label: t("theLamp"), href: "/#the-lamp" },
-        { label: t("features"), href: "/#features" },
-        { label: t("preorder"), href: "/preorder" },
-        { label: t("specification"), href: "/#specification" },
+        { label: t("theLamp"), href: "/#the-lamp", isHash: true },
+        { label: t("features"), href: "/#features", isHash: true },
+        { label: t("preorder"), href: "/preorder", isHash: false },
+        { label: t("specification"), href: "/#specification", isHash: true },
     ];
+
+    const getLenis = (): LenisLike | undefined => {
+        if (typeof window === "undefined") return undefined;
+        return (window as unknown as { lenis?: LenisLike }).lenis;
+    };
+
+    const jumpWithTransition = (getTop: () => number | null, hash?: string) => {
+        const performJump = () => {
+            const top = getTop();
+            if (top === null) return;
+
+            const lenis = getLenis();
+            if (lenis?.scrollTo) {
+                lenis.scrollTo(top, { immediate: true, force: true });
+            } else {
+                window.scrollTo(0, top);
+            }
+
+            ScrollTrigger.update();
+
+            if (hash !== undefined) {
+                window.history.replaceState(null, "", hash || window.location.pathname);
+            }
+        };
+
+        const doc = document as DocumentWithTransition;
+        if (doc.startViewTransition) {
+            doc.startViewTransition(performJump);
+        } else {
+            performJump();
+        }
+    };
 
     const handleLanguageChange = (code: LocaleCode) => {
         setLocaleCookie(code);
@@ -99,33 +137,49 @@ export default function Header({ isReady }: HeaderProps) {
         }
     );
 
-    const handleNavClick = (
-        e: React.MouseEvent<HTMLAnchorElement>,
+    const handleSectionClick = (
+        e: ReactMouseEvent<HTMLAnchorElement>,
         href: string
     ) => {
-        if (href.startsWith("/#") || href.startsWith("#")) {
-            const targetId = href.replace(/^\/?#/, "");
-            if (typeof window !== "undefined" && window.location.pathname === "/") {
-                const targetEl = document.getElementById(targetId);
-                if (targetEl) {
-                    e.preventDefault();
-                    const lenis = (window as unknown as WindowWithLenis).lenis;
-                    if (lenis?.scrollTo) {
-                        lenis.scrollTo(targetEl, {
-                            offset: -40,
-                            duration: 1.4,
-                        });
-                    } else {
-                        targetEl.scrollIntoView({ behavior: "smooth" });
-                    }
+        e.preventDefault();
+        const targetId = href.replace(/^\/?#/, "");
+        const hash = `#${targetId}`;
+
+        if (typeof window !== "undefined" && window.location.pathname === "/") {
+            jumpWithTransition(() => {
+                const target = document.getElementById(targetId);
+                if (!target) {
+                    return targetId === "about" ? 0 : null;
                 }
+
+                const scrollTarget = target.parentElement?.classList.contains("pin-spacer")
+                    ? target.parentElement
+                    : target;
+
+                return scrollTarget.getBoundingClientRect().top + window.scrollY;
+            }, hash);
+        } else {
+            transitionRouter.push(href);
+        }
+    };
+
+    const handleLogoClick = (e: ReactMouseEvent<HTMLAnchorElement>) => {
+        if (typeof window !== "undefined" && window.location.pathname === "/") {
+            e.preventDefault();
+            if (window.scrollY > 10) {
+                jumpWithTransition(() => 0, "");
             }
         }
     };
 
     return (
         <header className={styles.header} ref={headerRef}>
-            <Link href="/" className={styles.logoLink} aria-label="Orbita Home">
+            <Link
+                href="/"
+                onClick={handleLogoClick}
+                className={styles.logoLink}
+                aria-label="Orbita Home"
+            >
                 <Logo className={styles.logo} />
             </Link>
 
@@ -133,13 +187,19 @@ export default function Header({ isReady }: HeaderProps) {
                 <ul className={styles.navList}>
                     {navItems.map((item) => (
                         <li key={item.href} className={styles.navItem}>
-                            <Link
-                                href={item.href}
-                                className={styles.navLink}
-                                onClick={(e) => handleNavClick(e, item.href)}
-                            >
-                                {item.label}
-                            </Link>
+                            {item.isHash ? (
+                                <a
+                                    href={item.href}
+                                    className={styles.navLink}
+                                    onClick={(e) => handleSectionClick(e, item.href)}
+                                >
+                                    {item.label}
+                                </a>
+                            ) : (
+                                <Link href={item.href} className={styles.navLink}>
+                                    {item.label}
+                                </Link>
+                            )}
                         </li>
                     ))}
                 </ul>

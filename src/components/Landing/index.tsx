@@ -289,7 +289,7 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
     );
 
     return (
-        <section className={styles.landing} ref={landingRef}>
+        <section className={styles.landing} ref={landingRef} id="the-lamp">
             <div className={styles.bg}>
                 <video
                     ref={videoRef}
