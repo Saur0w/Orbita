@@ -279,5 +279,28 @@
         "answer": "Orbita ist bewusst als taktiles, ablenkungsfreies Objekt konzipiert und funktioniert unabhängig ohne WLAN oder Apps."
       }
     }
+  },
+  "Footer": {
+    "homeAriaLabel": "Orbita Startseite",
+    "labels": {
+      "email": "(E-Mail)",
+      "navs": "(Navigation)",
+      "socials": "(Socials)"
+    },
+    "email": "hello@orbitalight.com",
+    "nav": {
+      "about": "Über uns",
+      "theLamp": "Die Lampe",
+      "features": "Funktionen",
+      "specification": "Spezifikationen"
+    },
+    "socials": {
+      "instagram": "Instagram",
+      "x": "X",
+      "pinterest": "Pinterest"
+    },
+    "bannerAlt": "Orbita Lamp Vorschau",
+    "cardAlt": "Orbita Lamp auf Sockel",
+    "cta": "Jetzt vorbestellen"
   }
 }

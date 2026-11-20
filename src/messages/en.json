@@ -279,5 +279,28 @@
         "answer": "Orbita is intentionally designed as a tactile, distraction-free object and operates independently without Wi-Fi or apps."
       }
     }
+  },
+  "Footer": {
+    "homeAriaLabel": "Orbita Home",
+    "labels": {
+      "email": "(Email)",
+      "navs": "(Navs)",
+      "socials": "(Socials)"
+    },
+    "email": "hello@orbitalight.com",
+    "nav": {
+      "about": "About",
+      "theLamp": "The Lamp",
+      "features": "Features",
+      "specification": "Specification"
+    },
+    "socials": {
+      "instagram": "Instagram",
+      "x": "X",
+      "pinterest": "Pinterest"
+    },
+    "bannerAlt": "Orbita Lamp preview",
+    "cardAlt": "Orbita Lamp on stand",
+    "cta": "Pre-order now"
   }
 }
