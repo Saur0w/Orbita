@@ -27,7 +27,7 @@ type DocumentWithTransition = Document & {
 
 const languages = [
     { label: "En", code: "en" },
-    { label: "Ger", code: "de" },
+    { label: "De", code: "de" },
 ] as const;
 
 type LanguageLabel = (typeof languages)[number]["label"];
