@@ -21,7 +21,8 @@ $ink: #232323;
   }
 
   .textContainer {
-    min-height: 82vh;
+    min-height: 100vh;
+    min-height: 100svh;
     width: 100%;
     max-width: 1260px;
     margin: 0 auto;
@@ -32,7 +33,8 @@ $ink: #232323;
     z-index: 1;
 
     .text {
-      width: 100%;
+      width: fit-content;
+      max-width: 100%;
     }
   }
 
@@ -312,8 +314,6 @@ $ink: #232323;
     pointer-events: none;
   }
 
-  /* ---------- prefers-reduced-motion: static layout ---------- */
-
   &.reduced {
     .cardsOverlay {
       display: none;
@@ -330,8 +330,6 @@ $ink: #232323;
   }
 }
 
-/* ---------- Pill ---------- */
-
 .pill {
   position: relative;
   display: inline-flex;
@@ -346,7 +344,6 @@ $ink: #232323;
   overflow: hidden;
   cursor: default;
   font-size: inherit;
-  /* no CSS transition here: it fights the scrubbed GSAP border-color tween */
 
   .pillGhost {
     display: inline-block;
@@ -380,8 +377,6 @@ $ink: #232323;
   }
 }
 
-/* ---------- Responsive text ---------- */
-
 @media (max-width: 900px) {
   .des {
     .statement {
@@ -393,9 +388,11 @@ $ink: #232323;
 @media (max-width: 767px) {
   .des {
     .textContainer {
-      min-height: 70vh;
-      min-height: 70svh;
       padding-inline: 6vw;
+
+      .text {
+        width: 100%;
+      }
     }
 
     .line {
