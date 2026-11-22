@@ -42,6 +42,11 @@ const SOCIAL_LINKS = [
     { key: "pinterest", href: "https://pinterest.com" },
 ] as const;
 
+const CREDITS = {
+    designer: { label: "Designed by", name: "Qoreeb", href: "https://x.com/QoreebA" },
+    developer: { label: "Developed by", name: "Saurow", href: "https://x.com/sauroww" },
+} as const;
+
 export default function Footer() {
     const t = useTranslations("Footer");
     const locale = useLocale();
@@ -59,6 +64,7 @@ export default function Footer() {
     const bannerWrapperRef = useRef<HTMLDivElement | null>(null);
     const cardParallaxRef = useRef<HTMLDivElement | null>(null);
     const cardRef = useRef<HTMLDivElement | null>(null);
+    const creditsRef = useRef<HTMLDivElement | null>(null);
 
     const getLenis = (): LenisLike | undefined => {
         if (typeof window === "undefined") return undefined;
@@ -266,6 +272,21 @@ export default function Footer() {
                 });
             }
 
+            if (creditsRef.current && imageSectionRef.current) {
+                gsap.from(creditsRef.current, {
+                    opacity: 0,
+                    y: 8,
+                    duration: 1.1,
+                    delay: 0.25,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: imageSectionRef.current,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse",
+                    },
+                });
+            }
+
             const mm = gsap.matchMedia();
 
             mm.add("(min-width: 769px)", () => {
@@ -405,7 +426,7 @@ export default function Footer() {
                                     className={styles.linkItem}
                                 >
                                     <span
-                                         ref={(el) => {
+                                        ref={(el) => {
                                             navLinksRef.current[idx] = el;
                                         }}
                                         className={styles.linkText}
@@ -419,9 +440,9 @@ export default function Footer() {
                 </div>
 
                 <div className={styles.socialsCol}>
-          <span ref={socialsLabelRef} className={styles.columnLabel}>
-            {t("labels.socials")}
-          </span>
+                    <span ref={socialsLabelRef} className={styles.columnLabel}>
+                        {t("labels.socials")}
+                    </span>
                     <ul className={styles.linkList}>
                         {SOCIAL_LINKS.map((link, idx) => (
                             <li key={link.key}>
@@ -478,6 +499,36 @@ export default function Footer() {
                             </Link>
                         </div>
                     </div>
+                </div>
+
+                <div ref={creditsRef} className={styles.creditsBar}>
+                    <span className={styles.creditItem}>
+                        {CREDITS.designer.label}{" "}
+                        <a
+                            href={CREDITS.designer.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.creditLink}
+                        >
+                            {CREDITS.designer.name}
+                        </a>
+                    </span>
+
+                    <span className={styles.creditDivider} aria-hidden="true">
+                        ·
+                    </span>
+
+                    <span className={styles.creditItem}>
+                        {CREDITS.developer.label}{" "}
+                        <a
+                            href={CREDITS.developer.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.creditLink}
+                        >
+                            {CREDITS.developer.name}
+                        </a>
+                    </span>
                 </div>
             </div>
         </footer>
