@@ -14,7 +14,7 @@ $ink: #232323;
 }
 
 .header {
-  position: absolute;
+  position: fixed;
   opacity: 0;
   top: 26px;
   left: 0;
@@ -27,6 +27,15 @@ $ink: #232323;
   justify-content: space-between;
   z-index: 100;
   pointer-events: none;
+  will-change: transform, opacity;
+
+  &.headerHidden {
+    .logoLink,
+    .navPill,
+    .rightWrapper {
+      pointer-events: none;
+    }
+  }
 
   .logoLink {
     pointer-events: auto;

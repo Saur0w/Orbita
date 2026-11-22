@@ -33,6 +33,11 @@ const languages = [
 type LanguageLabel = (typeof languages)[number]["label"];
 type LocaleCode = (typeof languages)[number]["code"];
 
+const TOP_THRESHOLD = 80;
+const HIDE_THRESHOLD = 28;
+const SHOW_THRESHOLD = 16;
+const HIDDEN_Y = -100;
+
 function setLocaleCookie(code: LocaleCode) {
     document.cookie = `NEXT_LOCALE=${code}; path=/; max-age=31536000; SameSite=Lax`;
 }
@@ -44,6 +49,11 @@ interface HeaderProps {
 export default function Header({ isReady }: HeaderProps) {
     const headerRef = useRef<HTMLElement>(null);
     const rightWrapperRef = useRef<HTMLDivElement>(null);
+    const lastScrollYRef = useRef(0);
+    const directionAccumRef = useRef(0);
+    const isHiddenRef = useRef(false);
+    const isJumpingRef = useRef(false);
+
     const [isLangOpen, setIsLangOpen] = useState(false);
 
     const router = useRouter();
@@ -66,10 +76,42 @@ export default function Header({ isReady }: HeaderProps) {
         return (window as unknown as { lenis?: LenisLike }).lenis;
     };
 
+    const showHeader = () => {
+        if (!headerRef.current || !isHiddenRef.current) return;
+        isHiddenRef.current = false;
+        headerRef.current.classList.remove(styles.headerHidden);
+
+        gsap.to(headerRef.current, {
+            y: 0,
+            opacity: 1,
+            duration: 0.85,
+            ease: "power3.out",
+            force3D: true,
+            overwrite: "auto",
+        });
+    };
+
+    const hideHeader = () => {
+        if (!headerRef.current || isHiddenRef.current) return;
+        isHiddenRef.current = true;
+        headerRef.current.classList.add(styles.headerHidden);
+        setIsLangOpen(false);
+
+        gsap.to(headerRef.current, {
+            y: HIDDEN_Y,
+            duration: 0.65,
+            ease: "power2.inOut",
+            force3D: true,
+            overwrite: "auto",
+        });
+    };
+
     const jumpWithTransition = (getTop: () => number | null, hash?: string) => {
         const performJump = () => {
             const top = getTop();
             if (top === null) return;
+
+            isJumpingRef.current = true;
 
             const lenis = getLenis();
             if (lenis?.scrollTo) {
@@ -83,6 +125,16 @@ export default function Header({ isReady }: HeaderProps) {
             if (hash !== undefined) {
                 window.history.replaceState(null, "", hash || window.location.pathname);
             }
+
+            if (top <= TOP_THRESHOLD) {
+                showHeader();
+            }
+
+            requestAnimationFrame(() => {
+                lastScrollYRef.current = Math.max(window.scrollY, 0);
+                directionAccumRef.current = 0;
+                isJumpingRef.current = false;
+            });
         };
 
         const doc = document as DocumentWithTransition;
@@ -119,9 +171,13 @@ export default function Header({ isReady }: HeaderProps) {
                 gsap.set(headerRef.current, {
                     y: -24,
                     opacity: 0,
+                    force3D: true,
                 });
                 return;
             }
+
+            isHiddenRef.current = false;
+            headerRef.current?.classList.remove(styles.headerHidden);
 
             gsap.to(headerRef.current, {
                 y: 0,
@@ -129,6 +185,8 @@ export default function Header({ isReady }: HeaderProps) {
                 duration: 0.9,
                 ease: "power3.out",
                 delay: 0.1,
+                force3D: true,
+                overwrite: "auto",
             });
         },
         {
@@ -136,6 +194,65 @@ export default function Header({ isReady }: HeaderProps) {
             scope: headerRef,
         }
     );
+
+    useEffect(() => {
+        if (!isReady) return;
+
+        lastScrollYRef.current = Math.max(window.scrollY, 0);
+        directionAccumRef.current = 0;
+
+        const handleScroll = () => {
+            const currentY = Math.max(window.scrollY, 0);
+
+            if (isJumpingRef.current) {
+                lastScrollYRef.current = currentY;
+                directionAccumRef.current = 0;
+                return;
+            }
+
+            const maxScroll =
+                document.documentElement.scrollHeight - window.innerHeight;
+
+            if (currentY <= TOP_THRESHOLD) {
+                showHeader();
+                lastScrollYRef.current = currentY;
+                directionAccumRef.current = 0;
+                return;
+            }
+
+            // Ignore rubber-band overscroll past the bottom of the document
+            if (currentY >= maxScroll) {
+                lastScrollYRef.current = currentY;
+                return;
+            }
+
+            const diff = currentY - lastScrollYRef.current;
+            lastScrollYRef.current = currentY;
+
+            if (diff === 0) return;
+
+            // Reset accumulator when scroll direction reverses
+            if (
+                (diff > 0 && directionAccumRef.current < 0) ||
+                (diff < 0 && directionAccumRef.current > 0)
+            ) {
+                directionAccumRef.current = 0;
+            }
+
+            directionAccumRef.current += diff;
+
+            if (directionAccumRef.current >= HIDE_THRESHOLD) {
+                hideHeader();
+                directionAccumRef.current = 0;
+            } else if (directionAccumRef.current <= -SHOW_THRESHOLD) {
+                showHeader();
+                directionAccumRef.current = 0;
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [isReady]);
 
     const handleSectionClick = (
         e: ReactMouseEvent<HTMLAnchorElement>,
