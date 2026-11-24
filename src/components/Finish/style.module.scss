@@ -1,3 +1,13 @@
+@mixin glassBG($blur: 20px) {
+  background: linear-gradient(
+    180deg,
+    rgba(247, 241, 231, 0.7) 0%,
+    rgba(247, 241, 232, 0.3) 100%
+  );
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+}
+
 .finish {
   height: 100dvh;
   width: 100%;
