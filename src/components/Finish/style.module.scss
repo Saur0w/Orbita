@@ -1,11 +1,13 @@
-@mixin glassBG($blur: 20px) {
+@mixin glassBG($opacity: 0.22, $blur: 20px, $angle: 135deg) {
   background: linear-gradient(
-    180deg,
-    rgba(247, 241, 231, 0.7) 0%,
-    rgba(247, 241, 232, 0.3) 100%
+    $angle,
+    rgba(247, 241, 232, calc(0.7 * $opacity)) 0%,
+    rgba(247, 241, 232, calc(0.3 * $opacity)) 100%
   );
   backdrop-filter: blur($blur);
   -webkit-backdrop-filter: blur($blur);
+  border: 1px solid rgba(247, 241, 232, 0.22);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
 }
 
 .finish {
@@ -53,5 +55,69 @@
       bottom: 16px;
       justify-content: center;
     }
+  }
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.bottomBar {
+  position: absolute;
+  left: clamp(20px, 2.5vw, 32px);
+  right: clamp(20px, 2.5vw, 32px);
+  bottom: clamp(20px, 2.5vw, 32px);
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.previewCard {
+  @include glassBG($opacity: 0.16, $blur: 20px, $angle: 180deg);
+  pointer-events: auto;
+  box-sizing: border-box;
+  width: 256px;
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.previewThumb {
+  position: relative;
+  width: 100%;
+  height: 166px;
+  border-radius: 4px;
+  background-color: #161618;
+  overflow: hidden;
+
+  img {
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+.preorderBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 42px;
+  border-radius: 4px;
+  background-color: #F7F1E8;
+  color: #4B4841;
+  font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+
+  &:active {
+    opacity: 0.9;
   }
 }

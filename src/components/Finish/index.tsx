@@ -5,6 +5,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useRef, useState } from 'react';
+import Image from "next/image";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -71,6 +73,17 @@ export default function Finish() {
       </div>
 
       <div className={styles.stage} aria-hidden="true" />
+
+      <div className={styles.bottomBar}>
+        <div className={styles.previewCard}>
+          <div className={styles.previewThumb}>
+            <Image src="/images/lamp.jpg" alt="Preorder" fill /> 
+          </div>
+          <Link href="/preorder" className={styles.preorderBtn}>
+            Pre-order now
+          </Link>
+        </div>
+      </div>
     </section>
   );
 }
