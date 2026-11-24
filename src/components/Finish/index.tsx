@@ -83,6 +83,25 @@ export default function Finish() {
             Pre-order now
           </Link>
         </div>
+
+        <div className={styles.controls}>
+          <div className={styles.toggle} role="tablist" aria-label="Lamp Finish">
+            {(Object.keys(FINISHES) as FinishKey[]).map((key) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={activeFinish === key}
+                className={`${styles.toggleBtn} ${
+                  activeFinish === key ? styles.active : ""
+                }`}
+                onClick={() => setActiveFinish(key)}
+              >
+                {FINISHES[key].label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
