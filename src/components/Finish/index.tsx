@@ -85,7 +85,12 @@ export default function Finish() {
         </div>
 
         <div className={styles.controls}>
-          <div className={styles.toggle} role="tablist" aria-label="Lamp Finish">
+          <div 
+            className={styles.toggle} 
+            data-active={activeFinish}
+            role="tablist" 
+            aria-label="Lamp Finish"
+          >
             {(Object.keys(FINISHES) as FinishKey[]).map((key) => (
               <button
                 key={key}
