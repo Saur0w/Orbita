@@ -477,6 +477,7 @@ export default function Footer() {
                         sizes="100vw"
                         priority
                         className={styles.bannerImage}
+                        unoptimized
                     />
                 </div>
 
