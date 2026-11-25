@@ -67,6 +67,10 @@
       opacity: 0;
       will-change: transform;
     }
+
+    .mobileWord {
+      display: none;
+    }
   }
 
   .scrollDown,
@@ -179,14 +183,39 @@
     .heroTextOverlay {
       top: 48%;
       padding-inline: 14px;
+      display: grid;
+      justify-content: start;
+      justify-items: start;
+      align-items: center;
 
-      .leftHeading {
+      .leftHeading,
+      .rightHeading {
+        grid-area: 1 / 1;
         font-size: clamp(38px, 10.5vw, 48px);
         line-height: 1.02;
+        padding-right: 0;
       }
 
-      .rightHeading {
+      .rightHeading .lineMask:first-child {
+        visibility: hidden;
+      }
+
+      .lineMask {
+        perspective: 800px;
+        transform-style: preserve-3d;
+      }
+
+      .lineInner {
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+
+      .desktopWord {
         display: none;
+      }
+
+      .mobileWord {
+        display: inline;
       }
     }
 

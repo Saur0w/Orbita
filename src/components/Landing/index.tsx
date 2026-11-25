@@ -37,6 +37,7 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
 
     const leftLines = [t("leftLine1"), t("leftLine2"), t("leftLine3")];
     const rightLines = [t("rightLine1"), t("rightLine2"), t("rightLine3")];
+    const splitInOnMobile = rightLines[0].endsWith(" in");
 
     const landingRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -127,80 +128,169 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
     useEffect(() => {
         if (!isTriggered) return;
 
-        const leftEls = leftLinesRef.current.filter(Boolean);
-        const rightEls = rightLinesRef.current.filter(Boolean);
+        const leftEls = leftLinesRef.current.filter(Boolean) as HTMLSpanElement[];
+        const rightEls = rightLinesRef.current.filter(Boolean) as HTMLSpanElement[];
         const bottomLabels = [
             scrollDownInnerRef.current,
             mobileBrandInnerRef.current,
         ].filter(Boolean);
 
-        const tl = gsap.timeline({
-            delay: VIDEO_START_DELAY_MS / 1000,
-            onStart: () => {
-                playVideo();
-            },
-        });
+        const mm = gsap.matchMedia();
 
-        tl.fromTo(
-            leftEls,
-            { yPercent: 115, y: 0, opacity: 1 },
+        mm.add(
             {
-                yPercent: 0,
-                y: 0,
-                opacity: 1,
-                duration: 0.85,
-                stagger: 0.1,
-                ease: "power3.out",
+                isDesktop: "(min-width: 768px)",
+                isMobile: "(max-width: 767px)",
             },
-            0
+            (context) => {
+                const { isDesktop } = context.conditions!;
+
+                const leftSwitchEls = leftEls.slice(1);
+                const rightSwitchEls = rightEls.slice(1);
+
+                gsap.set(leftEls, { yPercent: 115, y: 0, rotateX: 0, autoAlpha: 1 });
+                if (isDesktop) {
+                    gsap.set(rightEls, { yPercent: 115, y: 0, rotateX: 0, autoAlpha: 1 });
+                } else {
+                    gsap.set(rightEls[0], { autoAlpha: 0 });
+                    gsap.set(rightSwitchEls, { yPercent: 0, rotateX: -85, autoAlpha: 0 });
+                }
+
+                const entranceTl = gsap.timeline({
+                    delay: VIDEO_START_DELAY_MS / 1000,
+                    onStart: () => {
+                        playVideo();
+                    },
+                });
+
+                entranceTl.fromTo(
+                    leftEls,
+                    { yPercent: 115, y: 0, autoAlpha: 1 },
+                    {
+                        yPercent: 0,
+                        y: 0,
+                        autoAlpha: 1,
+                        duration: 0.85,
+                        stagger: 0.1,
+                        ease: "power3.out",
+                    },
+                    0
+                );
+
+                if (isDesktop) {
+                    entranceTl.fromTo(
+                        rightEls,
+                        { yPercent: 115, y: 0, autoAlpha: 1 },
+                        {
+                            yPercent: 0,
+                            y: 0,
+                            autoAlpha: 1,
+                            duration: 0.85,
+                            stagger: 0.1,
+                            ease: "power3.out",
+                        },
+                        0.1
+                    );
+                }
+
+                if (cardRef.current) {
+                    entranceTl.fromTo(
+                        cardRef.current,
+                        { y: 24, opacity: 0, scale: 0.96 },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            scale: 1,
+                            duration: 0.8,
+                            ease: "power3.out",
+                        },
+                        0.25
+                    );
+                }
+
+                if (bottomLabels.length > 0) {
+                    entranceTl.fromTo(
+                        bottomLabels,
+                        { y: 14, opacity: 0 },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            duration: 0.7,
+                            stagger: 0.06,
+                            ease: "power3.out",
+                        },
+                        0.3
+                    );
+                }
+
+                if (!isDesktop && leftSwitchEls.length && rightSwitchEls.length) {
+                    const switchMasks = [
+                        ...leftSwitchEls.map((el) => el.parentElement),
+                        ...rightSwitchEls.map((el) => el.parentElement),
+                    ].filter(Boolean) as HTMLElement[];
+
+                    gsap.set([...leftSwitchEls, ...rightSwitchEls], {
+                        transformPerspective: 800,
+                        transformOrigin: "50% 50% -12px",
+                    });
+
+                    const cycleTl = gsap.timeline({
+                        repeat: -1,
+                        paused: true,
+                    });
+
+                    cycleTl
+                        .to({}, { duration: 2.6 })
+                        .to(leftSwitchEls, {
+                            rotateX: 85,
+                            autoAlpha: 0,
+                            duration: 0.45,
+                            stagger: 0.06,
+                            ease: "power2.in",
+                        })
+                        .set(rightSwitchEls, { rotateX: -85, yPercent: 0, autoAlpha: 0 })
+                        .to(
+                            rightSwitchEls,
+                            {
+                                rotateX: 0,
+                                autoAlpha: 1,
+                                duration: 0.65,
+                                stagger: 0.08,
+                                ease: "power3.out",
+                            },
+                            "+=0.04"
+                        )
+                        .to({}, { duration: 2.6 })
+                        .to(rightSwitchEls, {
+                            rotateX: 85,
+                            autoAlpha: 0,
+                            duration: 0.45,
+                            stagger: 0.06,
+                            ease: "power2.in",
+                        })
+                        .set(leftSwitchEls, { rotateX: -85, yPercent: 0, autoAlpha: 0 })
+                        .to(
+                            leftSwitchEls,
+                            {
+                                rotateX: 0,
+                                autoAlpha: 1,
+                                duration: 0.65,
+                                stagger: 0.08,
+                                ease: "power3.out",
+                            },
+                            "+=0.04"
+                        );
+
+                    entranceTl.eventCallback("onComplete", () => {
+                        gsap.set(switchMasks, { overflow: "visible" });
+                        cycleTl.play(0);
+                    });
+                }
+            }
         );
-
-        tl.fromTo(
-            rightEls,
-            { yPercent: 115, y: 0, opacity: 1 },
-            {
-                yPercent: 0,
-                y: 0,
-                opacity: 1,
-                duration: 0.85,
-                stagger: 0.1,
-                ease: "power3.out",
-            },
-            0.1
-        );
-
-        if (cardRef.current) {
-            tl.fromTo(
-                cardRef.current,
-                { y: 24, opacity: 0, scale: 0.96 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.8,
-                    ease: "power3.out",
-                },
-                0.25
-            );
-        }
-
-        if (bottomLabels.length > 0) {
-            tl.fromTo(
-                bottomLabels,
-                { y: 14, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.7,
-                    stagger: 0.06,
-                    ease: "power3.out",
-                },
-                0.3
-            );
-        }
 
         return () => {
-            tl.kill();
+            mm.revert();
         };
     }, [isTriggered, playVideo]);
 
@@ -230,18 +320,23 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
                         },
                     });
 
-                    gsap.to(`.${styles.leftHeading}`, {
-                        yPercent: isDesktop ? -45 : -30,
-                        opacity: 0,
-                        filter: "blur(6px)",
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: landingRef.current,
-                            start: "top top",
-                            end: "70% top",
-                            scrub: true,
-                        },
-                    });
+                    gsap.to(
+                        isDesktop
+                            ? `.${styles.leftHeading}`
+                            : [`.${styles.leftHeading}`, `.${styles.rightHeading}`],
+                        {
+                            yPercent: isDesktop ? -45 : -30,
+                            opacity: 0,
+                            filter: "blur(6px)",
+                            ease: "none",
+                            scrollTrigger: {
+                                trigger: landingRef.current,
+                                start: "top top",
+                                end: "70% top",
+                                scrub: true,
+                            },
+                        }
+                    );
 
                     if (isDesktop) {
                         gsap.to(`.${styles.rightHeading}`, {
@@ -326,7 +421,19 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
                                 }}
                                 className={styles.lineInner}
                             >
-                                {line}
+                                {splitInOnMobile && index === 0 ? (
+                                    <>
+                                        {line.slice(0, -3)}
+                                        <span className={styles.desktopWord}>{" in"}</span>
+                                    </>
+                                ) : splitInOnMobile && index === 1 ? (
+                                    <>
+                                        <span className={styles.mobileWord}>{"in "}</span>
+                                        {line}
+                                    </>
+                                ) : (
+                                    line
+                                )}
                             </span>
                         </span>
                     ))}

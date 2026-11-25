@@ -16,6 +16,7 @@ if (typeof window !== "undefined") {
 }
 
 type FinishKey = "silver" | "gold";
+
 type FinishDes = {
   label: string;
   description: string;
