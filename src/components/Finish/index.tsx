@@ -337,7 +337,7 @@ export default function Finish() {
             className={styles.toggle} 
             data-active={activeFinish}
             role="tablist" 
-            aria-label="Lamp Finish"
+            aria-label={t("tablistLabel")}
           >
             {FINISH_KEYS.map((key) => (
               <button

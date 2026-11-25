@@ -152,7 +152,8 @@
         "description": "A warm anodized finish designed to complement natural interiors.",
         "alt": "Orbita Lamp Gold Finish"
       }
-    }
+    },
+    "tablistLabel": "Lamp Finish"
   },
   "TechnicalSpecs": {
     "title": "Technical Specifications",
