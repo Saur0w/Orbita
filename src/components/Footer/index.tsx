@@ -12,6 +12,7 @@ import { useGSAP } from "@gsap/react";
 import styles from "./style.module.scss";
 import { Logo } from "../Icons/logo";
 import Magnetic from "@/ui/Magnetic";
+import FooterImage from "../../../public/images/footer.png";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, useGSAP);
@@ -470,12 +471,11 @@ export default function Footer() {
             <div ref={imageSectionRef} className={styles.imageSection}>
                 <div ref={bannerWrapperRef} className={styles.bannerWrapper}>
                     <Image
-                        src="/images/footer.png"
+                        src={FooterImage}
                         alt={t("bannerAlt")}
                         fill
                         sizes="100vw"
                         priority
-                        unoptimized
                         className={styles.bannerImage}
                     />
                 </div>

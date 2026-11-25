@@ -8,6 +8,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
+import philoBanner from "../../../public/images/philo.png";
 import styles from "./style.module.scss";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -23,7 +24,6 @@ export default function Philo() {
     const tagRef = useRef<HTMLSpanElement | null>(null);
     const titleRef = useRef<HTMLHeadingElement | null>(null);
     const imageSectionRef = useRef<HTMLDivElement | null>(null);
-    const imageRef = useRef<HTMLImageElement | null>(null);
     const infoCardRef = useRef<HTMLDivElement | null>(null);
     const infoHeadingRef = useRef<HTMLHeadingElement | null>(null);
     const elementsListRef = useRef<HTMLDivElement | null>(null);
@@ -157,30 +157,12 @@ export default function Philo() {
             const mm = gsap.matchMedia();
 
             mm.add("(min-width: 769px)", () => {
-                if (imageRef.current) {
-                    gsap.fromTo(
-                        imageRef.current,
-                        { yPercent: -2.8, scale: 1.08 },
-                        {
-                            yPercent: 2.8,
-                            scale: 1.06,
-                            ease: "none",
-                            scrollTrigger: {
-                                trigger: imageSectionRef.current,
-                                start: "top bottom",
-                                end: "bottom top",
-                                scrub: 1.2,
-                            },
-                        }
-                    );
-                }
-
                 if (infoCardRef.current) {
                     gsap.fromTo(
                         infoCardRef.current,
-                        { y: 30 },
+                        { y: 24 },
                         {
-                            y: -30,
+                            y: -24,
                             ease: "none",
                             scrollTrigger: {
                                 trigger: imageSectionRef.current,
@@ -234,8 +216,7 @@ export default function Philo() {
 
             <div ref={imageSectionRef} className={styles.imageSection}>
                 <Image
-                    ref={imageRef}
-                    src="/images/philo.png"
+                    src={philoBanner}
                     alt={t("imageAlt")}
                     fill
                     sizes="100vw"

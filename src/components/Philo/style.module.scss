@@ -115,10 +115,9 @@
 
 .bannerImage {
   object-fit: cover;
-  object-position: center 55%;
+  object-position: center;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
 
   @media (max-width: 768px) {
     object-position: 31% 58%;
