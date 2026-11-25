@@ -2,6 +2,7 @@
 
 import styles from "./style.module.scss";
 import Image from "next/image";
+import { Link } from "next-view-transitions";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -453,13 +454,13 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
                                 priority
                             />
                         </div>
-                        <button
-                            type="button"
+                        <Link
+                            href="/preorder"
                             className={styles.cardButton}
                             data-perspective-trigger
                         >
                             <PerspectiveText label={item.title} />
-                        </button>
+                        </Link>
                     </div>
                 ))}
             </div>
