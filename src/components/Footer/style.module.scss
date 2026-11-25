@@ -146,9 +146,21 @@
   }
 }
 
+.linkRevealMask {
+  display: inline-block;
+  overflow-x: visible;
+  overflow-y: clip;
+  padding-top: 0.2em;
+  margin-top: -0.2em;
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+  vertical-align: bottom;
+}
+
 .emailText {
   display: inline-block;
   line-height: inherit;
+  will-change: transform;
 }
 
 .navCol,
@@ -174,13 +186,14 @@
   transition: opacity 0.2s ease;
 
   &:hover {
-    opacity: 0.55;
+    opacity: 0.72;
   }
 }
 
 .linkText {
   display: inline-block;
   line-height: inherit;
+  will-change: transform;
 }
 
 .imageSection {
@@ -357,6 +370,9 @@
 }
 
 .creditItem {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.28em;
   font-family: "Neue Montreal", sans-serif;
   font-size: 0.75rem;
   font-weight: 400;
@@ -372,14 +388,14 @@
 
 .creditLink {
   pointer-events: auto;
+  display: inline-flex;
+  align-items: baseline;
   color: rgba(247, 241, 232, 0.9);
   text-decoration: none;
   transition: color 0.2s ease, opacity 0.2s ease;
 
   &:hover {
     color: #ffffff;
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
 }
 

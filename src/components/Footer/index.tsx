@@ -13,6 +13,7 @@ import styles from "./style.module.scss";
 import { Logo } from "../Icons/logo";
 import Magnetic from "@/ui/Magnetic";
 import FooterImage from "../../../public/images/footer.png";
+import PerspectiveText from "@/ui/PerspectiveText";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, useGSAP);
@@ -131,9 +132,7 @@ export default function Footer() {
             if (!contextSafe) return;
 
             let isCancelled = false;
-            let emailSplit: SplitText | null = null;
             let labelSplit: SplitText | null = null;
-            let linksSplit: SplitText | null = null;
             let revealTimeline: gsap.core.Timeline | null = null;
 
             const initSplitText = contextSafe(() => {
@@ -141,17 +140,7 @@ export default function Footer() {
 
                 revealTimeline?.scrollTrigger?.kill();
                 revealTimeline?.kill();
-                emailSplit?.revert();
                 labelSplit?.revert();
-                linksSplit?.revert();
-
-                if (emailTextRef.current) {
-                    emailSplit = new SplitText(emailTextRef.current, {
-                        type: "lines",
-                        mask: "lines",
-                        linesClass: `${styles.splitLine} splitLine`,
-                    });
-                }
 
                 const labelElements = [
                     emailLabelRef.current,
@@ -171,14 +160,6 @@ export default function Footer() {
                     ...navLinksRef.current,
                     ...socialLinksRef.current,
                 ].filter(Boolean) as HTMLElement[];
-
-                if (linkElements.length > 0) {
-                    linksSplit = new SplitText(linkElements, {
-                        type: "lines",
-                        mask: "lines",
-                        linesClass: `${styles.splitLine} splitLine`,
-                    });
-                }
 
                 revealTimeline = gsap.timeline({
                     scrollTrigger: {
@@ -231,11 +212,12 @@ export default function Footer() {
                     );
                 }
 
-                if (emailSplit && emailSplit.lines.length > 0) {
-                    revealTimeline.from(
-                        emailSplit.lines,
+                if (emailTextRef.current) {
+                    revealTimeline.fromTo(
+                        emailTextRef.current,
+                        { yPercent: 130 },
                         {
-                            yPercent: 115,
+                            yPercent: 0,
                             duration: 1.65,
                             ease: "luxuryMask",
                         },
@@ -243,11 +225,12 @@ export default function Footer() {
                     );
                 }
 
-                if (linksSplit && linksSplit.lines.length > 0) {
-                    revealTimeline.from(
-                        linksSplit.lines,
+                if (linkElements.length > 0) {
+                    revealTimeline.fromTo(
+                        linkElements,
+                        { yPercent: 130 },
                         {
-                            yPercent: 115,
+                            yPercent: 0,
                             duration: 1.45,
                             stagger: 0.065,
                             ease: "luxuryMask",
@@ -374,9 +357,7 @@ export default function Footer() {
                 isCancelled = true;
                 revealTimeline?.scrollTrigger?.kill();
                 revealTimeline?.kill();
-                emailSplit?.revert();
                 labelSplit?.revert();
-                linksSplit?.revert();
                 mm.revert();
             };
         },
@@ -406,9 +387,15 @@ export default function Footer() {
                         {t("labels.email")}
                     </span>
                     <Magnetic>
-                        <a href={`mailto:${t("email")}`} className={styles.emailLink}>
-                            <span ref={emailTextRef} className={styles.emailText}>
-                                {t("email")}
+                        <a
+                            href={`mailto:${t("email")}`}
+                            className={styles.emailLink}
+                            data-perspective-trigger
+                        >
+                            <span className={styles.linkRevealMask}>
+                                <span ref={emailTextRef} className={styles.emailText}>
+                                    <PerspectiveText label={t("email")} />
+                                </span>
                             </span>
                         </a>
                     </Magnetic>
@@ -425,14 +412,17 @@ export default function Footer() {
                                     href={link.href}
                                     onClick={(e) => handleSectionScroll(e, link.href)}
                                     className={styles.linkItem}
+                                    data-perspective-trigger
                                 >
-                                    <span
-                                        ref={(el) => {
-                                            navLinksRef.current[idx] = el;
-                                        }}
-                                        className={styles.linkText}
-                                    >
-                                        {t(`nav.${link.key}`)}
+                                    <span className={styles.linkRevealMask}>
+                                        <span
+                                            ref={(el) => {
+                                                navLinksRef.current[idx] = el;
+                                            }}
+                                            className={styles.linkText}
+                                        >
+                                            <PerspectiveText label={t(`nav.${link.key}`)} />
+                                        </span>
                                     </span>
                                 </a>
                             </li>
@@ -452,14 +442,17 @@ export default function Footer() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className={styles.linkItem}
+                                    data-perspective-trigger
                                 >
-                                    <span
-                                        ref={(el) => {
-                                            socialLinksRef.current[idx] = el;
-                                        }}
-                                        className={styles.linkText}
-                                    >
-                                        {t(`socials.${link.key}`)}
+                                    <span className={styles.linkRevealMask}>
+                                        <span
+                                            ref={(el) => {
+                                                socialLinksRef.current[idx] = el;
+                                            }}
+                                            className={styles.linkText}
+                                        >
+                                            <PerspectiveText label={t(`socials.${link.key}`)} />
+                                        </span>
                                     </span>
                                 </a>
                             </li>
@@ -495,8 +488,12 @@ export default function Footer() {
                                 />
                             </div>
 
-                            <Link href="/preorder" className={styles.cardButton}>
-                                {t("cta")}
+                            <Link
+                                href="/preorder"
+                                className={styles.cardButton}
+                                data-perspective-trigger
+                            >
+                                <PerspectiveText label={t("cta")} />
                             </Link>
                         </div>
                     </div>
@@ -504,14 +501,15 @@ export default function Footer() {
 
                 <div ref={creditsRef} className={styles.creditsBar}>
                     <span className={styles.creditItem}>
-                        {CREDITS.designer.label}{" "}
+                        <span>{CREDITS.designer.label}</span>
                         <a
                             href={CREDITS.designer.href}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={styles.creditLink}
+                            data-perspective-trigger
                         >
-                            {CREDITS.designer.name}
+                            <PerspectiveText label={CREDITS.designer.name} />
                         </a>
                     </span>
 
@@ -520,14 +518,15 @@ export default function Footer() {
                     </span>
 
                     <span className={styles.creditItem}>
-                        {CREDITS.developer.label}{" "}
+                        <span>{CREDITS.developer.label}</span>
                         <a
                             href={CREDITS.developer.href}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={styles.creditLink}
+                            data-perspective-trigger
                         >
-                            {CREDITS.developer.name}
+                            <PerspectiveText label={CREDITS.developer.name} />
                         </a>
                     </span>
                 </div>
