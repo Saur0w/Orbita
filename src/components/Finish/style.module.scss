@@ -92,6 +92,12 @@
   align-items: flex-end;
   justify-content: space-between;
   pointer-events: none;
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 10px;
+  }
 }
 
 .previewCard {
@@ -104,6 +110,10 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 
 .previewThumb {
@@ -113,6 +123,10 @@
   border-radius: 4px;
   background-color: #161618;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    height: 112px;
+  }
 
   img {
     object-fit: cover;
@@ -203,4 +217,85 @@
   &.active {
     color: #232323;
   }
+}
+
+.infoCard {
+  @include glassBG($opacity: 0.16, $blur: 20px, $angle: 180deg);
+  box-sizing: border-box;
+  width: 100%;
+  height: 232px;
+  padding: 20px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  @media (max-width: 768px) {
+    height: auto;
+    min-height: 156px;
+    padding: 16px;
+  }
+}
+
+.swatchRing {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 1px solid rgba(247, 241, 232, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.swatchDot {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transition: background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.infoTextTrack {
+  position: relative;
+  width: 100%;
+  display: grid;
+}
+
+.infoText {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+
+  &.infoTextActive {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+.infoTitle {
+  font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #f7f1e8;
+  margin: 0 0 8px;
+}
+
+.infoDesc {
+  font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: rgba(247, 241, 232, 0.72);
+  margin: 0;
 }

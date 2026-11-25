@@ -41,6 +41,8 @@ export default function Finish() {
   const marqueeTrackRef = useRef<HTMLDivElement>(null);
   const [activeFinish, setActiveFinish] = useState<FinishKey>("silver");
 
+  const current = FINISHES[activeFinish];
+
   useGSAP(() => {
     const track = marqueeTrackRef.current;
     const section = finishRef.current;
@@ -93,8 +95,7 @@ export default function Finish() {
                 alt={item.alt}
                 fill
                 sizes="100vw"
-                loading="eager"
-                unoptimized
+                
                 className={styles.stageImage}
               />
             </div>
@@ -133,6 +134,33 @@ export default function Finish() {
                 {FINISHES[key].label}
               </button>
             ))}
+          </div>
+          <div className={styles.infoCard}>
+            <div className={styles.swatchRing} aria-hidden="true">
+              <span
+                className={styles.swatchDot}
+                style={{ backgroundColor: current.swatch }}
+              />
+            </div>
+
+            <div className={styles.infoTextTrack}>
+              {(Object.keys(FINISHES) as FinishKey[]).map((key) => {
+                const item = FINISHES[key];
+                const isActive = activeFinish === key;
+                return (
+                  <div
+                    key={key}
+                    className={`${styles.infoText} ${
+                      isActive ? styles.infoTextActive : ""
+                    }`}
+                    aria-hidden={!isActive}
+                  >
+                    <h3 className={styles.infoTitle}>{item.label}</h3>
+                    <p className={styles.infoDesc}>{item.description}</p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
