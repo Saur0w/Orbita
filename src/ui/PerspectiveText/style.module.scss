@@ -1,0 +1,65 @@
+$duration: 0.75s;
+$ease: cubic-bezier(0.76, 0, 0.24, 1);
+
+.perspectiveText {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  perspective: 1000px;
+  line-height: 1.1;
+}
+
+.inner {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  transform-style: preserve-3d;
+  transition: transform $duration $ease;
+}
+
+.primary,
+.secondary {
+  display: block;
+  white-space: nowrap;
+  pointer-events: none;
+  transition:
+    transform $duration $ease,
+    opacity $duration $ease;
+}
+
+.secondary {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform-origin: bottom center;
+  transform: rotateX(-90deg) translateY(50%);
+  opacity: 0;
+}
+
+.perspectiveText:hover,
+.perspectiveText[data-active="true"],
+:global([data-perspective-trigger]):hover .perspectiveText,
+:global([data-perspective-trigger]):focus-visible .perspectiveText {
+  .inner {
+    transform: rotateX(90deg);
+  }
+
+  .primary {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  .secondary {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inner,
+  .primary,
+  .secondary {
+    transition-duration: 0.01ms;
+  }
+}
