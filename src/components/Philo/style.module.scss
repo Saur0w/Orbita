@@ -73,7 +73,7 @@
   will-change: transform, opacity;
 }
 
-:global(.splitLine-mask) {
+.philo :global(.splitLine-mask) {
   width: 100% !important;
   overflow-x: visible !important;
   overflow-y: clip !important;
@@ -85,6 +85,7 @@
 .imageSection {
   position: relative;
   width: 100%;
+  height: 100vh;
   height: 100dvh;
   background-color: #141517;
   overflow: hidden;
@@ -92,46 +93,55 @@
   align-items: center;
 
   @media (max-width: 768px) {
-    height: auto;
-    min-height: 85vh;
-    align-items: flex-end;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 640px;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(
+        90deg,
+        rgba(12, 14, 17, 0.56) 0%,
+        rgba(12, 14, 17, 0.24) 52%,
+        rgba(12, 14, 17, 0) 82%
+      );
+    }
   }
 }
 
 .bannerImage {
   object-fit: cover;
-  object-position: center 62%;
+  object-position: center 55%;
   pointer-events: none;
   user-select: none;
   will-change: transform;
+
+  @media (max-width: 768px) {
+    object-position: 31% 58%;
+  }
 }
 
 .contentOverlay {
   position: absolute;
   top: 52%;
   transform: translateY(-50%);
-  right: clamp(3.5rem, 13vw, 17rem);
+  right: clamp(2.5rem, 10vw, 13.5rem);
   z-index: 2;
   width: auto;
 
   @media (max-width: 1200px) {
-    right: clamp(2.5rem, 8vw, 5rem);
+    right: clamp(2rem, 7vw, 4.5rem);
   }
 
   @media (max-width: 768px) {
-    position: relative;
-    top: auto;
-    right: auto;
-    transform: none;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 3rem 1.25rem 2.5rem;
-    background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0) 0%,
-            rgba(15, 16, 18, 0.78) 30%,
-            rgba(15, 16, 18, 0.94) 100%
-    );
+    top: 49%;
+    left: clamp(1rem, 4.5vw, 1.5rem);
+    right: clamp(1rem, 4.5vw, 1.5rem);
+    transform: translateY(-50%);
   }
 }
 
@@ -142,6 +152,10 @@
   align-items: flex-start;
   text-align: left;
   will-change: transform;
+
+  @media (max-width: 768px) {
+    max-width: min(240px, 62vw);
+  }
 }
 
 .infoHeading {
@@ -154,8 +168,9 @@
   margin: 0 0 1.5rem;
 
   @media (max-width: 768px) {
-    font-size: 1.5rem;
-    margin-bottom: 1.25rem;
+    font-size: clamp(1.28rem, 5.4vw, 1.5rem);
+    line-height: 1.15;
+    margin-bottom: 1.15rem;
   }
 }
 
@@ -175,10 +190,10 @@
   }
 
   @media (max-width: 768px) {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.15rem;
 
     span {
-      font-size: 15px;
+      font-size: 13.5px;
     }
   }
 }
@@ -194,9 +209,10 @@
   max-width: 34ch;
 
   @media (max-width: 768px) {
-    font-size: 0.875rem;
-    margin-bottom: 1.75rem;
-    max-width: 100%;
+    font-size: 13px;
+    line-height: 1.38;
+    margin-bottom: 1.5rem;
+    max-width: 30ch;
   }
 }
 
@@ -215,6 +231,12 @@
   cursor: pointer;
   transition: background-color 0.25s ease, border-color 0.25s ease;
 
+  @media (max-width: 768px) {
+    height: 40px;
+    padding: 4px 4px 4px 16px;
+    gap: 12px;
+  }
+
   &:hover {
     background: rgba(247, 241, 232, 0.18);
     border-color: rgba(247, 241, 232, 0.45);
@@ -231,6 +253,10 @@
   font-weight: 500;
   color: #f7f1e8;
   letter-spacing: -0.01em;
+
+  @media (max-width: 768px) {
+    font-size: 13.5px;
+  }
 }
 
 .arrowCircle {
@@ -243,6 +269,11 @@
   justify-content: center;
   flex-shrink: 0;
   transition: transform 0.25s ease;
+
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+  }
 
   svg {
     display: block;

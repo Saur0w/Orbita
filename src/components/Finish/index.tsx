@@ -300,7 +300,6 @@ export default function Finish() {
                 fill
                 sizes="100vw"
                 loading="eager"
-                unoptimized
                 className={styles.stageImage}
               />
             </div>

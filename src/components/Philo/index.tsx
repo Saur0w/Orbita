@@ -25,6 +25,10 @@ export default function Philo() {
     const imageSectionRef = useRef<HTMLDivElement | null>(null);
     const imageRef = useRef<HTMLImageElement | null>(null);
     const infoCardRef = useRef<HTMLDivElement | null>(null);
+    const infoHeadingRef = useRef<HTMLHeadingElement | null>(null);
+    const elementsListRef = useRef<HTMLDivElement | null>(null);
+    const infoDescRef = useRef<HTMLParagraphElement | null>(null);
+    const ctaRef = useRef<HTMLAnchorElement | null>(null);
 
     useGSAP(
         (_, contextSafe) => {
@@ -32,32 +36,106 @@ export default function Philo() {
 
             let isCancelled = false;
             let headerTitleSplit: SplitText | null = null;
+            let infoHeadingSplit: SplitText | null = null;
             let titleTween: gsap.core.Tween | null = null;
+            let infoTimeline: gsap.core.Timeline | null = null;
 
             const initSplitText = contextSafe(() => {
-                if (isCancelled || !titleRef.current) return;
+                if (isCancelled) return;
 
                 titleTween?.scrollTrigger?.kill();
                 titleTween?.kill();
                 headerTitleSplit?.revert();
 
-                headerTitleSplit = new SplitText(titleRef.current, {
-                    type: "lines",
-                    mask: "lines",
-                    linesClass: `${styles.splitLine} splitLine`,
-                });
+                infoTimeline?.scrollTrigger?.kill();
+                infoTimeline?.kill();
+                infoHeadingSplit?.revert();
 
-                titleTween = gsap.from(headerTitleSplit.lines, {
-                    yPercent: 120,
-                    duration: 1.15,
-                    stagger: 0.12,
-                    ease: "power4.out",
-                    scrollTrigger: {
-                        trigger: titleRef.current,
-                        start: "top 85%",
-                        toggleActions: "play none none reverse",
-                    },
-                });
+                if (titleRef.current) {
+                    headerTitleSplit = new SplitText(titleRef.current, {
+                        type: "lines",
+                        mask: "lines",
+                        linesClass: `${styles.splitLine} splitLine`,
+                    });
+
+                    titleTween = gsap.from(headerTitleSplit.lines, {
+                        yPercent: 120,
+                        duration: 1.15,
+                        stagger: 0.12,
+                        ease: "power4.out",
+                        scrollTrigger: {
+                            trigger: titleRef.current,
+                            start: "top 85%",
+                            toggleActions: "play none none reverse",
+                        },
+                    });
+                }
+
+                if (infoHeadingRef.current && imageSectionRef.current) {
+                    infoHeadingSplit = new SplitText(infoHeadingRef.current, {
+                        type: "lines",
+                        mask: "lines",
+                        linesClass: `${styles.splitLine} splitLine`,
+                    });
+
+                    const tl = gsap.timeline({
+                        scrollTrigger: {
+                            trigger: imageSectionRef.current,
+                            start: "top 72%",
+                            toggleActions: "play none none reverse",
+                        },
+                    });
+
+                    tl.from(infoHeadingSplit.lines, {
+                        yPercent: 115,
+                        opacity: 0,
+                        duration: 1.0,
+                        stagger: 0.1,
+                        ease: "power4.out",
+                    });
+
+                    if (elementsListRef.current?.children.length) {
+                        tl.from(
+                            elementsListRef.current.children,
+                            {
+                                y: 16,
+                                opacity: 0,
+                                duration: 0.7,
+                                stagger: 0.08,
+                                ease: "power3.out",
+                            },
+                            "-=0.65"
+                        );
+                    }
+
+                    if (infoDescRef.current) {
+                        tl.from(
+                            infoDescRef.current,
+                            {
+                                y: 18,
+                                opacity: 0,
+                                duration: 0.8,
+                                ease: "power3.out",
+                            },
+                            "-=0.55"
+                        );
+                    }
+
+                    if (ctaRef.current) {
+                        tl.from(
+                            ctaRef.current,
+                            {
+                                y: 16,
+                                opacity: 0,
+                                duration: 0.75,
+                                ease: "power3.out",
+                            },
+                            "-=0.55"
+                        );
+                    }
+
+                    infoTimeline = tl;
+                }
             });
 
             initSplitText();
@@ -82,10 +160,10 @@ export default function Philo() {
                 if (imageRef.current) {
                     gsap.fromTo(
                         imageRef.current,
-                        { yPercent: -6, scale: 1.1 },
+                        { yPercent: -2.8, scale: 1.08 },
                         {
-                            yPercent: 6,
-                            scale: 1,
+                            yPercent: 2.8,
+                            scale: 1.06,
                             ease: "none",
                             scrollTrigger: {
                                 trigger: imageSectionRef.current,
@@ -132,6 +210,9 @@ export default function Philo() {
                 titleTween?.scrollTrigger?.kill();
                 titleTween?.kill();
                 headerTitleSplit?.revert();
+                infoTimeline?.scrollTrigger?.kill();
+                infoTimeline?.kill();
+                infoHeadingSplit?.revert();
                 mm.revert();
             };
         },
@@ -158,13 +239,13 @@ export default function Philo() {
                     alt={t("imageAlt")}
                     fill
                     sizes="100vw"
-                    priority
+                    loading="eager"
                     className={styles.bannerImage}
                 />
 
                 <div className={styles.contentOverlay}>
                     <div ref={infoCardRef} className={styles.infoCard}>
-                        <h3 className={styles.infoHeading}>
+                        <h3 ref={infoHeadingRef} className={styles.infoHeading}>
                             {t("infoHeading.line1")}
                             <br />
                             {t("infoHeading.line2")}
@@ -172,15 +253,15 @@ export default function Philo() {
                             {t("infoHeading.line3")}
                         </h3>
 
-                        <div className={styles.elementsList}>
+                        <div ref={elementsListRef} className={styles.elementsList}>
                             {ELEMENT_KEYS.map((key) => (
                                 <span key={key}>{t(`elements.${key}`)}</span>
                             ))}
                         </div>
 
-                        <p className={styles.infoDesc}>{t("infoDesc")}</p>
+                        <p ref={infoDescRef} className={styles.infoDesc}>{t("infoDesc")}</p>
 
-                        <Link href="/preorder" className={styles.pillButton}>
+                        <Link ref={ctaRef} href="/preorder" className={styles.pillButton}>
                             <span className={styles.buttonText}>{t("cta")}</span>
                             <span className={styles.arrowCircle}>
                 <svg
