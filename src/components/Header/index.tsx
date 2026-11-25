@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect, type MouseEvent as ReactMouseEvent } from "react";
-import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, useTransitionRouter } from "next-view-transitions";
 import gsap from "gsap";
@@ -56,7 +55,6 @@ export default function Header({ isReady }: HeaderProps) {
 
     const [isLangOpen, setIsLangOpen] = useState(false);
 
-    const router = useRouter();
     const transitionRouter = useTransitionRouter();
     const currentLocale = useLocale() as LocaleCode;
     const t = useTranslations("Header");
@@ -146,9 +144,26 @@ export default function Header({ isReady }: HeaderProps) {
     };
 
     const handleLanguageChange = (code: LocaleCode) => {
-        setLocaleCookie(code);
         setIsLangOpen(false);
-        router.refresh();
+        setLocaleCookie(code);
+        if (code === currentLocale) return;
+
+        if (window.location.hash) {
+            window.history.replaceState(
+                null,
+                "",
+                window.location.pathname + window.location.search
+            );
+        }
+
+        const lenis = getLenis();
+        if (lenis?.scrollTo) {
+            lenis.scrollTo(0, { immediate: true, force: true });
+        } else {
+            window.scrollTo(0, 0);
+        }
+
+        window.location.reload();
     };
 
     useEffect(() => {

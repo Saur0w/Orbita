@@ -9,6 +9,7 @@ import { useGSAP } from "@gsap/react";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, useGSAP);
@@ -27,24 +28,37 @@ type FinishDes = {
 
 const FINISH_KEYS: FinishKey[] = ["silver", "gold"];
 
-const FINISHES: Record<FinishKey, FinishDes> = {
+const FINISH_META: Record<FinishKey, { swatch: string; image: string }> = {
   silver: {
-    label: "Silver",
-    description: "A brushed aluminum finish with a cool industrial character.",
     swatch: "#C9C9C9",
     image: "/images/silver.png",
-    alt: "Orbita Lamp Silver Finish",
   },
   gold: {
-    label: "Gold",
-    description: "A warm anodized finish designed to complement natural interiors.",
     swatch: "#C48938",
     image: "/images/gold.png",
-    alt: "Orbita Lamp Gold Finish",
-  }
+  },
 };
 
 export default function Finish() {
+  const t = useTranslations("Finish");
+  const locale = useLocale();
+
+  const finishes: Record<FinishKey, FinishDes> = {
+    silver: {
+      label: t("finishes.silver.title"),
+      description: t("finishes.silver.description"),
+      alt: t("finishes.silver.alt"),
+      ...FINISH_META.silver,
+    },
+    gold: {
+      label: t("finishes.gold.title"),
+      description: t("finishes.gold.description"),
+      alt: t("finishes.gold.alt"),
+      ...FINISH_META.gold,
+    },
+  };
+
+  const marqueeText = t("marquee");
   const finishRef = useRef<HTMLElement>(null);
   const marqueeTrackRef = useRef<HTMLDivElement>(null);
   const stageLayersRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -148,7 +162,7 @@ export default function Finish() {
       titleSplitsRef.current = [];
       descSplitsRef.current = [];
     };
-  }, { scope: finishRef });
+  }, { scope: finishRef, dependencies: [locale], revertOnUpdate: true });
 
   useEffect(() => {
     const prevKey = prevFinishRef.current;
@@ -199,7 +213,7 @@ export default function Finish() {
     if (swatchDotRef.current) {
       gsap.killTweensOf(swatchDotRef.current);
       gsap.to(swatchDotRef.current, {
-        backgroundColor: FINISHES[activeFinish].swatch,
+        backgroundColor: FINISH_META[activeFinish].swatch,
         duration: 0.65,
         ease: "power2.out",
       });
@@ -274,17 +288,17 @@ export default function Finish() {
   return (
     <section className={styles.finish} ref={finishRef}>
       <div className={styles.marquee}>
-        <div className={styles.marqueeTrack} ref={marqueeTrackRef}>
-          <span>AVAILABLE IN TWO FINISHES &nbsp;•&nbsp;</span>
-          <span>AVAILABLE IN TWO FINISHES &nbsp;•&nbsp;</span>
-          <span>AVAILABLE IN TWO FINISHES &nbsp;•&nbsp;</span>
-          <span>AVAILABLE IN TWO FINISHES &nbsp;•&nbsp;</span>
+        <div className={styles.marqueeTrack} ref={marqueeTrackRef} key={locale}>
+          <span>{marqueeText} &nbsp;•&nbsp;</span>
+          <span>{marqueeText} &nbsp;•&nbsp;</span>
+          <span>{marqueeText} &nbsp;•&nbsp;</span>
+          <span>{marqueeText} &nbsp;•&nbsp;</span>
         </div>
       </div>
 
       <div className={styles.stage}>
         {FINISH_KEYS.map((key, idx) => {
-          const item = FINISHES[key];
+          const item = finishes[key];
           const isActive = activeFinish === key;
           return (
             <div
@@ -311,10 +325,10 @@ export default function Finish() {
       <div className={styles.bottomBar}>
         <div className={styles.previewCard}>
           <div className={styles.previewThumb}>
-            <Image src="/images/lamp.jpg" alt="Preorder" fill /> 
+            <Image src="/images/lamp.jpg" alt={t("previewAlt")} fill /> 
           </div>
           <Link href="/preorder" className={styles.preorderBtn}>
-            Pre-order now
+            {t("preorderCta")}
           </Link>
         </div>
 
@@ -336,7 +350,7 @@ export default function Finish() {
                 }`}
                 onClick={() => setActiveFinish(key)}
               >
-                {FINISHES[key].label}
+                {finishes[key].label}
               </button>
             ))}
           </div>
@@ -348,9 +362,9 @@ export default function Finish() {
               />
             </div>
 
-            <div className={styles.infoTextTrack}>
+            <div className={styles.infoTextTrack} key={locale}>
               {FINISH_KEYS.map((key, idx) => {
-                const item = FINISHES[key];
+                const item = finishes[key];
                 const isActive = activeFinish === key;
                 return (
                   <div

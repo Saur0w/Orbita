@@ -35,11 +35,11 @@ export default  async function RootLayout({ children }: { children: React.ReactN
   return (
     <ViewTransitions>
       <html
-        lang="en"
+        lang={locale}
         className={`${neueMontrealBold.variable} ${neueMontrealMedium.variable} ${neueMontrealRegular.variable}`}
       >
         <body>
-          <NextIntlClientProvider messages={messages}>
+          <NextIntlClientProvider locale={locale} messages={messages}>
             {children}
           </NextIntlClientProvider>
         </body>
