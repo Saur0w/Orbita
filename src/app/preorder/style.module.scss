@@ -139,6 +139,13 @@
   font-weight: 400;
   margin: 0 0 38px 0;
   color: #1c1b19;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+
+.priceInner {
+  display: inline-block;
+  will-change: transform;
 }
 
 .quantitySelector {
@@ -301,7 +308,7 @@
   will-change: transform;
 }
 
-:global(.splitLine-mask) {
+.preorder :global(.splitLine-mask) {
   overflow: hidden !important;
   overflow: visible clip !important;
   overflow-x: visible !important;

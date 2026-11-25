@@ -13,7 +13,7 @@ import PerspectiveText from "@/ui/PerspectiveText";
 
 gsap.registerPlugin(SplitText, CustomEase, useGSAP);
 
-CustomEase.create("luxuryMask", "0.16, 1, 0.3, 1");
+CustomEase.create("preorderLuxury", "0.22, 1, 0.36, 1");
 
 type ColorOption = "gold" | "silver";
 
@@ -44,7 +44,7 @@ export default function Preorder() {
     const [quantity, setQuantity] = useState<number>(1);
     const contentRef = useRef<HTMLDivElement>(null);
     const titleRef = useRef<HTMLHeadingElement>(null);
-    const priceRef = useRef<HTMLParagraphElement>(null);
+    const priceInnerRef = useRef<HTMLSpanElement>(null);
     const colorLabelRef = useRef<HTMLSpanElement>(null);
     const disclaimerRef = useRef<HTMLParagraphElement>(null);
 
@@ -66,15 +66,6 @@ export default function Preorder() {
                 linesClass: `${styles.splitLine} splitLine`,
             });
 
-            let priceSplit: SplitText | null = null;
-            if (priceRef.current) {
-                priceSplit = new SplitText(priceRef.current, {
-                    type: "lines",
-                    mask: "lines",
-                    linesClass: `${styles.splitLine} splitLine`,
-                });
-            }
-
             let colorLabelSplit: SplitText | null = null;
             if (colorLabelRef.current) {
                 colorLabelSplit = new SplitText(colorLabelRef.current, {
@@ -95,17 +86,16 @@ export default function Preorder() {
 
             const allLines = [
                 ...titleSplit.lines,
-                ...(priceSplit ? priceSplit.lines : []),
+                ...(priceInnerRef.current ? [priceInnerRef.current] : []),
                 ...(colorLabelSplit ? colorLabelSplit.lines : []),
                 ...(disclaimerSplit ? disclaimerSplit.lines : []),
             ];
 
-            gsap.set(allLines, { yPercent: 115 });
+            gsap.set(allLines, { yPercent: 120 });
 
             const tl = gsap.timeline({
-                delay: 0.1,
+                delay: 0.25,
                 onComplete: () => {
-                    priceSplit?.revert();
                     colorLabelSplit?.revert();
                     disclaimerSplit?.revert();
                 },
@@ -115,25 +105,24 @@ export default function Preorder() {
                 tl.to(
                     titleSplit.lines,
                     {
-                        delay: 0.3,
                         yPercent: 0,
-                        duration: 1.4,
-                        stagger: 0.08,
-                        ease: "luxuryMask",
+                        duration: 1.75,
+                        stagger: 0.14,
+                        ease: "preorderLuxury",
                     },
                     0
                 );
             }
 
-            if (priceSplit && priceSplit.lines.length) {
+            if (priceInnerRef.current) {
                 tl.to(
-                    priceSplit.lines,
+                    priceInnerRef.current,
                     {
                         yPercent: 0,
-                        duration: 1.35,
-                        ease: "luxuryMask",
+                        duration: 1.55,
+                        ease: "preorderLuxury",
                     },
-                    0.12
+                    0.2
                 );
             }
 
@@ -142,10 +131,10 @@ export default function Preorder() {
                     colorLabelSplit.lines,
                     {
                         yPercent: 0,
-                        duration: 1.25,
-                        ease: "luxuryMask",
+                        duration: 1.5,
+                        ease: "preorderLuxury",
                     },
-                    0.22
+                    0.35
                 );
             }
 
@@ -154,18 +143,17 @@ export default function Preorder() {
                     disclaimerSplit.lines,
                     {
                         yPercent: 0,
-                        duration: 1.25,
-                        stagger: 0.06,
-                        ease: "luxuryMask",
+                        duration: 1.5,
+                        stagger: 0.1,
+                        ease: "preorderLuxury",
                     },
-                    0.32
+                    0.46
                 );
             }
 
             return () => {
                 tl.kill();
                 titleSplit.revert();
-                priceSplit?.revert();
                 colorLabelSplit?.revert();
                 disclaimerSplit?.revert();
             };
@@ -215,8 +203,10 @@ export default function Preorder() {
                     <h1 className={styles.title} ref={titleRef}>
                         {t("title")}
                     </h1>
-                    <p className={styles.price} ref={priceRef}>
-                        €{800 * quantity}
+                    <p className={styles.price}>
+                        <span ref={priceInnerRef} className={styles.priceInner}>
+                            €{800 * quantity}
+                        </span>
                     </p>
 
                     <div className={styles.quantitySelector} aria-label="Quantity">
