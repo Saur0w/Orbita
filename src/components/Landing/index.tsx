@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useRef, useEffect, useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
+import PerspectiveText from "@/ui/PerspectiveText";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -452,8 +453,12 @@ export default function Landing({ isPortalOpen }: LandingProps = {}) {
                                 priority
                             />
                         </div>
-                        <button type="button" className={styles.cardButton}>
-                            {item.title}
+                        <button
+                            type="button"
+                            className={styles.cardButton}
+                            data-perspective-trigger
+                        >
+                            <PerspectiveText label={item.title} />
                         </button>
                     </div>
                 ))}

@@ -86,6 +86,8 @@ $ink: #232323;
   }
 
   .navLink {
+    display: inline-flex;
+    align-items: center;
     font-family: var(--font-neue-montreal), "Neue Montreal", sans-serif;
     font-size: 14px;
     font-weight: 400;
@@ -97,7 +99,7 @@ $ink: #232323;
     transition: opacity 0.2s ease;
 
     &:hover {
-      opacity: 0.72;
+      opacity: 0.85;
     }
   }
 

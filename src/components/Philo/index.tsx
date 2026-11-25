@@ -8,6 +8,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
+import PerspectiveText from "@/ui/PerspectiveText";
 import philoBanner from "../../../public/images/philo.png";
 import styles from "./style.module.scss";
 
@@ -242,8 +243,13 @@ export default function Philo() {
 
                         <p ref={infoDescRef} className={styles.infoDesc}>{t("infoDesc")}</p>
 
-                        <Link ref={ctaRef} href="/preorder" className={styles.pillButton}>
-                            <span className={styles.buttonText}>{t("cta")}</span>
+                        <Link
+                            ref={ctaRef}
+                            href="/preorder"
+                            className={styles.pillButton}
+                            data-perspective-trigger
+                        >
+                            <PerspectiveText label={t("cta")} className={styles.buttonText} />
                             <span className={styles.arrowCircle}>
                 <svg
                     width="13"

@@ -9,6 +9,7 @@ import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { CustomEase } from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
+import PerspectiveText from "@/ui/PerspectiveText";
 
 gsap.registerPlugin(SplitText, CustomEase, useGSAP);
 
@@ -174,9 +175,14 @@ export default function Preorder() {
 
     return (
         <main className={styles.preorder}>
-            <Link href="/" className={styles.homeBtn} aria-label={t("backHome")}>
+            <Link
+                href="/"
+                className={styles.homeBtn}
+                aria-label={t("backHome")}
+                data-perspective-trigger
+            >
                 <span className={styles.homeArrow}>←</span>
-                <span>{t("backHome")}</span>
+                <PerspectiveText label={t("backHome")} />
             </Link>
 
             <div className={styles.imageSection}>
@@ -264,8 +270,14 @@ export default function Preorder() {
                     </div>
 
                     <div className={styles.actionWrapper}>
-                        <button type="button" className={styles.preorderBtn}>
-                            <span className={styles.btnText}>{t("ctaButton")}</span>
+                        <button
+                            type="button"
+                            className={styles.preorderBtn}
+                            data-perspective-trigger
+                        >
+                            <span className={styles.btnText}>
+                                <PerspectiveText label={t("ctaButton")} />
+                            </span>
                             <span className={styles.btnThumb}>
                                 <Image
                                     src="/images/lamp.jpg"

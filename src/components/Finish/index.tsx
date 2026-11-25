@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import PerspectiveText from "@/ui/PerspectiveText";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, useGSAP);
@@ -327,8 +328,12 @@ export default function Finish() {
           <div className={styles.previewThumb}>
             <Image src="/images/lamp.jpg" alt={t("previewAlt")} fill /> 
           </div>
-          <Link href="/preorder" className={styles.preorderBtn}>
-            {t("preorderCta")}
+          <Link
+            href="/preorder"
+            className={styles.preorderBtn}
+            data-perspective-trigger
+          >
+            <PerspectiveText label={t("preorderCta")} />
           </Link>
         </div>
 

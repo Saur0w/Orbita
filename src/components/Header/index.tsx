@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { Logo } from "@/components/Icons/logo";
+import PerspectiveText from "@/ui/PerspectiveText";
 import styles from "./style.module.scss";
 
 if (typeof window !== "undefined") {
@@ -324,12 +325,17 @@ export default function Header({ isReady }: HeaderProps) {
                                     href={item.href}
                                     className={styles.navLink}
                                     onClick={(e) => handleSectionClick(e, item.href)}
+                                    data-perspective-trigger
                                 >
-                                    {item.label}
+                                    <PerspectiveText label={item.label} />
                                 </a>
                             ) : (
-                                <Link href={item.href} className={styles.navLink}>
-                                    {item.label}
+                                <Link
+                                    href={item.href}
+                                    className={styles.navLink}
+                                    data-perspective-trigger
+                                >
+                                    <PerspectiveText label={item.label} />
                                 </Link>
                             )}
                         </li>
