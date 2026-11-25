@@ -68,12 +68,16 @@
 .stageLayer {
   position: absolute;
   inset: 0;
-  opacity: 0;
-  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity;
 
-  &.stageLayerActive {
+  &:first-child {
     opacity: 1;
+    z-index: 1;
+  }
+
+  &:not(:first-child) {
+    opacity: 0;
+    z-index: 0;
   }
 }
 
@@ -189,7 +193,7 @@
     z-index: 0;
     pointer-events: none;
     transform: translateX(0);
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
   }
 
@@ -255,7 +259,8 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  transition: background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  background-color: #c9c9c9;
+  will-change: transform, background-color;
 }
 
 .infoTextTrack {
@@ -266,16 +271,13 @@
 
 .infoText {
   grid-area: 1 / 1;
-  opacity: 0;
-  transform: translateY(6px);
-  transition:
-    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 
+  &:not(:first-child) {
+    opacity: 0;
+  }
+
   &.infoTextActive {
-    opacity: 1;
-    transform: translateY(0);
     pointer-events: auto;
   }
 }
@@ -298,4 +300,18 @@
   letter-spacing: -0.01em;
   color: rgba(247, 241, 232, 0.72);
   margin: 0;
+}
+
+.splitLine {
+  display: block;
+  width: 100%;
+  will-change: transform, opacity;
+}
+
+:global(.splitLine-mask) {
+  overflow: hidden !important;
+  display: block !important;
+  width: 100% !important;
+  padding-bottom: 0.14em !important;
+  margin-bottom: -0.14em !important;
 }

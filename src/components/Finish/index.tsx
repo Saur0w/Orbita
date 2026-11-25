@@ -3,12 +3,17 @@
 import styles from "./style.module.scss";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
+import { CustomEase } from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, useGSAP);
+  CustomEase.create("luxuryMask", "0.16, 1, 0.3, 1");
+}
 
 type FinishKey = "silver" | "gold";
 type FinishDes = {
@@ -18,6 +23,8 @@ type FinishDes = {
   image: string;
   alt: string;
 };
+
+const FINISH_KEYS: FinishKey[] = ["silver", "gold"];
 
 const FINISHES: Record<FinishKey, FinishDes> = {
   silver: {
@@ -39,9 +46,16 @@ const FINISHES: Record<FinishKey, FinishDes> = {
 export default function Finish() {
   const finishRef = useRef<HTMLElement>(null);
   const marqueeTrackRef = useRef<HTMLDivElement>(null);
-  const [activeFinish, setActiveFinish] = useState<FinishKey>("silver");
+  const stageLayersRef = useRef<(HTMLDivElement | null)[]>([]);
+  const swatchDotRef = useRef<HTMLSpanElement>(null);
+  const infoTextRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const infoTitleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
+  const infoDescRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  const titleSplitsRef = useRef<SplitText[]>([]);
+  const descSplitsRef = useRef<SplitText[]>([]);
+  const prevFinishRef = useRef<FinishKey>("silver");
 
-  const current = FINISHES[activeFinish];
+  const [activeFinish, setActiveFinish] = useState<FinishKey>("silver");
 
   useGSAP(() => {
     const track = marqueeTrackRef.current;
@@ -65,7 +79,196 @@ export default function Finish() {
         scrub: 1.2
       }
     });
+
+    let isCancelled = false;
+
+    const initSplits = () => {
+      if (isCancelled) return;
+
+      titleSplitsRef.current.forEach((s) => s.revert());
+      descSplitsRef.current.forEach((s) => s.revert());
+
+      const nextTitleSplits: SplitText[] = [];
+      const nextDescSplits: SplitText[] = [];
+
+      FINISH_KEYS.forEach((key, idx) => {
+        const titleEl = infoTitleRefs.current[idx];
+        const descEl = infoDescRefs.current[idx];
+        const isCurrent = key === prevFinishRef.current;
+
+        if (titleEl) {
+          const split = new SplitText(titleEl, {
+            type: "lines",
+            mask: "lines",
+            linesClass: `${styles.splitLine} splitLine`,
+          });
+          gsap.set(split.lines, {
+            yPercent: isCurrent ? 0 : 115,
+            opacity: isCurrent ? 1 : 0,
+          });
+          nextTitleSplits.push(split);
+        }
+
+        if (descEl) {
+          const split = new SplitText(descEl, {
+            type: "lines",
+            mask: "lines",
+            linesClass: `${styles.splitLine} splitLine`,
+          });
+          gsap.set(split.lines, {
+            yPercent: isCurrent ? 0 : 115,
+            opacity: isCurrent ? 1 : 0,
+          });
+          nextDescSplits.push(split);
+        }
+      });
+
+      titleSplitsRef.current = nextTitleSplits;
+      descSplitsRef.current = nextDescSplits;
+
+      const textEls = infoTextRefs.current.filter(Boolean) as HTMLDivElement[];
+      if (textEls.length) {
+        gsap.set(textEls, { opacity: 1 });
+      }
+    };
+
+    if (typeof document !== "undefined" && document.fonts && document.fonts.status !== "loaded") {
+      document.fonts.ready.then(initSplits);
+    } else {
+      initSplits();
+    }
+
+    return () => {
+      isCancelled = true;
+      gsap.killTweensOf(stageLayersRef.current.filter(Boolean));
+      if (swatchDotRef.current) gsap.killTweensOf(swatchDotRef.current);
+      titleSplitsRef.current.forEach((s) => s.revert());
+      descSplitsRef.current.forEach((s) => s.revert());
+      titleSplitsRef.current = [];
+      descSplitsRef.current = [];
+    };
   }, { scope: finishRef });
+
+  useEffect(() => {
+    const prevKey = prevFinishRef.current;
+    if (prevKey === activeFinish) return;
+    prevFinishRef.current = activeFinish;
+
+    const prevIndex = FINISH_KEYS.indexOf(prevKey);
+    const nextIndex = FINISH_KEYS.indexOf(activeFinish);
+    const isForward = nextIndex > prevIndex;
+
+    // image layer morph 
+    const prevLayer = stageLayersRef.current[prevIndex];
+    const nextLayer = stageLayersRef.current[nextIndex];
+    if (prevLayer && nextLayer) {
+      gsap.killTweensOf([prevLayer, nextLayer]);
+      const nextAlpha = Number(gsap.getProperty(nextLayer, "opacity")) || 0;
+
+      if (nextAlpha >= 0.99) {
+        gsap.set(nextLayer, { zIndex: 1, opacity: 1 });
+        gsap.set(prevLayer, { zIndex: 2 });
+        gsap.to(prevLayer, {
+          opacity: 0,
+          duration: 0.72,
+          ease: "power2.inOut",
+          onComplete: () => {
+            gsap.set(prevLayer, { zIndex: 0 });
+          },
+        });
+      } else {
+        gsap.set(prevLayer, { zIndex: 1, opacity: 1 });
+        gsap.set(nextLayer, { zIndex: 2 });
+        gsap.fromTo(
+          nextLayer,
+          { opacity: nextAlpha },
+          {
+            opacity: 1,
+            duration: 0.78,
+            ease: "power2.inOut",
+            onComplete: () => {
+              gsap.set(prevLayer, { opacity: 0, zIndex: 0 });
+            },
+          }
+        );
+      }
+    }
+
+    // swatch color morph
+    if (swatchDotRef.current) {
+      gsap.killTweensOf(swatchDotRef.current);
+      gsap.to(swatchDotRef.current, {
+        backgroundColor: FINISHES[activeFinish].swatch,
+        duration: 0.65,
+        ease: "power2.out",
+      });
+      gsap.fromTo(
+        swatchDotRef.current,
+        { scale: 0.86 },
+        { scale: 1, duration: 0.55, ease: "power3.out" }
+      );
+    }
+
+    // SplitText line 
+    const outY = isForward ? -115 : 115;
+    const inY = isForward ? 115 : -115;
+
+    titleSplitsRef.current.forEach((s) => s?.lines && gsap.killTweensOf(s.lines));
+    descSplitsRef.current.forEach((s) => s?.lines && gsap.killTweensOf(s.lines));
+
+    const prevTitle = titleSplitsRef.current[prevIndex];
+    const prevDesc = descSplitsRef.current[prevIndex];
+    const nextTitle = titleSplitsRef.current[nextIndex];
+    const nextDesc = descSplitsRef.current[nextIndex];
+
+    if (prevTitle?.lines?.length) {
+      gsap.to(prevTitle.lines, {
+        yPercent: outY,
+        opacity: 0,
+        duration: 0.34,
+        stagger: 0.04,
+        ease: "power2.in",
+      });
+    }
+    if (prevDesc?.lines?.length) {
+      gsap.to(prevDesc.lines, {
+        yPercent: outY,
+        opacity: 0,
+        duration: 0.32,
+        stagger: 0.03,
+        ease: "power2.in",
+      });
+    }
+
+    if (nextTitle?.lines?.length) {
+      gsap.fromTo(
+        nextTitle.lines,
+        { yPercent: inY, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.68,
+          stagger: 0.05,
+          ease: "luxuryMask",
+          delay: 0.14,
+        }
+      );
+    }
+    if (nextDesc?.lines?.length) {
+      gsap.fromTo(
+        nextDesc.lines,
+        { yPercent: inY, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.65,
+          stagger: 0.045,
+          ease: "luxuryMask",
+          delay: 0.2,
+        }
+      );
+    }
+  }, [activeFinish]);
 
   return (
     <section className={styles.finish} ref={finishRef}>
@@ -79,15 +282,16 @@ export default function Finish() {
       </div>
 
       <div className={styles.stage}>
-        {(Object.keys(FINISHES) as FinishKey[]).map((key) => {
+        {FINISH_KEYS.map((key, idx) => {
           const item = FINISHES[key];
           const isActive = activeFinish === key;
           return (
             <div
               key={key}
-              className={`${styles.stageLayer} ${
-                isActive ? styles.stageLayerActive : ""
-              }`}
+              ref={(el) => {
+                stageLayersRef.current[idx] = el;
+              }}
+              className={styles.stageLayer}
               aria-hidden={!isActive}
             >
               <Image
@@ -95,7 +299,8 @@ export default function Finish() {
                 alt={item.alt}
                 fill
                 sizes="100vw"
-                
+                loading="eager"
+                unoptimized
                 className={styles.stageImage}
               />
             </div>
@@ -120,7 +325,7 @@ export default function Finish() {
             role="tablist" 
             aria-label="Lamp Finish"
           >
-            {(Object.keys(FINISHES) as FinishKey[]).map((key) => (
+            {FINISH_KEYS.map((key) => (
               <button
                 key={key}
                 type="button"
@@ -138,25 +343,42 @@ export default function Finish() {
           <div className={styles.infoCard}>
             <div className={styles.swatchRing} aria-hidden="true">
               <span
+                ref={swatchDotRef}
                 className={styles.swatchDot}
-                style={{ backgroundColor: current.swatch }}
               />
             </div>
 
             <div className={styles.infoTextTrack}>
-              {(Object.keys(FINISHES) as FinishKey[]).map((key) => {
+              {FINISH_KEYS.map((key, idx) => {
                 const item = FINISHES[key];
                 const isActive = activeFinish === key;
                 return (
                   <div
                     key={key}
+                    ref={(el) => {
+                      infoTextRefs.current[idx] = el;
+                    }}
                     className={`${styles.infoText} ${
                       isActive ? styles.infoTextActive : ""
                     }`}
                     aria-hidden={!isActive}
                   >
-                    <h3 className={styles.infoTitle}>{item.label}</h3>
-                    <p className={styles.infoDesc}>{item.description}</p>
+                    <h3
+                      className={styles.infoTitle}
+                      ref={(el) => {
+                        infoTitleRefs.current[idx] = el;
+                      }}
+                    >
+                      {item.label}
+                    </h3>
+                    <p
+                      className={styles.infoDesc}
+                      ref={(el) => {
+                        infoDescRefs.current[idx] = el;
+                      }}
+                    >
+                      {item.description}
+                    </p>
                   </div>
                 );
               })}
