@@ -79,6 +79,14 @@
     opacity: 0;
     z-index: 0;
   }
+
+  @media (max-width: 768px) {
+    top: -1vh;
+    top: -1dvh;
+    bottom: auto;
+    height: calc(100vh - 210px);
+    height: calc(100dvh - 210px);
+  }
 }
 
 .stageImage {
@@ -98,9 +106,12 @@
   pointer-events: none;
 
   @media (max-width: 768px) {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
     flex-direction: column-reverse;
     align-items: stretch;
-    gap: 10px;
+    gap: 14px;
   }
 }
 
@@ -117,6 +128,10 @@
 
   @media (max-width: 768px) {
     width: 100%;
+    flex-direction: row-reverse;
+    align-items: center;
+    padding: 6px;
+    gap: 6px;
   }
 }
 
@@ -129,7 +144,9 @@
   overflow: hidden;
 
   @media (max-width: 768px) {
-    height: 112px;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
   }
 
   img {
@@ -152,6 +169,13 @@
   font-weight: 500;
   letter-spacing: -0.015em;
   text-decoration: none;
+
+  @media (max-width: 768px) {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    font-size: 15px;
+  }
 
   &:active {
     opacity: 0.9;
@@ -237,8 +261,9 @@
 
   @media (max-width: 768px) {
     height: auto;
-    min-height: 156px;
-    padding: 16px;
+    min-height: 160px;
+    padding: 18px 16px;
+    gap: 20px;
   }
 }
 
