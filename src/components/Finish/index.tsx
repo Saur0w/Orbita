@@ -15,18 +15,24 @@ type FinishDes = {
   label: string;
   description: string;
   swatch: string;
+  image: string;
+  alt: string;
 };
 
 const FINISHES: Record<FinishKey, FinishDes> = {
   silver: {
     label: "Silver",
     description: "A brushed aluminum finish with a cool industrial character.",
-    swatch: "#C9C9C9"
+    swatch: "#C9C9C9",
+    image: "/images/silver.png",
+    alt: "Orbita Lamp Silver Finish",
   },
   gold: {
     label: "Gold",
     description: "A warm anodized finish designed to complement natural interiors.",
-    swatch: "#C48938"
+    swatch: "#C48938",
+    image: "/images/gold.png",
+    alt: "Orbita Lamp Gold Finish",
   }
 };
 
@@ -34,8 +40,6 @@ export default function Finish() {
   const finishRef = useRef<HTMLElement>(null);
   const marqueeTrackRef = useRef<HTMLDivElement>(null);
   const [activeFinish, setActiveFinish] = useState<FinishKey>("silver");
-
-  const current = FINISHES[activeFinish];
 
   useGSAP(() => {
     const track = marqueeTrackRef.current;
@@ -72,7 +76,31 @@ export default function Finish() {
         </div>
       </div>
 
-      <div className={styles.stage} aria-hidden="true" />
+      <div className={styles.stage}>
+        {(Object.keys(FINISHES) as FinishKey[]).map((key) => {
+          const item = FINISHES[key];
+          const isActive = activeFinish === key;
+          return (
+            <div
+              key={key}
+              className={`${styles.stageLayer} ${
+                isActive ? styles.stageLayerActive : ""
+              }`}
+              aria-hidden={!isActive}
+            >
+              <Image
+                src={item.image}
+                alt={item.alt}
+                fill
+                sizes="100vw"
+                loading="eager"
+                unoptimized
+                className={styles.stageImage}
+              />
+            </div>
+          );
+        })}
+      </div>
 
       <div className={styles.bottomBar}>
         <div className={styles.previewCard}>
