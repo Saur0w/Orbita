@@ -132,6 +132,7 @@ export default function Footer() {
             if (!contextSafe) return;
 
             let isCancelled = false;
+            let emailSplit: SplitText | null = null;
             let labelSplit: SplitText | null = null;
             let revealTimeline: gsap.core.Timeline | null = null;
 
@@ -140,7 +141,16 @@ export default function Footer() {
 
                 revealTimeline?.scrollTrigger?.kill();
                 revealTimeline?.kill();
+                emailSplit?.revert();
                 labelSplit?.revert();
+
+                if (emailTextRef.current) {
+                    emailSplit = new SplitText(emailTextRef.current, {
+                        type: "lines",
+                        mask: "lines",
+                        linesClass: `${styles.splitLine} splitLine`,
+                    });
+                }
 
                 const labelElements = [
                     emailLabelRef.current,
@@ -212,12 +222,11 @@ export default function Footer() {
                     );
                 }
 
-                if (emailTextRef.current) {
-                    revealTimeline.fromTo(
-                        emailTextRef.current,
-                        { yPercent: 130 },
+                if (emailSplit && emailSplit.lines.length > 0) {
+                    revealTimeline.from(
+                        emailSplit.lines,
                         {
-                            yPercent: 0,
+                            yPercent: 115,
                             duration: 1.65,
                             ease: "luxuryMask",
                         },
@@ -357,6 +366,7 @@ export default function Footer() {
                 isCancelled = true;
                 revealTimeline?.scrollTrigger?.kill();
                 revealTimeline?.kill();
+                emailSplit?.revert();
                 labelSplit?.revert();
                 mm.revert();
             };
@@ -387,15 +397,9 @@ export default function Footer() {
                         {t("labels.email")}
                     </span>
                     <Magnetic>
-                        <a
-                            href={`mailto:${t("email")}`}
-                            className={styles.emailLink}
-                            data-perspective-trigger
-                        >
-                            <span className={styles.linkRevealMask}>
-                                <span ref={emailTextRef} className={styles.emailText}>
-                                    <PerspectiveText label={t("email")} />
-                                </span>
+                        <a href={`mailto:${t("email")}`} className={styles.emailLink}>
+                            <span ref={emailTextRef} className={styles.emailText}>
+                                {t("email")}
                             </span>
                         </a>
                     </Magnetic>
