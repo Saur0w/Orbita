@@ -5,11 +5,17 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { SplitText } from "gsap/SplitText";
 import { useLocale, useTranslations } from "next-intl";
 import { AmbientIcon, FocusIcon, NightIcon, HaloIcon } from "@/lib/icons";
 import type { ComponentType, SVGProps } from "react";
+
+//Images
+import AmbientModeImage from "../../../public/images/ambient.jpg";
+import FocusImage from "../../../public/images/focus.jpg";
+import NightModeImage from "../../../public/images/night.jpg";
+import HaloModeImage from "../../../public/images/halo.jpg";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
@@ -18,35 +24,15 @@ type AtmosphereKey = "ambient" | "focus" | "night" | "halo";
 interface AtmosphereConfig {
   id: number;
   key: AtmosphereKey;
-  src: string;
+  src: StaticImageData;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
 const ATMOSPHERE_CONFIG: AtmosphereConfig[] = [
-  {
-    id: 1,
-    key: "ambient",
-    src: "/images/ambient.jpg",
-    icon: AmbientIcon,
-  },
-  {
-    id: 2,
-    key: "focus",
-    src: "/images/focus.jpg",
-    icon: FocusIcon,
-  },
-  {
-    id: 3,
-    key: "night",
-    src: "/images/night.jpg",
-    icon: NightIcon,
-  },
-  {
-    id: 4,
-    key: "halo",
-    src: "/images/halo.jpg",
-    icon: HaloIcon,
-  },
+  { id: 1, key: "ambient", src: AmbientModeImage, icon: AmbientIcon },
+  { id: 2, key: "focus", src: FocusImage, icon: FocusIcon },
+  { id: 3, key: "night", src: NightModeImage, icon: NightIcon },
+  { id: 4, key: "halo", src: HaloModeImage, icon: HaloIcon },
 ];
 
 export default function Atmos() {
@@ -316,7 +302,8 @@ export default function Atmos() {
                         src={item.src}
                         alt={item.alt}
                         fill
-                        priority={i === 0}
+                        sizes="100vw"
+                        loading="eager"
                         unoptimized
                     />
                   </div>
