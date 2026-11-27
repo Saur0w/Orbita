@@ -1,7 +1,7 @@
 import { getLocale, getMessages } from "next-intl/server";
 
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://orbita.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://orbita-lamp.vercel.app";
 
 export interface MetadataMessages {
   title: string;

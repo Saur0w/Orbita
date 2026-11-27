@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(SITE_URL),
     applicationName: "Orbita",
     title: {
-      default: meta.ogTitle,
+      default: meta.title,
       template: "%s — Orbita",
     },
     description: meta.description,
