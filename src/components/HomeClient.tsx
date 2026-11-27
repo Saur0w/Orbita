@@ -1,0 +1,103 @@
+"use client";
+
+import "lenis/dist/lenis.css";
+import styles from "@/app/page.module.css";
+import Footer from "@/components/Footer";
+import Atmos from "@/components/Atmos";
+import Features from "@/components/Features";
+import Des from "@/components/Des";
+import Landing from "@/components/Landing";
+import Header from "@/components/Header";
+import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useState } from "react";
+import Preloader from "@/components/Preloader";
+import Upscale from "@/components/Upscale";
+import Swtich from "@/components/Switch";
+import FAQ from "@/components/FAQ";
+import Philo from "@/components/Philo";
+import Mat from "@/components/Materials";
+import Sus from "@/components/Sus";
+import Finish from "@/components/Finish";
+import Tech from "@/components/Tech";
+import Source from "@/components/Source";
+import USB from "@/components/USB";
+
+gsap.registerPlugin(ScrollTrigger);
+
+type WindowWithLenis = {
+  lenis?: Lenis | null;
+};
+
+export default function HomeClient() {
+  const [isReady, setIsReady] = useState(false);
+  const [isPortalOpen, setIsPortalOpen] = useState(false);
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      lerp: 0.1,
+      smoothWheel: true,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.0,
+      syncTouch: false,
+      autoResize: true,
+    });
+
+    lenis.on("scroll", ScrollTrigger.update);
+    if (typeof window !== "undefined") {
+      (window as unknown as WindowWithLenis).lenis = lenis;
+    }
+
+    const updateTicker = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(updateTicker);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      if (typeof window !== "undefined") {
+        (window as unknown as WindowWithLenis).lenis = null;
+      }
+      gsap.ticker.remove(updateTicker);
+      lenis.destroy();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isReady) {
+      const t1 = setTimeout(() => ScrollTrigger.refresh(), 100);
+      const t2 = setTimeout(() => ScrollTrigger.refresh(), 450);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+  }, [isReady]);
+
+  return (
+    <main className={styles.main}>
+      <Preloader
+        onStartReveal={() => setIsPortalOpen(true)}
+        onComplete={() => setIsReady(true)}
+      />
+      <Header isReady={isReady} />
+      <Landing isPortalOpen={isPortalOpen} />
+      <Des />
+      <Atmos />
+      <Features />
+      <Upscale />
+      <Mat />
+      <Swtich />
+      <Finish />
+      <Tech />
+      <Source />
+      <USB />
+      <Sus />
+      <Philo />
+      <FAQ />
+      <Footer />
+    </main>
+  );
+}

@@ -303,5 +303,15 @@
     "bannerAlt": "Orbita Lamp preview",
     "cardAlt": "Orbita Lamp on stand",
     "cta": "Pre-order now"
+  },
+  "Metadata": {
+    "title": "Orbita",
+    "ogTitle": "Orbita — Architectural Lighting",
+    "description": "Sculpted to shape the atmosphere of your space. Orbita unites minimal form, adaptive lighting, and precision craftsmanship.",
+    "ogImageAlt": "Orbita sculptural ambient lamp",
+    "preorderTitle": "Pre-order Orbital Lamp",
+    "preorderOgTitle": "Pre-order Orbital Lamp — Orbita",
+    "preorderDescription": "Reserve your Orbita Lamp in brushed Silver or anodized Gold (€800). Portable cordless architectural LED lighting with 12-hour USB-C battery life.",
+    "preorderOgImageAlt": "Orbita Lamp Gold edition pre-order preview"
   }
 }

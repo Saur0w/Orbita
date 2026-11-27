@@ -1,98 +1,85 @@
-"use client";
+import type { Metadata } from "next";
+import HomeClient from "@/components/HomeClient";
+import {
+  buildProductJsonLd,
+  getSeoContext,
+  serializeJsonLd,
+  SITE_URL,
+} from "@/lib/seo";
 
-import "lenis/dist/lenis.css";
-import styles from "./page.module.css";
-import Footer from "@/components/Footer";
-import Atmos from "@/components/Atmos";
-import Features from "@/components/Features";
-import Des from "@/components/Des";
-import Landing from "@/components/Landing";
-import Header from "@/components/Header";
-import Lenis from "lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useState } from "react";
-import Preloader from "@/components/Preloader";
-import Upscale from "@/components/Upscale";
-import Swtich from "@/components/Switch";
-import FAQ from "@/components/FAQ";
-import Philo from "@/components/Philo";
-import Mat from "@/components/Materials";
-import Sus from "@/components/Sus";
-import Finish from "@/components/Finish";
-import Tech from "@/components/Tech";
-import Source from "@/components/Source";
-import USB from "@/components/USB";
+export async function generateMetadata(): Promise<Metadata> {
+  const { meta, ogLocale, alternateOgLocale } = await getSeoContext();
 
-gsap.registerPlugin(ScrollTrigger);
+  return {
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      type: "website",
+      siteName: "Orbita",
+      url: "/",
+      title: meta.ogTitle,
+      description: meta.description,
+      locale: ogLocale,
+      alternateLocale: alternateOgLocale,
+      images: [
+        {
+          url: "/images/og.jpg",
+          width: 1200,
+          height: 630,
+          alt: meta.ogImageAlt,
+        },
+      ],
+    },
+  };
+}
 
-export default function Home() {
-    const [isReady, setIsReady] = useState(false);
-    const [isPortalOpen, setIsPortalOpen] = useState(false);
+export default async function HomePage() {
+  const { meta, messages } = await getSeoContext();
+  const faqEntries = Object.values(messages?.FAQ?.items ?? {});
 
-    useEffect(() => {
-        const lenis = new Lenis({
-            lerp: 0.1,
-            smoothWheel: true,
-            wheelMultiplier: 1.0,
-            touchMultiplier: 1.0,
-            syncTouch: false,
-            autoResize: true
-        });
+  const jsonLdGraph = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Orbita",
+      url: SITE_URL,
+      email: "hello@orbitalight.com",
+      logo: `${SITE_URL}/images/og.jpg`,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Orbita",
+      url: SITE_URL,
+      description: meta.description,
+    },
+    buildProductJsonLd(meta.description),
+    ...(faqEntries.length > 0
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqEntries.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: item.answer,
+              },
+            })),
+          },
+        ]
+      : []),
+  ];
 
-        lenis.on("scroll", ScrollTrigger.update);
-        if (typeof window !== "undefined") {
-            (window as any).lenis = lenis;
-        }
-
-        const updateTicker = (time: number) => {
-            lenis.raf(time * 1000);
-        };
-
-        gsap.ticker.add(updateTicker);
-        gsap.ticker.lagSmoothing(0);
-
-        return () => {
-            if (typeof window !== "undefined") {
-                (window as any).lenis = null;
-            }
-            gsap.ticker.remove(updateTicker);
-            lenis.destroy();
-        };
-    }, []);
-
-    useEffect(() => {
-        if (isReady) {
-            const t1 = setTimeout(() => ScrollTrigger.refresh(), 100);
-            const t2 = setTimeout(() => ScrollTrigger.refresh(), 450);
-            return () => {
-                clearTimeout(t1);
-                clearTimeout(t2);
-            };
-        }
-    }, [isReady]);
   return (
-    <main className={styles.main}>
-        <Preloader
-            onStartReveal={() => setIsPortalOpen(true)}
-            onComplete={() => setIsReady(true)}
-        />
-        <Header isReady={isReady} />
-        <Landing isPortalOpen={isPortalOpen} />
-        <Des />
-        <Atmos />
-        <Features />
-        <Upscale />
-        <Mat />
-        <Swtich />
-        <Finish />
-        <Tech />
-        <Source />
-        <USB />
-        <Sus />
-        <Philo />
-        <FAQ />
-        <Footer />
-    </main>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLdGraph) }}
+      />
+      <HomeClient />
+    </>
   );
 }
